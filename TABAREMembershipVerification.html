@@ -845,7 +845,7 @@
     
     <div class="header">
       <div class="logo-container">
-        <img id="logoImage" src="finallogo.jpg" alt="Tabare Cooperative Logo">
+        <img id="logoImage" src="finallogo.jpg" alt="Tabare Cooperative Logo" onerror="this.style.display='none'">
       </div>
       <div class="title-group">
         <h1>TABARE <span>MARABA</span></h1>
@@ -862,7 +862,7 @@
         <input 
           type="text" 
           id="memberIdInput" 
-          placeholder="e.g., TAB/MEM/2026/001"
+          placeholder="e.g., TAB/MEM/2026/xxx"
           autocomplete="off"
         />
         <button class="btn-search" id="searchBtn" onclick="verifyMember()">
@@ -874,7 +874,7 @@
       </div>
       <div class="search-hint">
         <i class="fas fa-info-circle"></i> 
-        Enter the membership ID to check validity and view member details
+        Enter the membership ID (with slashes or underscores) to check validity and view member details
       </div>
     </div>
 
@@ -1016,13 +1016,34 @@
       measurementId: "G-50F5VT9W12"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase
+    try {
+      firebase.initializeApp(firebaseConfig);
+      console.log('✅ Firebase initialized successfully');
+    } catch (e) {
+      console.error('❌ Firebase initialization error:', e);
+      alert('Error initializing Firebase. Please check your connection.');
+    }
+    
     const db = firebase.firestore();
 
     // ============================================
     // STATE
     // ============================================
     let currentMember = null;
+
+    // ============================================
+    // HELPER: Normalize ID formats
+    // ============================================
+    function normalizeId(id) {
+      // Convert slashes to underscores for document lookup
+      return id.toUpperCase().replace(/\//g, '_');
+    }
+
+    function convertToDisplayId(id) {
+      // Convert underscores to slashes for display
+      return id.toUpperCase().replace(/_/g, '/');
+    }
 
     // ============================================
     // VERIFICATION FUNCTION - FROM FIRESTORE
@@ -1032,7 +1053,7 @@
       const id = memberId || input.value.trim();
       
       if (!id) {
-        alert('Please enter a Membership ID.');
+        showToast('⚠️ Please enter a Membership ID.', 'error');
         input.focus();
         return;
       }
@@ -1043,32 +1064,150 @@
       btn.disabled = true;
 
       try {
-        // Query Firestore for the member document
-        const docRef = db.collection('MembershipList').doc(id.toUpperCase());
+        const resultContainer = document.getElementById('resultContainer');
+        let found = false;
+        let memberData = null;
+        let docId = '';
+
+        // 1. TRY: Direct document lookup using normalized ID (underscores)
+        const normalizedId = normalizeId(id);
+        console.log('🔍 Trying direct lookup with:', normalizedId);
+        
+        const docRef = db.collection('MembershipList').doc(normalizedId);
         const docSnap = await docRef.get();
 
-        const resultContainer = document.getElementById('resultContainer');
-        
         if (docSnap.exists) {
-          const data = docSnap.data();
+          console.log('✅ Found by direct document ID:', normalizedId);
+          memberData = docSnap.data();
+          docId = docSnap.id;
+          found = true;
+        }
+
+        // 2. TRY: Search by membershipId field (display format with slashes)
+        if (!found) {
+          console.log('🔍 Trying search by membershipId field:', id);
+          const searchId = id.toUpperCase();
+          const snapshot = await db.collection('MembershipList')
+            .where('membershipId', '==', searchId)
+            .get();
+
+          if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            memberData = doc.data();
+            docId = doc.id;
+            found = true;
+            console.log('✅ Found by membershipId field:', docId);
+          }
+        }
+
+        // 3. TRY: Search by phone number
+        if (!found) {
+          console.log('🔍 Trying search by phone:', id);
+          const phoneSnapshot = await db.collection('MembershipList')
+            .where('phone', '==', id)
+            .get();
+
+          if (!phoneSnapshot.empty) {
+            const doc = phoneSnapshot.docs[0];
+            memberData = doc.data();
+            docId = doc.id;
+            found = true;
+            console.log('✅ Found by phone:', docId);
+          }
+        }
+
+        // 4. TRY: Search by fullName (partial match)
+        if (!found) {
+          console.log('🔍 Trying search by name:', id);
+          const nameSnapshot = await db.collection('MembershipList')
+            .where('fullName', '>=', id)
+            .where('fullName', '<=', id + '\uf8ff')
+            .get();
+
+          if (!nameSnapshot.empty) {
+            const doc = nameSnapshot.docs[0];
+            memberData = doc.data();
+            docId = doc.id;
+            found = true;
+            console.log('✅ Found by name:', docId);
+          }
+        }
+
+        if (found && memberData) {
           currentMember = {
-            id: docSnap.id,
-            ...data
+            id: docId,
+            ...memberData
           };
           displayValidMember(currentMember);
+          resultContainer.classList.add('visible');
+          showToast(`✅ Member found: ${memberData.fullName || 'Unknown'}`, 'success');
         } else {
           currentMember = null;
           displayInvalidMember(id);
+          resultContainer.classList.add('visible');
+          showToast('❌ Member not found. Please check the ID.', 'error');
         }
 
-        resultContainer.classList.add('visible');
       } catch (error) {
-        console.error('Error verifying member:', error);
-        alert('Error connecting to database. Please try again.');
+        console.error('❌ Error verifying member:', error);
+        showToast('⚠️ Database error: ' + error.message, 'error');
+        displayInvalidMember(id);
+        resultContainer.classList.add('visible');
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
       }
+    }
+
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+    function showToast(message, type = 'info') {
+      let toast = document.getElementById('toastNotification');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastNotification';
+        toast.style.cssText = `
+          position: fixed;
+          bottom: 2rem;
+          right: 2rem;
+          padding: 1rem 1.5rem;
+          border-radius: 12px;
+          color: #fff;
+          font-weight: 600;
+          font-size: 10pt;
+          z-index: 9999;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+          display: none;
+          max-width: 400px;
+          animation: slideIn 0.3s ease;
+        `;
+        document.body.appendChild(toast);
+      }
+
+      const colors = {
+        success: '#0f7b3a',
+        error: '#dc2626',
+        info: '#0b1c2e'
+      };
+
+      toast.style.background = colors[type] || colors.info;
+      toast.textContent = message;
+      toast.style.display = 'flex';
+      toast.style.alignItems = 'center';
+      toast.style.gap = '0.8rem';
+
+      const iconMap = {
+        success: '✅',
+        error: '❌',
+        info: 'ℹ️'
+      };
+      toast.innerHTML = `${iconMap[type] || 'ℹ️'} ${message}`;
+
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 4000);
     }
 
     // ============================================
@@ -1080,12 +1219,14 @@
       
       document.getElementById('statusIcon').innerHTML = '<i class="fas fa-check-circle"></i>';
       document.getElementById('statusTitle').textContent = '✅ Member Valid';
-      document.getElementById('statusMessage').textContent = 'This membership ID is registered and active in our system.';
+      document.getElementById('statusMessage').textContent = 'This membership ID is registered in our system.';
 
-      document.getElementById('detailMemberId').textContent = member.id;
+      // Display membership ID - prefer membershipId field, then doc ID
+      const displayId = member.membershipId || member.id || '—';
+      document.getElementById('detailMemberId').textContent = displayId;
+      
       document.getElementById('detailFullName').textContent = member.fullName || '—';
       
-      // Map membership type
       const typeMap = {
         'driver': 'Driver Only',
         'tricycle_owner': 'Owner Only',
@@ -1094,11 +1235,10 @@
       document.getElementById('detailMembershipType').textContent = typeMap[member.membershipType] || member.membershipType || '—';
       
       const statusEl = document.getElementById('detailStatus');
-      const status = member.status || 'Active';
-      statusEl.textContent = status;
-      statusEl.style.color = status === 'Active' ? '#16a34a' : '#dc2626';
+      const status = member.status || 'pending';
+      statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+      statusEl.style.color = status === 'active' ? '#16a34a' : status === 'pending' ? '#d97706' : '#dc2626';
       
-      // Format date
       const formatDate = (date) => {
         if (!date) return '—';
         if (date.toDate) {
@@ -1112,12 +1252,11 @@
         return '—';
       };
 
-      document.getElementById('detailDob').textContent = member.dateOfBirth || '—';
+      document.getElementById('detailDob').textContent = member.dateOfBirth || member.dob || '—';
       document.getElementById('detailPhone').textContent = member.phone || '—';
-      document.getElementById('detailState').textContent = member.stateOfOrigin || '—';
+      document.getElementById('detailState').textContent = member.stateOfOrigin || member.state || '—';
       document.getElementById('detailRegDate').textContent = formatDate(member.registeredAt || member.registrationDate);
       
-      // Calculate expiry date (1 year from registration)
       let expiryDate = '—';
       if (member.registeredAt && member.registeredAt.toDate) {
         const regDate = member.registeredAt.toDate();
@@ -1169,7 +1308,7 @@
     // ============================================
     function viewIdCard() {
       if (!currentMember) {
-        alert('Please verify a member first.');
+        showToast('Please verify a member first.', 'error');
         return;
       }
 
@@ -1179,11 +1318,11 @@
       document.body.style.overflow = 'hidden';
 
       setTimeout(() => {
-        // Generate QR code
         const qrContainer = document.getElementById('qrcode');
-        if (qrContainer && currentMember.id) {
+        if (qrContainer) {
+          const qrText = currentMember.membershipId || currentMember.id || 'TABARE-MEMBER';
           new QRCode(qrContainer, {
-            text: currentMember.id,
+            text: qrText,
             width: 56,
             height: 56,
             colorDark: '#0b1c2e',
@@ -1202,12 +1341,18 @@
         year: 'numeric'
       });
 
+      const displayId = member.membershipId || member.id || 'N/A';
+      const displayName = member.fullName || 'N/A';
+      const displayType = member.membershipType || 'N/A';
+      const displayStatus = member.status || 'Active';
+      const displayPhone = member.phone || 'N/A';
+
       return `
         <div class="id-card" id="idCardToPrint">
           <div class="card-watermark">TABARE</div>
           <div class="card-header">
             <div class="card-logo">
-              <img src="finallogo.jpg" alt="TABARE Logo" style="width:40px; height:40px; object-fit:contain; border-radius:50%;">
+              <img src="finallogo.jpg" alt="TABARE Logo" style="width:40px; height:40px; object-fit:contain; border-radius:50%;" onerror="this.style.display='none'">
             </div>
             <div class="card-title">
               <h3>TABARE <span>MARABA</span></h3>
@@ -1221,19 +1366,19 @@
             <div class="card-info">
               <div class="info-row">
                 <span class="label">ID No.</span>
-                <span class="value highlight">${member.id}</span>
+                <span class="value highlight">${displayId}</span>
               </div>
               <div class="info-row">
                 <span class="label">Name</span>
-                <span class="value">${member.fullName || '—'}</span>
+                <span class="value">${displayName}</span>
               </div>
               <div class="info-row">
                 <span class="label">Role</span>
-                <span class="value">${member.membershipType || '—'}</span>
+                <span class="value">${displayType}</span>
               </div>
               <div class="info-row">
                 <span class="label">Status</span>
-                <span class="value" style="color:${member.status === 'Active' ? '#4ade80' : '#f87171'}">${member.status || 'Active'}</span>
+                <span class="value" style="color:${displayStatus === 'active' ? '#4ade80' : '#f87171'}">${displayStatus}</span>
               </div>
               <div class="info-row">
                 <span class="label">Date of Issue</span>
@@ -1244,7 +1389,7 @@
           <div class="card-footer">
             <div class="card-tagline" style="width:100%; text-align:center;">
               <strong>In Case of Emergency</strong><br>
-              <span style="font-size:8pt;">Contact: ${member.phone || 'N/A'}</span><br>
+              <span style="font-size:8pt;">Contact: ${displayPhone}</span><br>
               <span style="font-size:6pt; opacity:0.7;">TABARE Transport Cooperative</span>
             </div>
           </div>
@@ -1433,7 +1578,7 @@
     // ============================================
     function viewUndertakingForm() {
       if (!currentMember) {
-        alert('Please verify a member first.');
+        showToast('Please verify a member first.', 'error');
         return;
       }
 
@@ -1447,7 +1592,7 @@
         if (form) {
           form.addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('✅ Undertaking Form submitted successfully!');
+            showToast('✅ Undertaking Form submitted successfully!', 'success');
             closeUndertakingModal();
           });
         }
@@ -1461,6 +1606,8 @@
         month: 'long',
         year: 'numeric'
       });
+
+      const displayId = member.membershipId || member.id || 'N/A';
 
       return `
         <div class="undertaking-form">
@@ -1481,11 +1628,11 @@
               <p style="font-size:9pt; color:#52647a; margin-bottom:0.5rem;">Please confirm that the following information is correct:</p>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:9pt;">
                 <div><strong>Full Name:</strong> ${member.fullName || 'N/A'}</div>
-                <div><strong>Membership ID:</strong> ${member.id}</div>
-                <div><strong>Date of Birth:</strong> ${member.dateOfBirth || 'N/A'}</div>
+                <div><strong>Membership ID:</strong> ${displayId}</div>
+                <div><strong>Date of Birth:</strong> ${member.dateOfBirth || member.dob || 'N/A'}</div>
                 <div><strong>Phone:</strong> ${member.phone || 'N/A'}</div>
-                <div><strong>State of Origin:</strong> ${member.stateOfOrigin || 'N/A'}</div>
-                <div><strong>Home Address:</strong> ${member.homeAddress || 'N/A'}</div>
+                <div><strong>State of Origin:</strong> ${member.stateOfOrigin || member.state || 'N/A'}</div>
+                <div><strong>Home Address:</strong> ${member.homeAddress || member.address || 'N/A'}</div>
               </div>
             </div>
             <div class="section">
@@ -1546,7 +1693,7 @@
     // ============================================
     function viewApprovalLetter() {
       if (!currentMember) {
-        alert('Please verify a member first.');
+        showToast('Please verify a member first.', 'error');
         return;
       }
 
@@ -1564,15 +1711,17 @@
         year: 'numeric'
       });
 
+      const displayId = member.membershipId || member.id || 'N/A';
+
       let detailsHTML = `
         <tr><td style="padding:4px 8px; font-weight:600;">Full Name</td><td style="padding:4px 8px;">${member.fullName || 'N/A'}</td></tr>
-        <tr><td style="padding:4px 8px; font-weight:600;">Membership ID</td><td style="padding:4px 8px; color:#d97706; font-weight:700;">${member.id}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Membership ID</td><td style="padding:4px 8px; color:#d97706; font-weight:700;">${displayId}</td></tr>
         <tr><td style="padding:4px 8px; font-weight:600;">Membership Type</td><td style="padding:4px 8px;">${member.membershipType || 'N/A'}</td></tr>
         <tr><td style="padding:4px 8px; font-weight:600;">Status</td><td style="padding:4px 8px;">${member.status || 'Active'}</td></tr>
-        <tr><td style="padding:4px 8px; font-weight:600;">Date of Birth</td><td style="padding:4px 8px;">${member.dateOfBirth || 'N/A'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Date of Birth</td><td style="padding:4px 8px;">${member.dateOfBirth || member.dob || 'N/A'}</td></tr>
         <tr><td style="padding:4px 8px; font-weight:600;">Phone</td><td style="padding:4px 8px;">${member.phone || 'N/A'}</td></tr>
-        <tr><td style="padding:4px 8px; font-weight:600;">State of Origin</td><td style="padding:4px 8px;">${member.stateOfOrigin || 'N/A'}</td></tr>
-        <tr><td style="padding:4px 8px; font-weight:600;">Address</td><td style="padding:4px 8px;">${member.homeAddress || 'N/A'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">State of Origin</td><td style="padding:4px 8px;">${member.stateOfOrigin || member.state || 'N/A'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Address</td><td style="padding:4px 8px;">${member.homeAddress || member.address || 'N/A'}</td></tr>
       `;
 
       if (member.tricyclePlate) {
@@ -1586,7 +1735,7 @@
         <div style="font-family: 'Inter', sans-serif; max-width: 210mm; margin: 0 auto; padding: 0.5in; background: white;">
           <div style="display: flex; align-items: center; gap: 1rem; border-bottom: 3px solid #d97706; padding-bottom: 0.5rem; margin-bottom: 1rem;">
             <div style="flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#fef3e8; border-radius:12px; padding:6px; width:60px; height:60px;">
-              <img src="finallogo.jpg" alt="Logo" style="height:55px; width:auto; max-width:55px; object-fit:contain; border-radius:8px;">
+              <img src="finallogo.jpg" alt="Logo" style="height:55px; width:auto; max-width:55px; object-fit:contain; border-radius:8px;" onerror="this.style.display='none'">
             </div>
             <div style="flex:1;">
               <h1 style="font-size:20pt; font-weight:800; color:#0b1c2e; letter-spacing:-0.02em; line-height:1.1;">
@@ -1604,7 +1753,7 @@
 
           <div style="margin-bottom:0.5rem;">
             <p><strong>${member.fullName || 'N/A'}</strong></p>
-            <p>${member.homeAddress || 'N/A'}</p>
+            <p>${member.homeAddress || member.address || 'N/A'}</p>
             <p>${member.phone || 'N/A'}</p>
           </div>
 
@@ -1619,7 +1768,7 @@
             <p style="font-size:14pt; color:#16a34a; font-weight:700;">
               <i class="fas fa-check-circle" style="color:#16a34a;"></i> MEMBERSHIP APPROVED
             </p>
-            <p style="font-size:10pt; color:#64748b;">Membership ID: <strong>${member.id}</strong></p>
+            <p style="font-size:10pt; color:#64748b;">Membership ID: <strong>${displayId}</strong></p>
           </div>
 
           <table style="width:100%; border-collapse:collapse; margin:0.5rem 0; background:#f8fafc; border-radius:8px; overflow:hidden;">
@@ -1681,7 +1830,7 @@
 
     function printApprovalLetter() {
       if (!currentMember) {
-        alert('Please verify a member first.');
+        showToast('Please verify a member first.', 'error');
         return;
       }
 
@@ -1755,8 +1904,9 @@
       setTimeout(() => verifyMember(memberParam), 500);
     }
 
-    console.log('TABARE Membership Verification System v2.0 loaded.');
-    console.log('Connected to Firestore "MembershipList" collection.');
+    console.log('✅ TABARE Membership Verification System v2.0 loaded.');
+    console.log('📡 Connected to Firestore "MembershipList" collection.');
+    console.log('💡 Supports both ID formats: TAB/MEM/2026/001 and TAB_MEM_2026_001');
   </script>
 
 </body>

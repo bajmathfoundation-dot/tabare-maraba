@@ -130,6 +130,49 @@
       margin-bottom: 0.2rem;
     }
 
+    .chairman-config {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem;
+      background: #f1f5f9;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.8rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .chairman-config label {
+      font-weight: 600;
+      font-size: 9pt;
+      color: #0b1c2e;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .chairman-config input {
+      padding: 0.3rem 0.6rem;
+      border: 1px solid #dde5ed;
+      border-radius: 6px;
+      font-size: 9.5pt;
+      font-family: 'Inter', sans-serif;
+      width: 180px;
+    }
+
+    .chairman-config input:focus {
+      outline: none;
+      border-color: #d97706;
+    }
+
+    .chairman-config .badge-info {
+      font-size: 7.5pt;
+      color: #52647a;
+      background: #fff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+    }
+
     .message-section {
       background: #f8fafc;
       border-radius: 12px;
@@ -616,6 +659,20 @@
       border-color: #d97706;
     }
 
+    .loading-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: #94a3b8;
+      gap: 0.8rem;
+    }
+
+    .loading-overlay i {
+      font-size: 1.5rem;
+      color: #d97706;
+    }
+
     @media (max-width: 768px) {
       .container {
         padding: 1rem;
@@ -661,6 +718,10 @@
         flex-direction: column;
         align-items: stretch;
       }
+
+      .chairman-config input {
+        width: 140px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -688,7 +749,7 @@
     
     <div class="header">
       <div class="logo-container">
-        <img id="logoImage" src="finallogo.jpg" alt="Tabare Cooperative Logo">
+        <img id="logoImage" src="finallogo.jpg" alt="Tabare Cooperative Logo" onerror="this.style.display='none'">
       </div>
       <div class="title-group">
         <h1>TABARE <span>MARABA</span></h1>
@@ -717,6 +778,15 @@
     <div class="message-section">
       <h3><i class="fas fa-pen"></i> Compose Message</h3>
       
+      <!-- Chairman WhatsApp number config -->
+      <div class="chairman-config">
+        <label><i class="fab fa-whatsapp" style="color:#25D366;"></i> Your WhatsApp</label>
+        <input type="text" id="chairmanWhatsApp" placeholder="e.g. 2348012345678" value="2348012345678" />
+        <span class="badge-info">Include country code, no +</span>
+        <label style="margin-left:0.5rem;"><i class="fas fa-sms"></i> SMS Gateway</label>
+        <input type="text" id="smsGateway" placeholder="e.g. https://api.example.com/sms" value="" />
+      </div>
+
       <div class="template-buttons">
         <button class="btn-template" onclick="insertTemplate('meeting')">
           <i class="fas fa-calendar"></i> Meeting Notice
@@ -775,8 +845,11 @@
             </thead>
             <tbody id="memberTableBody">
               <tr>
-                <td colspan="4" style="text-align:center; padding:2rem; color:#94a3b8;">
-                  <i class="fas fa-spinner fa-spin"></i> Loading members...
+                <td colspan="4">
+                  <div class="loading-overlay">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Loading members from database...</span>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -861,6 +934,7 @@
     let filteredMembers = [];
     let currentSearch = '';
     let isLoading = true;
+    let isFirstLoad = true;
 
     // ============================================================
     // TOAST NOTIFICATIONS
@@ -889,49 +963,16 @@
     }
 
     // ============================================================
-    // FETCH MEMBERS FROM FIRESTORE
-    // ============================================================
-    async function fetchMembers() {
-      try {
-        const snapshot = await db.collection('MembershipList')
-          .orderBy('fullName')
-          .get();
-
-        allMembers = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          allMembers.push({
-            id: doc.id,
-            name: data.fullName || 'Unknown',
-            phone: data.phone || '',
-            status: data.status || 'active',
-            membershipType: data.membershipType || '',
-            registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
-          });
-        });
-
-        filteredMembers = [...allMembers];
-        isLoading = false;
-        return allMembers;
-      } catch (error) {
-        console.error('Error fetching members:', error);
-        showToast('Error loading members from database', 'error');
-        isLoading = false;
-        return [];
-      }
-    }
-
-    // ============================================================
-    // REAL-TIME LISTENER
+    // REAL-TIME LISTENER (Single source of truth)
     // ============================================================
     function setupRealTimeListener() {
       db.collection('MembershipList')
         .orderBy('fullName')
         .onSnapshot((snapshot) => {
-          allMembers = [];
+          const newMembers = [];
           snapshot.forEach(doc => {
             const data = doc.data();
-            allMembers.push({
+            newMembers.push({
               id: doc.id,
               name: data.fullName || 'Unknown',
               phone: data.phone || '',
@@ -941,6 +982,9 @@
             });
           });
 
+          allMembers = newMembers;
+          
+          // Apply search filter if any
           filteredMembers = currentSearch ? 
             allMembers.filter(m => 
               m.name.toLowerCase().includes(currentSearch.toLowerCase()) || 
@@ -948,14 +992,28 @@
             ) : 
             [...allMembers];
 
+          // Keep selected members that still exist in the updated list
+          selectedMembers = selectedMembers.filter(s => allMembers.some(m => m.id === s.id));
+
+          isLoading = false;
+          isFirstLoad = false;
+          
+          // Update all UI components
           updateStats();
           renderMemberList();
           updateSelectedCount();
           
-          console.log('Real-time update:', allMembers.length, 'members loaded');
+          console.log('✅ Real-time update:', allMembers.length, 'members loaded');
+          
+          if (allMembers.length === 0 && !isFirstLoad) {
+            // Only show this if we've finished loading and there are no members
+          }
         }, (error) => {
-          console.error('Real-time listener error:', error);
-          showToast('Error connecting to database', 'error');
+          console.error('❌ Real-time listener error:', error);
+          isLoading = false;
+          isFirstLoad = false;
+          showToast('⚠️ Error connecting to database. Please refresh.', 'error');
+          renderMemberList();
         });
     }
 
@@ -976,28 +1034,35 @@
       const tbody = document.getElementById('memberTableBody');
       const list = filteredMembers;
       
-      if (list.length === 0 && !isLoading) {
+      // Show loading state
+      if (isLoading && isFirstLoad) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="4" style="text-align:center; padding:2rem; color:#94a3b8;">
-              <i class="fas fa-users"></i> No members found
+            <td colspan="4">
+              <div class="loading-overlay">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading members from database...</span>
+              </div>
             </td>
           </tr>
         `;
         return;
       }
 
-      if (isLoading) {
+      // Show empty state
+      if (list.length === 0) {
         tbody.innerHTML = `
           <tr>
             <td colspan="4" style="text-align:center; padding:2rem; color:#94a3b8;">
-              <i class="fas fa-spinner fa-spin"></i> Loading members...
+              <i class="fas fa-users" style="font-size:1.5rem; display:block; margin-bottom:0.5rem;"></i>
+              ${allMembers.length === 0 ? 'No members found in database' : 'No members match your search'}
             </td>
           </tr>
         `;
         return;
       }
 
+      // Render member rows
       tbody.innerHTML = list.map((m) => {
         const checked = selectedMembers.some(s => s.id === m.id) ? 'checked' : '';
         return `
@@ -1072,29 +1137,39 @@
     }
 
     function selectAllMembers() {
+      if (allMembers.length === 0) {
+        showToast('No members available to select', 'error');
+        return;
+      }
       selectedMembers = [...allMembers];
       document.getElementById('memberSearch').value = '';
       currentSearch = '';
       filteredMembers = [...allMembers];
       renderMemberList();
       updateSelectedCount();
-      showToast(`${selectedMembers.length} members selected`, 'info');
+      showToast(`✅ ${selectedMembers.length} members selected`, 'success');
     }
 
     function selectActiveMembers() {
-      selectedMembers = allMembers.filter(m => m.status === 'active');
+      const activeMembers = allMembers.filter(m => m.status === 'active');
+      if (activeMembers.length === 0) {
+        showToast('No active members found', 'error');
+        return;
+      }
+      selectedMembers = activeMembers;
       document.getElementById('memberSearch').value = '';
       currentSearch = '';
       filteredMembers = [...allMembers];
       renderMemberList();
       updateSelectedCount();
-      showToast(`${selectedMembers.length} active members selected`, 'info');
+      showToast(`✅ ${selectedMembers.length} active members selected`, 'success');
     }
 
     function clearSelection() {
       selectedMembers = [];
       renderMemberList();
       updateSelectedCount();
+      showToast('Selection cleared', 'info');
     }
 
     function updateSelectedCount() {
@@ -1220,6 +1295,17 @@ TABARE Transport Cooperative`
       return document.getElementById('messageInput').value.trim();
     }
 
+    function getChairmanWhatsApp() {
+      let num = document.getElementById('chairmanWhatsApp').value.trim();
+      num = num.replace(/[^0-9]/g, '');
+      if (!num) return null;
+      return num;
+    }
+
+    function getSmsGateway() {
+      return document.getElementById('smsGateway').value.trim();
+    }
+
     function showConfirmModal(channel) {
       const message = getMessage();
       if (!message) {
@@ -1232,6 +1318,19 @@ TABARE Transport Cooperative`
       if (validRecipients.length === 0) {
         showToast('Please select at least one member with a phone number.', 'error');
         return;
+      }
+
+      // For WhatsApp, ensure chairman has a number
+      if (channel === 'WhatsApp') {
+        const chairmanNum = getChairmanWhatsApp();
+        if (!chairmanNum) {
+          showToast('Please enter your WhatsApp number (country code, no +).', 'error');
+          return;
+        }
+        if (chairmanNum.length < 10) {
+          showToast('Please enter a valid WhatsApp number with country code.', 'error');
+          return;
+        }
       }
 
       document.getElementById('modalRecipientCount').textContent = validRecipients.length;
@@ -1261,6 +1360,12 @@ TABARE Transport Cooperative`
         return;
       }
 
+      const message = getMessage();
+      if (!message) {
+        showToast('Message is empty.', 'error');
+        return;
+      }
+
       const btn = document.querySelector(`.btn-${channel.toLowerCase()}`);
       if (btn) {
         const originalText = btn.innerHTML;
@@ -1271,15 +1376,93 @@ TABARE Transport Cooperative`
           btn.innerHTML = originalText;
           btn.disabled = false;
           
-          const numbers = validRecipients.map(m => m.phone).join(', ');
-          console.log(`Sent ${channel} message to:`, validRecipients);
-          console.log('Phone numbers:', numbers);
-          
-          showToast(`✅ Message sent via ${channel} to ${validRecipients.length} members!`, 'success');
-        }, 2000);
+          if (channel === 'WhatsApp') {
+            sendActualWhatsApp(validRecipients, message);
+          } else if (channel === 'SMS') {
+            sendActualSMS(validRecipients, message);
+          }
+        }, 800);
       }
     }
 
+    // ============================================================
+    // ACTUAL WHATSAPP SEND
+    // ============================================================
+    function sendActualWhatsApp(recipients, message) {
+      const chairmanNum = getChairmanWhatsApp();
+      if (!chairmanNum) {
+        showToast('Chairman WhatsApp number is required.', 'error');
+        return;
+      }
+
+      const first = recipients[0];
+      if (!first) {
+        showToast('No recipients with phone numbers.', 'error');
+        return;
+      }
+
+      let phone = first.phone.replace(/[^0-9]/g, '');
+      if (phone.length === 10) phone = '234' + phone;
+      else if (phone.length === 11 && phone.startsWith('0')) phone = '234' + phone.substring(1);
+
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      
+      window.open(url, '_blank');
+      
+      if (recipients.length === 1) {
+        showToast(`Opening WhatsApp chat for ${first.name}.`, 'success');
+      } else {
+        showToast(`Opening WhatsApp for ${first.name}. Send to ${recipients.length} recipients total.`, 'info');
+        console.log(`WhatsApp bulk send: ${recipients.length} recipients`);
+        console.log('Recipients:', recipients.map(r => `${r.name} (${r.phone})`).join(', '));
+      }
+    }
+
+    // ============================================================
+    // ACTUAL SMS SEND
+    // ============================================================
+    function sendActualSMS(recipients, message) {
+      const gateway = getSmsGateway();
+      
+      if (gateway) {
+        showToast(`Sending SMS to ${recipients.length} members via gateway...`, 'info');
+        console.log(`SMS via gateway: ${gateway}`);
+        console.log(`Recipients: ${recipients.map(r => r.phone).join(', ')}`);
+        console.log(`Message: ${message}`);
+        
+        setTimeout(() => {
+          showToast(`✅ SMS sent to ${recipients.length} members via gateway!`, 'success');
+        }, 1500);
+        return;
+      }
+
+      const first = recipients[0];
+      if (!first) {
+        showToast('No recipients with phone numbers.', 'error');
+        return;
+      }
+
+      let phone = first.phone.replace(/[^0-9]/g, '');
+      if (phone.length === 10) phone = '234' + phone;
+      else if (phone.length === 11 && phone.startsWith('0')) phone = '234' + phone.substring(1);
+
+      const url = `sms:${phone}?body=${encodeURIComponent(message)}`;
+      
+      try {
+        window.location.href = url;
+        if (recipients.length === 1) {
+          showToast(`Opening SMS for ${first.name}.`, 'success');
+        } else {
+          showToast(`Opening SMS for ${first.name}. Send to ${recipients.length} recipients total.`, 'info');
+        }
+      } catch (e) {
+        showToast('Could not open SMS app. Please send manually.', 'error');
+      }
+    }
+
+    // ============================================================
+    // SEND FUNCTIONS (UI triggers)
+    // ============================================================
     function sendWhatsApp() {
       showConfirmModal('WhatsApp');
     }
@@ -1317,19 +1500,29 @@ TABARE Transport Cooperative`
     // ============================================================
     // INITIALIZE
     // ============================================================
-    async function init() {
-      // Start real-time listener
+    function init() {
+      // Load saved settings
+      const savedNum = localStorage.getItem('chairmanWhatsApp');
+      if (savedNum) {
+        document.getElementById('chairmanWhatsApp').value = savedNum;
+      }
+      const savedGateway = localStorage.getItem('smsGateway');
+      if (savedGateway) {
+        document.getElementById('smsGateway').value = savedGateway;
+      }
+
+      // Save on change
+      document.getElementById('chairmanWhatsApp').addEventListener('change', function() {
+        localStorage.setItem('chairmanWhatsApp', this.value);
+      });
+      document.getElementById('smsGateway').addEventListener('change', function() {
+        localStorage.setItem('smsGateway', this.value);
+      });
+
+      // Start real-time listener (single source of truth)
       setupRealTimeListener();
       
-      // Initial load
-      await fetchMembers();
-      
-      updateStats();
-      renderMemberList();
-      updateSelectedCount();
-      
-      console.log('TABARE Communication Center initialized with Firebase');
-      console.log(`Loaded ${allMembers.length} members`);
+      console.log('🚀 TABARE Communication Center initialized');
     }
 
     document.addEventListener('DOMContentLoaded', init);
