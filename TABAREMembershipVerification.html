@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TABARE · Membership Verification</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e8ecf1;
+      color: #0b1c2e;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 3px solid #d97706;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .header .logo-container {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fef3e8;
+      border-radius: 12px;
+      padding: 6px;
+      width: 60px;
+      height: 60px;
+    }
+
+    .header .logo-container img {
+      height: 55px;
+      width: auto;
+      max-width: 55px;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .header .title-group h1 {
+      font-size: 20pt;
+      font-weight: 800;
+      color: #0b1c2e;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .header .title-group h1 span {
+      color: #d97706;
+    }
+
+    .header .title-group .subtitle {
+      font-size: 10pt;
+      color: #52647a;
+      font-weight: 500;
+    }
+
+    .search-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-box label {
+      display: block;
+      font-weight: 600;
+      font-size: 10.5pt;
+      color: #0b1c2e;
+      margin-bottom: 0.5rem;
+    }
+
+    .search-input-group {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .search-input-group input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border: 2px solid #dde5ed;
+      border-radius: 8px;
+      font-size: 11pt;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.25s ease;
+      min-width: 200px;
+    }
+
+    .search-input-group input:focus {
+      outline: none;
+      border-color: #d97706;
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+    }
+
+    .search-input-group .btn-search {
+      padding: 0.8rem 1.8rem;
+      background: #0b1c2e;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 10.5pt;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .search-input-group .btn-search:hover {
+      background: #1a314a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(11, 28, 46, 0.25);
+    }
+
+    .search-input-group .btn-search:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .search-hint {
+      font-size: 8.5pt;
+      color: #94a3b8;
+      margin-top: 0.5rem;
+    }
+
+    .search-hint i {
+      color: #d97706;
+    }
+
+    .result-container {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .result-container.visible {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .status-card {
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-card.valid {
+      background: #f0fdf4;
+      border: 2px solid #16a34a;
+    }
+
+    .status-card.invalid {
+      background: #fef2f2;
+      border: 2px solid #dc2626;
+    }
+
+    .status-card .status-icon {
+      font-size: 2.5rem;
+    }
+
+    .status-card.valid .status-icon {
+      color: #16a34a;
+    }
+
+    .status-card.invalid .status-icon {
+      color: #dc2626;
+    }
+
+    .status-card .status-text h2 {
+      font-size: 14pt;
+      font-weight: 700;
+    }
+
+    .status-card.valid .status-text h2 {
+      color: #16a34a;
+    }
+
+    .status-card.invalid .status-text h2 {
+      color: #dc2626;
+    }
+
+    .status-card .status-text p {
+      font-size: 9.5pt;
+      color: #52647a;
+      margin-top: 0.2rem;
+    }
+
+    .member-details {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .member-details h3 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #0b1c2e;
+      margin-bottom: 0.8rem;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.5rem;
+    }
+
+    .member-details h3 i {
+      color: #d97706;
+      margin-right: 0.5rem;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-item .label {
+      font-size: 8pt;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .detail-item .value {
+      font-size: 10.5pt;
+      font-weight: 500;
+      color: #0b1c2e;
+      margin-top: 0.1rem;
+    }
+
+    .detail-item .value.highlight {
+      color: #d97706;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 10pt;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+
+    .btn-success {
+      background: #0f7b3a;
+      color: #fff;
+    }
+    .btn-success:hover {
+      background: #0d6a31;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(15, 123, 58, 0.3);
+    }
+
+    .btn-primary {
+      background: #0b1c2e;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #1a314a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(11, 28, 46, 0.25);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #0b1c2e;
+      border: 2px solid #d0dce9;
+    }
+    .btn-outline:hover {
+      background: #eef4f9;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
+    }
+    .btn-danger:hover {
+      background: #b91c1c;
+      transform: translateY(-2px);
+    }
+
+    .btn-id-card {
+      background: #8b5cf6;
+      color: #fff;
+    }
+    .btn-id-card:hover {
+      background: #7c3aed;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 8.5pt;
+      color: #94a3b8;
+      margin-top: 1rem;
+    }
+
+    .footer i {
+      color: #d97706;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    .modal-content {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .modal-close {
+      position: sticky;
+      top: 0;
+      float: right;
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .modal-close:hover {
+      background: #dc2626;
+    }
+
+    .id-card {
+      font-family: 'Inter', sans-serif;
+      width: 340px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #0b1c2e 0%, #1a314a 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      color: #fff;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .id-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .id-card .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      border-bottom: 2px solid rgba(217, 119, 6, 0.5);
+      padding-bottom: 0.8rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .id-card .card-header .card-logo {
+      width: 50px;
+      height: 50px;
+      background: #fef3e8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #d97706;
+      flex-shrink: 0;
+    }
+
+    .id-card .card-header .card-title {
+      flex: 1;
+    }
+
+    .id-card .card-header .card-title h3 {
+      font-size: 14pt;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .id-card .card-header .card-title h3 span {
+      color: #d97706;
+    }
+
+    .id-card .card-header .card-title small {
+      font-size: 7pt;
+      opacity: 0.7;
+      font-weight: 400;
+    }
+
+    .id-card .card-body {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .id-card .card-body .card-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(217, 119, 6, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: rgba(255,255,255,0.3);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .id-card .card-body .card-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .id-card .card-body .card-info {
+      flex: 1;
+    }
+
+    .id-card .card-body .card-info .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8pt;
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .id-card .card-body .card-info .info-row .label {
+      opacity: 0.6;
+      font-weight: 500;
+    }
+
+    .id-card .card-body .card-info .info-row .value {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .id-card .card-body .card-info .info-row .value.highlight {
+      color: #d97706;
+    }
+
+    .id-card .card-footer {
+      border-top: 2px solid rgba(217, 119, 6, 0.5);
+      padding-top: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .id-card .card-footer .qr-container {
+      width: 60px;
+      height: 60px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .id-card .card-footer .qr-container #qrcode {
+      width: 100%;
+      height: 100%;
+    }
+
+    .id-card .card-footer .card-tagline {
+      text-align: right;
+      font-size: 7pt;
+      opacity: 0.6;
+      line-height: 1.4;
+    }
+
+    .id-card .card-footer .card-tagline strong {
+      color: #d97706;
+      opacity: 1;
+    }
+
+    .id-card .card-watermark {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 60px;
+      opacity: 0.05;
+      font-weight: 800;
+      z-index: 0;
+      color: #d97706;
+      pointer-events: none;
+    }
+
+    /* Undertaking Form Styles */
+    .undertaking-form {
+      font-family: 'Inter', sans-serif;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 0.5in;
+      background: white;
+    }
+
+    .undertaking-form .form-header {
+      text-align: center;
+      border-bottom: 3px solid #d97706;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .undertaking-form .form-header h2 {
+      font-size: 18pt;
+      font-weight: 800;
+      color: #0b1c2e;
+    }
+
+    .undertaking-form .form-header h2 span {
+      color: #d97706;
+    }
+
+    .undertaking-form .form-header p {
+      font-size: 10pt;
+      color: #52647a;
+    }
+
+    .undertaking-form .section {
+      margin: 1rem 0;
+      padding: 0.8rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .undertaking-form .section h4 {
+      color: #d97706;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 11pt;
+    }
+
+    .undertaking-form .form-field {
+      margin: 0.5rem 0;
+    }
+
+    .undertaking-form .form-field label {
+      display: block;
+      font-weight: 600;
+      font-size: 9pt;
+      color: #1f3348;
+      margin-bottom: 0.2rem;
+    }
+
+    .undertaking-form .form-field input,
+    .undertaking-form .form-field textarea,
+    .undertaking-form .form-field select {
+      width: 100%;
+      padding: 0.5rem 0.8rem;
+      border: 1.5px solid #dde5ed;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5pt;
+      background: #ffffff;
+      transition: 0.2s;
+    }
+
+    .undertaking-form .form-field input:focus,
+    .undertaking-form .form-field textarea:focus,
+    .undertaking-form .form-field select:focus {
+      border-color: #d97706;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+    }
+
+    .undertaking-form .form-field textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .undertaking-form .declaration {
+      background: #fef9e7;
+      border-left: 4px solid #d97706;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      font-size: 9pt;
+      color: #7c6a3a;
+    }
+
+    .undertaking-form .signature-section {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      margin: 1rem 0;
+    }
+
+    .undertaking-form .signature-section .sig-block {
+      flex: 1;
+    }
+
+    .undertaking-form .signature-section .sig-line {
+      border-bottom: 2px solid #0b1c2e;
+      min-height: 2rem;
+      margin-top: 0.5rem;
+    }
+
+    .undertaking-form .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin: 0.5rem 0;
+    }
+
+    .undertaking-form .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+      cursor: pointer;
+      accent-color: #d97706;
+    }
+
+    .undertaking-form .checkbox-group label {
+      font-size: 9pt;
+      color: #1f3348;
+      cursor: pointer;
+    }
+
+    .undertaking-form .btn-submit {
+      width: 100%;
+      padding: 0.8rem;
+      background: #0f7b3a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 11pt;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .undertaking-form .btn-submit:hover {
+      background: #0d6a31;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+      .header {
+        flex-wrap: wrap;
+      }
+      .header .logo-container {
+        width: 50px;
+        height: 50px;
+      }
+      .header .logo-container img {
+        height: 45px;
+        max-width: 45px;
+      }
+      .header .title-group h1 {
+        font-size: 16pt;
+      }
+      .search-input-group {
+        flex-direction: column;
+      }
+      .search-input-group input {
+        min-width: auto;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .action-buttons {
+        flex-direction: column;
+      }
+      .action-buttons .btn {
+        justify-content: center;
+      }
+      .status-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .signature-section {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .modal-content {
+        padding: 1rem;
+      }
+      .id-card {
+        width: 100%;
+        max-width: 340px;
+      }
+      .id-card .card-body {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .id-card .card-body .card-info .info-row {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .id-card .card-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+      }
+      .id-card .card-footer .card-tagline {
+        text-align: center;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0.5in;
+        max-width: 100%;
+      }
+      .controls,
+      .search-box,
+      .action-buttons,
+      .footer {
+        display: none !important;
+      }
+      .result-container {
+        display: block !important;
+      }
+      .modal-overlay {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <div class="header">
+      <div class="logo-container">
+        <img id="logoImage" src="finallogo.jpg" alt="Tabare Cooperative Logo">
+      </div>
+      <div class="title-group">
+        <h1>TABARE <span>MARABA</span></h1>
+        <div class="subtitle">Transport Cooperative, Bauchi State</div>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <label for="memberIdInput">
+        <i class="fas fa-id-card" style="color: #d97706;"></i> 
+        Enter Membership ID to Verify
+      </label>
+      <div class="search-input-group">
+        <input 
+          type="text" 
+          id="memberIdInput" 
+          placeholder="e.g., TAB/MEM/2026/001"
+          autocomplete="off"
+        />
+        <button class="btn-search" id="searchBtn" onclick="verifyMember()">
+          <i class="fas fa-search"></i> Verify
+        </button>
+        <button class="btn btn-outline" onclick="clearResults()">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+      <div class="search-hint">
+        <i class="fas fa-info-circle"></i> 
+        Enter the membership ID to check validity and view member details
+      </div>
+    </div>
+
+    <div class="result-container" id="resultContainer">
+      
+      <div class="status-card" id="statusCard">
+        <div class="status-icon" id="statusIcon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="status-text">
+          <h2 id="statusTitle">Member Valid</h2>
+          <p id="statusMessage">This membership ID is registered and active.</p>
+        </div>
+      </div>
+
+      <div class="member-details" id="memberDetails">
+        <h3><i class="fas fa-user-circle"></i> Member Information</h3>
+        <div class="detail-grid" id="detailGrid">
+          <div class="detail-item">
+            <span class="label">Membership ID</span>
+            <span class="value highlight" id="detailMemberId">—</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Full Name</span>
+            <span class="value" id="detailFullName">—</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Membership Type</span>
+            <span class="value" id="detailMembershipType">—</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Status</span>
+            <span class="value" id="detailStatus">—</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Date of Birth</span>
+            <span class="value" id="detailDob">—</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Phone Number</span>
+            <span class="value" id="detailPhone">—</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">State of Origin</span>
+            <span class="value" id="detailState">—</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Registration Date</span>
+            <span class="value" id="detailRegDate">—</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Expiry Date</span>
+            <span class="value" id="detailExpiryDate">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-success" id="viewApprovalBtn" onclick="viewApprovalLetter()">
+          <i class="fas fa-file-pdf"></i> View Approval Letter
+        </button>
+        <button class="btn btn-primary" id="viewUndertakingBtn" onclick="viewUndertakingForm()">
+          <i class="fas fa-file-signature"></i> Undertaking Form
+        </button>
+        <button class="btn btn-id-card" id="viewIdCardBtn" onclick="viewIdCard()">
+          <i class="fas fa-id-card"></i> View ID Card
+        </button>
+        <button class="btn btn-primary" id="printApprovalBtn" onclick="printApprovalLetter()">
+          <i class="fas fa-print"></i> Print Letter
+        </button>
+        <button class="btn btn-outline" onclick="window.history.back()">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <i class="fas fa-shield-alt"></i> 
+      TABARE Transport Cooperative · Membership Verification System v2.0
+    </div>
+  </div>
+
+  <!-- Approval Letter Modal -->
+  <div class="modal-overlay" id="approvalModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeApprovalModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="approvalLetterContent"></div>
+      <div style="text-align:center; margin-top:1rem; padding-top:1rem; border-top:1px solid #e2e8f0;">
+        <button class="btn btn-primary" onclick="printApprovalFromModal()">
+          <i class="fas fa-print"></i> Print Letter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Undertaking Form Modal -->
+  <div class="modal-overlay" id="undertakingModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeUndertakingModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="undertakingFormContent"></div>
+    </div>
+  </div>
+
+  <!-- ID Card Modal -->
+  <div class="modal-overlay" id="idCardModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeIdCardModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="idCardContent"></div>
+      <div style="text-align:center; margin-top:1rem; padding-top:1rem; border-top:1px solid #e2e8f0;">
+        <button class="btn btn-primary" onclick="printIdCard()">
+          <i class="fas fa-print"></i> Print ID Card
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ============================================
+    // FIREBASE CONFIG
+    // ============================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg",
+      authDomain: "tabare-maraba.firebaseapp.com",
+      projectId: "tabare-maraba",
+      storageBucket: "tabare-maraba.firebasestorage.app",
+      messagingSenderId: "204144494424",
+      appId: "1:204144494424:web:82e1006399c1b94eb9c72d",
+      measurementId: "G-50F5VT9W12"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ============================================
+    // STATE
+    // ============================================
+    let currentMember = null;
+
+    // ============================================
+    // VERIFICATION FUNCTION - FROM FIRESTORE
+    // ============================================
+    async function verifyMember(memberId) {
+      const input = document.getElementById('memberIdInput');
+      const id = memberId || input.value.trim();
+      
+      if (!id) {
+        alert('Please enter a Membership ID.');
+        input.focus();
+        return;
+      }
+
+      const btn = document.getElementById('searchBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Verifying...';
+      btn.disabled = true;
+
+      try {
+        // Query Firestore for the member document
+        const docRef = db.collection('MembershipList').doc(id.toUpperCase());
+        const docSnap = await docRef.get();
+
+        const resultContainer = document.getElementById('resultContainer');
+        
+        if (docSnap.exists) {
+          const data = docSnap.data();
+          currentMember = {
+            id: docSnap.id,
+            ...data
+          };
+          displayValidMember(currentMember);
+        } else {
+          currentMember = null;
+          displayInvalidMember(id);
+        }
+
+        resultContainer.classList.add('visible');
+      } catch (error) {
+        console.error('Error verifying member:', error);
+        alert('Error connecting to database. Please try again.');
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    // ============================================
+    // DISPLAY FUNCTIONS
+    // ============================================
+    function displayValidMember(member) {
+      const statusCard = document.getElementById('statusCard');
+      statusCard.className = 'status-card valid';
+      
+      document.getElementById('statusIcon').innerHTML = '<i class="fas fa-check-circle"></i>';
+      document.getElementById('statusTitle').textContent = '✅ Member Valid';
+      document.getElementById('statusMessage').textContent = 'This membership ID is registered and active in our system.';
+
+      document.getElementById('detailMemberId').textContent = member.id;
+      document.getElementById('detailFullName').textContent = member.fullName || '—';
+      
+      // Map membership type
+      const typeMap = {
+        'driver': 'Driver Only',
+        'tricycle_owner': 'Owner Only',
+        'both': 'Driver & Owner'
+      };
+      document.getElementById('detailMembershipType').textContent = typeMap[member.membershipType] || member.membershipType || '—';
+      
+      const statusEl = document.getElementById('detailStatus');
+      const status = member.status || 'Active';
+      statusEl.textContent = status;
+      statusEl.style.color = status === 'Active' ? '#16a34a' : '#dc2626';
+      
+      // Format date
+      const formatDate = (date) => {
+        if (!date) return '—';
+        if (date.toDate) {
+          return date.toDate().toLocaleDateString('en-NG', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+          });
+        }
+        if (typeof date === 'string') return date;
+        return '—';
+      };
+
+      document.getElementById('detailDob').textContent = member.dateOfBirth || '—';
+      document.getElementById('detailPhone').textContent = member.phone || '—';
+      document.getElementById('detailState').textContent = member.stateOfOrigin || '—';
+      document.getElementById('detailRegDate').textContent = formatDate(member.registeredAt || member.registrationDate);
+      
+      // Calculate expiry date (1 year from registration)
+      let expiryDate = '—';
+      if (member.registeredAt && member.registeredAt.toDate) {
+        const regDate = member.registeredAt.toDate();
+        const expDate = new Date(regDate);
+        expDate.setFullYear(expDate.getFullYear() + 1);
+        expiryDate = expDate.toLocaleDateString('en-NG', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+      }
+      document.getElementById('detailExpiryDate').textContent = expiryDate;
+
+      document.getElementById('viewApprovalBtn').disabled = false;
+      document.getElementById('viewUndertakingBtn').disabled = false;
+      document.getElementById('viewIdCardBtn').disabled = false;
+      document.getElementById('printApprovalBtn').disabled = false;
+    }
+
+    function displayInvalidMember(memberId) {
+      const statusCard = document.getElementById('statusCard');
+      statusCard.className = 'status-card invalid';
+      
+      document.getElementById('statusIcon').innerHTML = '<i class="fas fa-times-circle"></i>';
+      document.getElementById('statusTitle').textContent = '❌ Member Not Found';
+      document.getElementById('statusMessage').textContent = `Membership ID "${memberId}" is not registered in our system.`;
+
+      document.querySelectorAll('#detailGrid .value').forEach(el => {
+        el.textContent = '—';
+      });
+      document.getElementById('detailStatus').textContent = 'Not Found';
+      document.getElementById('detailStatus').style.color = '#dc2626';
+
+      document.getElementById('viewApprovalBtn').disabled = true;
+      document.getElementById('viewUndertakingBtn').disabled = true;
+      document.getElementById('viewIdCardBtn').disabled = true;
+      document.getElementById('printApprovalBtn').disabled = true;
+    }
+
+    function clearResults() {
+      document.getElementById('memberIdInput').value = '';
+      document.getElementById('resultContainer').classList.remove('visible');
+      document.getElementById('memberIdInput').focus();
+      currentMember = null;
+    }
+
+    // ============================================
+    // ID CARD FUNCTIONS
+    // ============================================
+    function viewIdCard() {
+      if (!currentMember) {
+        alert('Please verify a member first.');
+        return;
+      }
+
+      const cardHTML = generateIdCard(currentMember);
+      document.getElementById('idCardContent').innerHTML = cardHTML;
+      document.getElementById('idCardModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      setTimeout(() => {
+        // Generate QR code
+        const qrContainer = document.getElementById('qrcode');
+        if (qrContainer && currentMember.id) {
+          new QRCode(qrContainer, {
+            text: currentMember.id,
+            width: 56,
+            height: 56,
+            colorDark: '#0b1c2e',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        }
+      }, 200);
+    }
+
+    function generateIdCard(member) {
+      const today = new Date();
+      const issueDate = today.toLocaleDateString('en-NG', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+
+      return `
+        <div class="id-card" id="idCardToPrint">
+          <div class="card-watermark">TABARE</div>
+          <div class="card-header">
+            <div class="card-logo">
+              <img src="finallogo.jpg" alt="TABARE Logo" style="width:40px; height:40px; object-fit:contain; border-radius:50%;">
+            </div>
+            <div class="card-title">
+              <h3>TABARE <span>MARABA</span></h3>
+              <small>Transport Cooperative · Bauchi State</small>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-photo" id="cardPhoto">
+              ${member.profilePhoto ? `<img src="${member.profilePhoto}" alt="Member Photo">` : '<i class="fas fa-user"></i>'}
+            </div>
+            <div class="card-info">
+              <div class="info-row">
+                <span class="label">ID No.</span>
+                <span class="value highlight">${member.id}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Name</span>
+                <span class="value">${member.fullName || '—'}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Role</span>
+                <span class="value">${member.membershipType || '—'}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Status</span>
+                <span class="value" style="color:${member.status === 'Active' ? '#4ade80' : '#f87171'}">${member.status || 'Active'}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Date of Issue</span>
+                <span class="value">${issueDate}</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="card-tagline" style="width:100%; text-align:center;">
+              <strong>In Case of Emergency</strong><br>
+              <span style="font-size:8pt;">Contact: ${member.phone || 'N/A'}</span><br>
+              <span style="font-size:6pt; opacity:0.7;">TABARE Transport Cooperative</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function printIdCard() {
+      const content = document.getElementById('idCardContent').innerHTML;
+      const win = window.open('', '_blank', 'width=800,height=600');
+      win.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>ID Card</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+            <style>
+              body { margin: 0; padding: 0; background: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+              @media print { body { margin: 0; padding: 0; } }
+              .id-card {
+                font-family: 'Inter', sans-serif;
+                width: 340px;
+                margin: 0 auto;
+                background: linear-gradient(135deg, #0b1c2e 0%, #1a314a 100%);
+                border-radius: 16px;
+                padding: 1.5rem;
+                color: #fff;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+                position: relative;
+                overflow: hidden;
+              }
+              .id-card::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(217, 119, 6, 0.1) 0%, transparent 70%);
+                pointer-events: none;
+              }
+              .id-card .card-header {
+                display: flex;
+                align-items: center;
+                gap: 0.8rem;
+                border-bottom: 2px solid rgba(217, 119, 6, 0.5);
+                padding-bottom: 0.8rem;
+                margin-bottom: 1rem;
+                position: relative;
+                z-index: 1;
+              }
+              .id-card .card-header .card-logo {
+                width: 50px;
+                height: 50px;
+                background: #fef3e8;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                color: #d97706;
+                flex-shrink: 0;
+              }
+              .id-card .card-header .card-title {
+                flex: 1;
+              }
+              .id-card .card-header .card-title h3 {
+                font-size: 14pt;
+                font-weight: 800;
+                letter-spacing: -0.02em;
+                line-height: 1.1;
+              }
+              .id-card .card-header .card-title h3 span {
+                color: #d97706;
+              }
+              .id-card .card-header .card-title small {
+                font-size: 7pt;
+                opacity: 0.7;
+                font-weight: 400;
+              }
+              .id-card .card-body {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 0.8rem;
+              }
+              .id-card .card-body .card-photo {
+                width: 80px;
+                height: 80px;
+                border-radius: 12px;
+                background: rgba(255,255,255,0.1);
+                border: 2px solid rgba(217, 119, 6, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 40px;
+                color: rgba(255,255,255,0.3);
+                flex-shrink: 0;
+                overflow: hidden;
+              }
+              .id-card .card-body .card-photo img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+              .id-card .card-body .card-info {
+                flex: 1;
+              }
+              .id-card .card-body .card-info .info-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: 8pt;
+                padding: 2px 0;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+              }
+              .id-card .card-body .card-info .info-row .label {
+                opacity: 0.6;
+                font-weight: 500;
+              }
+              .id-card .card-body .card-info .info-row .value {
+                font-weight: 600;
+                text-align: right;
+              }
+              .id-card .card-body .card-info .info-row .value.highlight {
+                color: #d97706;
+              }
+              .id-card .card-footer {
+                border-top: 2px solid rgba(217, 119, 6, 0.5);
+                padding-top: 0.8rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                z-index: 1;
+              }
+              .id-card .card-footer .card-tagline {
+                text-align: right;
+                font-size: 7pt;
+                opacity: 0.6;
+                line-height: 1.4;
+              }
+              .id-card .card-footer .card-tagline strong {
+                color: #d97706;
+                opacity: 1;
+              }
+              .id-card .card-watermark {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                font-size: 60px;
+                opacity: 0.05;
+                font-weight: 800;
+                z-index: 0;
+                color: #d97706;
+                pointer-events: none;
+              }
+              @media print {
+                .id-card {
+                  box-shadow: none;
+                  border: 2px solid #0b1c2e;
+                  page-break-inside: avoid;
+                  margin: 0 auto;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            ${content}
+            <script>
+              window.onload = function() { window.print(); };
+            <\/script>
+          </body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    function closeIdCardModal() {
+      document.getElementById('idCardModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // ============================================
+    // UNDERTAKING FORM
+    // ============================================
+    function viewUndertakingForm() {
+      if (!currentMember) {
+        alert('Please verify a member first.');
+        return;
+      }
+
+      const formHTML = generateUndertakingForm(currentMember);
+      document.getElementById('undertakingFormContent').innerHTML = formHTML;
+      document.getElementById('undertakingModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      setTimeout(() => {
+        const form = document.getElementById('undertakingFormElement');
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Undertaking Form submitted successfully!');
+            closeUndertakingModal();
+          });
+        }
+      }, 100);
+    }
+
+    function generateUndertakingForm(member) {
+      const today = new Date();
+      const formattedDate = today.toLocaleDateString('en-NG', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      return `
+        <div class="undertaking-form">
+          <div class="form-header">
+            <h2>TABARE <span>MARABA</span></h2>
+            <p>Transport Cooperative, Bauchi State</p>
+            <p style="font-size:9pt; color:#64748b;">MEMBER'S UNDERTAKING FORM</p>
+          </div>
+          <div style="text-align:right; font-size:9pt; color:#64748b; margin-bottom:0.5rem;">
+            Date: ${formattedDate}
+          </div>
+          <p style="font-size:10pt; margin-bottom:0.5rem;">
+            I, <strong>${member.fullName || 'N/A'}</strong>, having been approved for membership in the TABARE Transport Cooperative, do hereby undertake and agree to the following terms and conditions:
+          </p>
+          <form id="undertakingFormElement">
+            <div class="section">
+              <h4><i class="fas fa-user-check" style="color:#d97706;"></i> 1. Personal Information Confirmation</h4>
+              <p style="font-size:9pt; color:#52647a; margin-bottom:0.5rem;">Please confirm that the following information is correct:</p>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:9pt;">
+                <div><strong>Full Name:</strong> ${member.fullName || 'N/A'}</div>
+                <div><strong>Membership ID:</strong> ${member.id}</div>
+                <div><strong>Date of Birth:</strong> ${member.dateOfBirth || 'N/A'}</div>
+                <div><strong>Phone:</strong> ${member.phone || 'N/A'}</div>
+                <div><strong>State of Origin:</strong> ${member.stateOfOrigin || 'N/A'}</div>
+                <div><strong>Home Address:</strong> ${member.homeAddress || 'N/A'}</div>
+              </div>
+            </div>
+            <div class="section">
+              <h4><i class="fas fa-handshake" style="color:#d97706;"></i> 2. Undertaking Clauses</h4>
+              <div class="checkbox-group"><input type="checkbox" id="clause1" required /><label for="clause1">I agree to abide by the constitution, bylaws, and regulations of the TABARE Transport Cooperative.</label></div>
+              <div class="checkbox-group"><input type="checkbox" id="clause2" required /><label for="clause2">I undertake to pay all dues and levies as determined by the cooperative's management.</label></div>
+              <div class="checkbox-group"><input type="checkbox" id="clause3" required /><label for="clause3">I commit to maintaining professional conduct and upholding the reputation of TABARE Cooperative.</label></div>
+              <div class="checkbox-group"><input type="checkbox" id="clause4" required /><label for="clause4">I agree to comply with all road safety regulations and ensure my vehicle is roadworthy.</label></div>
+              <div class="checkbox-group"><input type="checkbox" id="clause5" required /><label for="clause5">I understand that membership may be terminated for violation of rules or non-payment.</label></div>
+              <div class="checkbox-group"><input type="checkbox" id="clause6" required /><label for="clause6">I consent to the use of my personal information for cooperative purposes only.</label></div>
+            </div>
+            <div class="section">
+              <h4><i class="fas fa-edit" style="color:#d97706;"></i> 3. Additional Information</h4>
+              <div class="form-field">
+                <label for="nextOfKin">Next of Kin / Emergency Contact</label>
+                <input type="text" id="nextOfKin" placeholder="Full name and relationship" required />
+              </div>
+              <div class="form-field">
+                <label for="nextOfKinPhone">Next of Kin Phone Number</label>
+                <input type="tel" id="nextOfKinPhone" placeholder="e.g., 080 1234 5678" required />
+              </div>
+            </div>
+            <div class="declaration">
+              <i class="fas fa-gavel" style="color:#d97706;"></i>
+              <strong>Declaration:</strong> I, ${member.fullName || 'N/A'}, hereby declare that all information provided is true and correct.
+            </div>
+            <div class="section">
+              <h4><i class="fas fa-pen" style="color:#d97706;"></i> 4. Signatures</h4>
+              <div class="signature-section">
+                <div class="sig-block">
+                  <div class="form-field">
+                    <label for="memberSignature">Member's Signature</label>
+                    <input type="text" id="memberSignature" placeholder="Type your full name as signature" required />
+                  </div>
+                </div>
+                <div class="sig-block">
+                  <div style="text-align:center; padding:0.3rem; border:2px dashed #d97706; border-radius:8px; min-height:3rem; display:flex; align-items:center; justify-content:center; color:#d97706; font-weight:600; font-size:10pt;">
+                    <i class="fas fa-stamp"></i> COOPERATIVE STAMP
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn-submit">
+              <i class="fas fa-check-circle"></i> Submit Undertaking
+            </button>
+          </form>
+        </div>
+      `;
+    }
+
+    function closeUndertakingModal() {
+      document.getElementById('undertakingModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // ============================================
+    // APPROVAL LETTER FUNCTIONS
+    // ============================================
+    function viewApprovalLetter() {
+      if (!currentMember) {
+        alert('Please verify a member first.');
+        return;
+      }
+
+      const letterHTML = generateApprovalLetter(currentMember);
+      document.getElementById('approvalLetterContent').innerHTML = letterHTML;
+      document.getElementById('approvalModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function generateApprovalLetter(member) {
+      const today = new Date();
+      const formattedDate = today.toLocaleDateString('en-NG', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      let detailsHTML = `
+        <tr><td style="padding:4px 8px; font-weight:600;">Full Name</td><td style="padding:4px 8px;">${member.fullName || 'N/A'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Membership ID</td><td style="padding:4px 8px; color:#d97706; font-weight:700;">${member.id}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Membership Type</td><td style="padding:4px 8px;">${member.membershipType || 'N/A'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Status</td><td style="padding:4px 8px;">${member.status || 'Active'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Date of Birth</td><td style="padding:4px 8px;">${member.dateOfBirth || 'N/A'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Phone</td><td style="padding:4px 8px;">${member.phone || 'N/A'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">State of Origin</td><td style="padding:4px 8px;">${member.stateOfOrigin || 'N/A'}</td></tr>
+        <tr><td style="padding:4px 8px; font-weight:600;">Address</td><td style="padding:4px 8px;">${member.homeAddress || 'N/A'}</td></tr>
+      `;
+
+      if (member.tricyclePlate) {
+        detailsHTML += `<tr><td style="padding:4px 8px; font-weight:600;">Tricycle Plate</td><td style="padding:4px 8px;">${member.tricyclePlate}</td></tr>`;
+      }
+      if (member.driversLicense) {
+        detailsHTML += `<tr><td style="padding:4px 8px; font-weight:600;">Driver's License</td><td style="padding:4px 8px;">${member.driversLicense}</td></tr>`;
+      }
+
+      return `
+        <div style="font-family: 'Inter', sans-serif; max-width: 210mm; margin: 0 auto; padding: 0.5in; background: white;">
+          <div style="display: flex; align-items: center; gap: 1rem; border-bottom: 3px solid #d97706; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+            <div style="flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#fef3e8; border-radius:12px; padding:6px; width:60px; height:60px;">
+              <img src="finallogo.jpg" alt="Logo" style="height:55px; width:auto; max-width:55px; object-fit:contain; border-radius:8px;">
+            </div>
+            <div style="flex:1;">
+              <h1 style="font-size:20pt; font-weight:800; color:#0b1c2e; letter-spacing:-0.02em; line-height:1.1;">
+                TABARE <span style="color:#d97706;">MARABA</span>
+              </h1>
+              <div style="font-size:9pt; color:#52647a; font-weight:500;">
+                <i class="fas fa-map-marker-alt"></i> Maraba Town, Bauchi State, Nigeria
+              </div>
+            </div>
+            <div style="text-align:right; font-size:9pt; color:#64748b; flex-shrink:0; line-height:1.5;">
+              <strong>Ref:</strong> TAB/MEM/APP/${new Date().getFullYear()}/001<br>
+              <span style="font-size:8.5pt;">Date: ${formattedDate}</span>
+            </div>
+          </div>
+
+          <div style="margin-bottom:0.5rem;">
+            <p><strong>${member.fullName || 'N/A'}</strong></p>
+            <p>${member.homeAddress || 'N/A'}</p>
+            <p>${member.phone || 'N/A'}</p>
+          </div>
+
+          <div style="font-weight:700; font-size:12pt; color:#0b1c2e; margin:0.5rem 0; text-decoration:underline;">
+            <i class="fas fa-check-circle" style="color:#16a34a;"></i> APPROVAL OF MEMBERSHIP APPLICATION
+          </div>
+
+          <p>Dear ${(member.fullName || '').split(' ')[0] || 'Member'},</p>
+          <p>We are pleased to inform you that your application for membership in the <strong>TABARE Transport Cooperative</strong> has been <strong>reviewed and approved</strong>.</p>
+
+          <div style="background:#f0fdf4; border-left:4px solid #16a34a; padding:0.5rem 0.8rem; margin:0.3rem 0; border-radius:4px; text-align:center;">
+            <p style="font-size:14pt; color:#16a34a; font-weight:700;">
+              <i class="fas fa-check-circle" style="color:#16a34a;"></i> MEMBERSHIP APPROVED
+            </p>
+            <p style="font-size:10pt; color:#64748b;">Membership ID: <strong>${member.id}</strong></p>
+          </div>
+
+          <table style="width:100%; border-collapse:collapse; margin:0.5rem 0; background:#f8fafc; border-radius:8px; overflow:hidden;">
+            <tbody>${detailsHTML}</tbody>
+          </table>
+
+          <p><strong>Next Steps:</strong> As a new member, you are required to:</p>
+          <ul style="margin:0.3rem 0 0.3rem 1.5rem; list-style:none;">
+            <li style="margin:0.2rem 0; padding-left:1.5rem; position:relative;">
+              <span style="position:absolute; left:0; color:#16a34a;">✓</span>
+              Pay the initial membership registration fee of <strong>₦25,000</strong> within 7 working days
+            </li>
+            <li style="margin:0.2rem 0; padding-left:1.5rem; position:relative;">
+              <span style="position:absolute; left:0; color:#16a34a;">✓</span>
+              Attend the new member orientation session
+            </li>
+            <li style="margin:0.2rem 0; padding-left:1.5rem; position:relative;">
+              <span style="position:absolute; left:0; color:#16a34a;">✓</span>
+              Complete and submit the Member's Undertaking Form
+            </li>
+            <li style="margin:0.2rem 0; padding-left:1.5rem; position:relative;">
+              <span style="position:absolute; left:0; color:#16a34a;">✓</span>
+              Provide two (2) passport photographs
+            </li>
+          </ul>
+
+          <p>Congratulations on your acceptance!</p>
+
+          <div style="margin-top:0.5rem;">
+            <p>Yours sincerely,</p>
+            <div style="margin-top:1.5rem; display:flex; justify-content:space-between; gap:2rem;">
+              <div style="flex:1;">
+                <div style="border-bottom:2px solid #0b1c2e; min-height:2.5rem; margin-top:1rem;"></div>
+                <div style="font-size:9pt; color:#52647a; font-weight:500; margin-top:0.1rem;">
+                  <strong>Chairman,</strong><br>Membership Committee
+                </div>
+              </div>
+              <div style="flex:1;">
+                <div style="border-bottom:2px solid #0b1c2e; min-height:2.5rem; margin-top:1rem;"></div>
+                <div style="font-size:9pt; color:#52647a; font-weight:500; margin-top:0.1rem;">
+                  <strong>Secretary,</strong><br>Membership Committee
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:1rem; padding-top:0.4rem; border-top:2px solid #d97706; display:flex; justify-content:space-between; font-size:8.5pt; color:#94a3b8;">
+            <span><i class="fas fa-tricycle"></i> TABARE Transport Cooperative · Maraba, Bauchi State</span>
+            <span>Ref: TAB/MEM/APP/${new Date().getFullYear()}/001</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function closeApprovalModal() {
+      document.getElementById('approvalModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    function printApprovalLetter() {
+      if (!currentMember) {
+        alert('Please verify a member first.');
+        return;
+      }
+
+      const letterHTML = generateApprovalLetter(currentMember);
+      const win = window.open('', '_blank', 'width=800,height=600');
+      win.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Approval Letter</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+            <style>body { margin: 0; padding: 0; background: white; }</style>
+          </head>
+          <body>${letterHTML}<script>window.onload=function(){window.print();}<\/script></body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    function printApprovalFromModal() {
+      const content = document.getElementById('approvalLetterContent').innerHTML;
+      const win = window.open('', '_blank', 'width=800,height=600');
+      win.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Approval Letter</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+            <style>body { margin: 0; padding: 0; background: white; }</style>
+          </head>
+          <body>${content}<script>window.onload=function(){window.print();}<\/script></body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    // ============================================
+    // ENTER KEY & MODAL CLOSE
+    // ============================================
+    document.getElementById('memberIdInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        verifyMember();
+      }
+    });
+
+    document.getElementById('approvalModal').addEventListener('click', function(e) {
+      if (e.target === this) closeApprovalModal();
+    });
+
+    document.getElementById('undertakingModal').addEventListener('click', function(e) {
+      if (e.target === this) closeUndertakingModal();
+    });
+
+    document.getElementById('idCardModal').addEventListener('click', function(e) {
+      if (e.target === this) closeIdCardModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeApprovalModal();
+        closeUndertakingModal();
+        closeIdCardModal();
+      }
+    });
+
+    // Check if URL has member parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const memberParam = urlParams.get('member');
+    if (memberParam) {
+      document.getElementById('memberIdInput').value = memberParam;
+      setTimeout(() => verifyMember(memberParam), 500);
+    }
+
+    console.log('TABARE Membership Verification System v2.0 loaded.');
+    console.log('Connected to Firestore "MembershipList" collection.');
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TABARE · Full Membership Registration</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f7fb;
+      color: #0b1c2e;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .navbar {
+      background: #ffffff;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+      padding: 0.8rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+      color: #0b1c2e;
+    }
+
+    .logo i {
+      color: #d97706;
+      font-size: 1.8rem;
+    }
+
+    .logo span {
+      color: #d97706;
+    }
+
+    .logo small {
+      font-size: 0.6rem;
+      font-weight: 500;
+      color: #52647a;
+      display: block;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-weight: 600;
+      color: #0b1c2e;
+      transition: color 0.2s;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      color: #d97706;
+    }
+    .back-link i {
+      margin-right: 0.3rem;
+    }
+
+    .register-main {
+      flex: 1;
+      padding: 3rem 0 4rem;
+    }
+
+    .register-card {
+      background: #ffffff;
+      border-radius: 32px;
+      padding: 2.5rem 2.5rem 3rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+      border: 1px solid #edf2f7;
+    }
+
+    .register-card .header-icon {
+      font-size: 2.8rem;
+      color: #d97706;
+      margin-bottom: 0.2rem;
+    }
+
+    .register-card h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.2rem;
+    }
+
+    .register-card .sub {
+      color: #52647a;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1f3348;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-group label .required {
+      color: #b91c1c;
+      margin-left: 0.1rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid #dde5ed;
+      border-radius: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      background: #fafcfe;
+      transition: 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #d97706;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.12);
+    }
+
+    .form-group input[type="file"] {
+      padding: 0.5rem;
+      background: #f8fafc;
+      border: 2px dashed #dde5ed;
+      cursor: pointer;
+    }
+
+    .form-group input[type="file"]:hover {
+      border-color: #d97706;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      width: 100%;
+    }
+
+    .btn-success {
+      background: #0f7b3a;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(15, 123, 58, 0.3);
+    }
+    .btn-success:hover {
+      background: #0d6a31;
+      transform: translateY(-2px);
+    }
+    .btn-success:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .alert {
+      padding: 0.8rem 1.2rem;
+      border-radius: 16px;
+      background: #ecfdf5;
+      color: #0f7b3a;
+      border: 1px solid #b8e6c9;
+      margin-bottom: 1.5rem;
+      display: none;
+      font-weight: 500;
+    }
+    .alert.error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+    .alert.show {
+      display: block;
+    }
+
+    .image-preview-container {
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .image-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      border: 2px solid #edf2f7;
+      overflow: hidden;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-preview .placeholder-icon {
+      color: #dde5ed;
+      font-size: 2rem;
+    }
+
+    .image-preview .remove-img {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #b91c1c;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-preview:hover .remove-img {
+      display: flex;
+    }
+
+    .terms-section {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      border: 1px solid #edf2f7;
+    }
+
+    .terms-section h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #0b1c2e;
+    }
+
+    .terms-section .terms-text {
+      font-size: 0.85rem;
+      color: #52647a;
+      max-height: 120px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .terms-section .terms-text::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .terms-section .terms-text::-webkit-scrollbar-thumb {
+      background: #dde5ed;
+      border-radius: 4px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+      cursor: pointer;
+      accent-color: #d97706;
+    }
+
+    .checkbox-group label {
+      font-size: 0.9rem;
+      color: #1f3348;
+      cursor: pointer;
+    }
+
+    .member-benefits {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.8rem 0 0.5rem;
+      border: 1px solid #edf2f7;
+    }
+
+    .member-benefits h4 {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .member-benefits ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.5rem;
+    }
+
+    .member-benefits ul li {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      color: #1f3348;
+    }
+
+    .member-benefits ul li i {
+      color: #0f7b3a;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 2px dashed #dde5ed;
+      margin: 1.8rem 0;
+    }
+
+    .footer {
+      background: #0b1c2e;
+      color: #cbd5e1;
+      padding: 1.5rem 0;
+      margin-top: auto;
+    }
+    .footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .footer small {
+      color: #64748b;
+    }
+    .footer i {
+      color: #d97706;
+    }
+
+    .disclaimer {
+      background: #fef9e7;
+      border-left: 4px solid #d97706;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: #7c6a3a;
+    }
+
+    .disclaimer i {
+      color: #d97706;
+      margin-right: 0.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .register-card {
+        padding: 1.8rem 1.2rem;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .register-card h1 {
+        font-size: 1.8rem;
+      }
+      .member-benefits ul {
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .footer .container {
+        flex-direction: column;
+        text-align: center;
+      }
+      .image-preview {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <div class="logo">
+      <i class="fas fa-tricycle"></i>
+      <div>
+        TABARE <span>COOP</span>
+        <small>Maraba • Bauchi</small>
+      </div>
+    </div>
+    <a href="#" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+  </div>
+</nav>
+
+<main class="register-main">
+  <div class="container">
+    <div class="register-card">
+
+      <div class="header-icon"><i class="fas fa-user-plus"></i></div>
+      <h1>Full Membership Registration</h1>
+      <div class="sub">Complete the form below to join TABARE Transport Cooperative</div>
+
+      <div class="disclaimer">
+        <i class="fas fa-info-circle"></i> <strong>Disclaimer:</strong> By submitting this form, you confirm that all information provided is accurate and complete. TABARE Cooperative reserves the right to verify all details and approve membership at its discretion.
+      </div>
+
+      <div id="memberAlert" class="alert"></div>
+
+      <form id="memberForm">
+
+        <h3 style="font-size: 1.1rem; color: #d97706; margin-bottom: 0.8rem;"><i class="fas fa-user-circle"></i> Personal Information</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full name <span class="required">*</span></label>
+            <input type="text" id="memName" placeholder="e.g. Amina Bello" required />
+          </div>
+          <div class="form-group">
+            <label>Date of Birth <span class="required">*</span></label>
+            <input type="date" id="memDob" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone number <span class="required">*</span></label>
+            <input type="tel" id="memPhone" placeholder="080 1234 5678" required />
+          </div>
+          <div class="form-group">
+            <label>Emergency contact <span class="required">*</span></label>
+            <input type="tel" id="memEmergency" placeholder="080 9876 5432" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>State of Origin <span class="required">*</span></label>
+            <input type="text" id="memStateOrigin" placeholder="e.g. Bauchi, Borno" required />
+          </div>
+          <div class="form-group">
+            <label>Home Address <span class="required">*</span></label>
+            <input type="text" id="memAddress" placeholder="e.g. Maraba town, Bauchi" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Profile Photo</label>
+          <input type="file" id="memImage" accept="image/*" />
+          <div class="image-preview-container">
+            <div class="image-preview" id="imagePreview">
+              <i class="fas fa-user placeholder-icon"></i>
+              <button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <span style="font-size: 0.8rem; color: #52647a;">Upload a clear photo (passport size preferred) - Optional</span>
+          </div>
+        </div>
+
+        <hr class="section-divider" />
+
+        <h3 style="font-size: 1.1rem; color: #d97706; margin-bottom: 0.8rem;"><i class="fas fa-id-card"></i> Membership Details</h3>
+
+        <div class="form-group">
+          <label>Membership type <span class="required">*</span></label>
+          <select id="memType" required>
+            <option value="">Select membership type...</option>
+            <option value="driver">Driver</option>
+            <option value="tricycle_owner">Tricycle Owner</option>
+            <option value="both">Both (Driver &amp; Owner)</option>
+          </select>
+        </div>
+
+        <div class="form-row" id="vehicleFields" style="display: none;">
+          <div class="form-group">
+            <label>Tricycle registration plate</label>
+            <input type="text" id="memPlate" placeholder="e.g. BAU-678TR" />
+          </div>
+          <div class="form-group">
+            <label>Tricycle model / brand</label>
+            <input type="text" id="memModel" placeholder="e.g. Bajaj RE, TVS King" />
+          </div>
+        </div>
+
+        <div class="form-group" id="licenseField" style="display: none;">
+          <label>Driver's license number</label>
+          <input type="text" id="memLicense" placeholder="e.g. BAU-12345" />
+        </div>
+
+        <hr class="section-divider" />
+
+        <h3 style="font-size: 1.1rem; color: #d97706; margin-bottom: 0.8rem;"><i class="fas fa-info-circle"></i> Additional Information</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Occupation</label>
+            <input type="text" id="memOccupation" placeholder="e.g. Teacher, Trader, Driver" />
+          </div>
+          <div class="form-group">
+            <label>Years of experience</label>
+            <input type="number" id="memExperience" placeholder="e.g. 3" min="0" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Preferred routes</label>
+          <input type="text" id="memRoute" placeholder="e.g. Maraba – Bauchi metropolis" />
+        </div>
+
+        <div class="form-group">
+          <label>Why do you want to join TABARE?</label>
+          <textarea id="memReason" placeholder="Tell us your motivation and how you can contribute ..."></textarea>
+        </div>
+
+        <div class="terms-section">
+          <h4><i class="fas fa-file-contract" style="color: #d97706;"></i> Terms & Conditions</h4>
+          <div class="terms-text">
+            <p><strong>1. Membership Obligations:</strong> All members must abide by the cooperative's constitution and operational guidelines.</p>
+            <p><strong>2. Dues & Contributions:</strong> Members are required to pay registration fees and monthly dues as determined by the cooperative's management.</p>
+            <p><strong>3. Conduct:</strong> Members must maintain professional conduct and uphold the reputation of TABARE Cooperative at all times.</p>
+            <p><strong>4. Safety:</strong> Drivers must comply with all road safety regulations and ensure their tricycles are roadworthy.</p>
+            <p><strong>5. Termination:</strong> The cooperative reserves the right to terminate membership for violation of rules or misconduct.</p>
+            <p><strong>6. Data Privacy:</strong> Personal information will be kept confidential and used only for cooperative purposes.</p>
+            <p><strong>7. Dispute Resolution:</strong> Any disputes shall be resolved internally through the cooperative's dispute resolution mechanism.</p>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="termsCheck" required />
+            <label for="termsCheck">
+              I have read, understood, and agree to the <strong>Terms & Conditions</strong> and <strong>Disclaimer</strong> above. <span class="required">*</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-success" id="submitBtn"><i class="fas fa-paper-plane"></i> Register Now</button>
+      </form>
+
+      <div class="member-benefits">
+        <h4><i class="fas fa-star" style="color: #d97706;"></i> What you get as a member</h4>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> Access to cooperative transport services</li>
+          <li><i class="fas fa-check-circle"></i> Discounted rates &amp; group benefits</li>
+          <li><i class="fas fa-check-circle"></i> Business networking &amp; support</li>
+          <li><i class="fas fa-check-circle"></i> Community development participation</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <span><i class="fas fa-tricycle"></i> TABARE Transport Cooperative</span>
+    <small>&copy; 2026 Maraba, Bauchi State</small>
+  </div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg",
+    authDomain: "tabare-maraba.firebaseapp.com",
+    projectId: "tabare-maraba",
+    storageBucket: "tabare-maraba.firebasestorage.app",
+    messagingSenderId: "204144494424",
+    appId: "1:204144494424:web:82e1006399c1b94eb9c72d",
+    measurementId: "G-50F5VT9W12"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  const form = document.getElementById('memberForm');
+  const alertEl = document.getElementById('memberAlert');
+  const memType = document.getElementById('memType');
+  const vehicleFields = document.getElementById('vehicleFields');
+  const licenseField = document.getElementById('licenseField');
+  const imageInput = document.getElementById('memImage');
+  const imagePreview = document.getElementById('imagePreview');
+  const termsCheck = document.getElementById('termsCheck');
+  const submitBtn = document.getElementById('submitBtn');
+
+  let selectedImageFile = null;
+
+  memType.addEventListener('change', function() {
+    const val = this.value;
+    if (val === 'tricycle_owner' || val === 'both') {
+      vehicleFields.style.display = 'grid';
+    } else {
+      vehicleFields.style.display = 'none';
+    }
+    if (val === 'driver' || val === 'both') {
+      licenseField.style.display = 'block';
+    } else {
+      licenseField.style.display = 'none';
+    }
+  });
+
+  imageInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      selectedImageFile = file;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        imagePreview.innerHTML = `
+          <img src="${event.target.result}" alt="Profile photo" />
+          <button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>
+        `;
+        document.getElementById('removeImageBtn').addEventListener('click', removeImage);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  function removeImage() {
+    selectedImageFile = null;
+    imageInput.value = '';
+    imagePreview.innerHTML = `
+      <i class="fas fa-user placeholder-icon"></i>
+      <button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>
+    `;
+    document.getElementById('removeImageBtn').addEventListener('click', removeImage);
+  }
+
+  document.getElementById('removeImageBtn').addEventListener('click', removeImage);
+
+  function showAlert(msg, isError = false) {
+    alertEl.textContent = msg;
+    alertEl.className = 'alert show' + (isError ? ' error' : '');
+    setTimeout(() => { alertEl.className = 'alert'; }, 8000);
+  }
+
+  async function generateMembershipId() {
+    try {
+      const currentYear = new Date().getFullYear();
+      const snapshot = await db.collection('MembershipList')
+        .where('membershipId', '>=', `TAB/MEM/${currentYear}/`)
+        .where('membershipId', '<=', `TAB/MEM/${currentYear}/\uf8ff`)
+        .get();
+      
+      const count = snapshot.size;
+      const nextNumber = count + 1;
+      const padded = String(nextNumber).padStart(3, '0');
+      
+      // Return a clean ID without slashes for the document reference
+      return {
+        docId: `TAB_MEM_${currentYear}_${padded}`,  // For document ID (no slashes)
+        displayId: `TAB/MEM/${currentYear}/${padded}` // For display (with slashes)
+      };
+    } catch (error) {
+      console.error('Error generating membership ID:', error);
+      const timestamp = Date.now().toString(36).toUpperCase();
+      return {
+        docId: `TAB_MEM_${timestamp}`,
+        displayId: `TAB/MEM/${new Date().getFullYear()}/${timestamp.slice(-4)}`
+      };
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!termsCheck.checked) {
+      showAlert('Please accept the Terms & Conditions to proceed.', true);
+      return;
+    }
+
+    const name = document.getElementById('memName').value.trim();
+    const phone = document.getElementById('memPhone').value.trim();
+    const emergency = document.getElementById('memEmergency').value.trim();
+    const dob = document.getElementById('memDob').value;
+    const stateOrigin = document.getElementById('memStateOrigin').value.trim();
+    const address = document.getElementById('memAddress').value.trim();
+    const memTypeVal = document.getElementById('memType').value;
+    const plate = document.getElementById('memPlate').value.trim();
+    const model = document.getElementById('memModel').value.trim();
+    const license = document.getElementById('memLicense').value.trim();
+    const occupation = document.getElementById('memOccupation').value.trim();
+    const experience = document.getElementById('memExperience').value.trim();
+    const route = document.getElementById('memRoute').value.trim();
+    const reason = document.getElementById('memReason').value.trim();
+
+    if (!name || !phone || !emergency || !dob || !stateOrigin || !address || !memTypeVal) {
+      showAlert('Please fill all required fields marked with *', true);
+      return;
+    }
+
+    if ((memTypeVal === 'driver' || memTypeVal === 'both') && !license) {
+      showAlert('Driver\'s license number is required for Driver or Both membership', true);
+      return;
+    }
+
+    if ((memTypeVal === 'tricycle_owner' || memTypeVal === 'both') && !plate) {
+      showAlert('Tricycle registration plate is required for Owner or Both membership', true);
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+    try {
+      console.log('Starting registration process...');
+      
+      // Generate membership ID
+      const { docId, displayId } = await generateMembershipId();
+      console.log('Document ID:', docId);
+      console.log('Display ID:', displayId);
+
+      // Upload image if selected
+      let imageUrl = '';
+      if (selectedImageFile) {
+        try {
+          console.log('Uploading image...');
+          const storageRef = storage.ref(`member_photos/${Date.now()}_${selectedImageFile.name}`);
+          const snapshot = await storageRef.put(selectedImageFile);
+          imageUrl = await snapshot.ref.getDownloadURL();
+          console.log('Image uploaded:', imageUrl);
+        } catch (imageError) {
+          console.error('Image upload error:', imageError);
+          imageUrl = '';
+        }
+      }
+
+      // Prepare member data
+      const memberData = {
+        fullName: name,
+        phone: phone,
+        emergencyContact: emergency,
+        dateOfBirth: dob,
+        stateOfOrigin: stateOrigin,
+        homeAddress: address,
+        profilePhoto: imageUrl || '',
+        membershipType: memTypeVal,
+        tricyclePlate: plate || '',
+        tricycleModel: model || '',
+        driversLicense: license || '',
+        occupation: occupation || '',
+        yearsExperience: experience ? parseInt(experience) : 0,
+        preferredRoute: route || '',
+        reason: reason || '',
+        termsAccepted: true,
+        membershipId: displayId,  // Store formatted ID for display
+        status: 'pending',
+        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      console.log('Saving member data...');
+      console.log('Using document ID:', docId);
+
+      // Save to Firestore using clean document ID
+      await db.collection('MembershipList').doc(docId).set(memberData);
+      
+      console.log('Member saved successfully!');
+
+      showAlert(`✅ Registration successful! Your Membership ID: ${displayId}. Welcome to TABARE Cooperative.`);
+      form.reset();
+      vehicleFields.style.display = 'none';
+      licenseField.style.display = 'none';
+      removeImage();
+      termsCheck.checked = false;
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Register Now';
+
+    } catch (err) {
+      console.error('Registration error DETAILS:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
+      
+      let errorMsg = '❌ Something went wrong. Please try again.';
+      if (err.code === 'permission-denied') {
+        errorMsg = '❌ Permission denied. Please check your Firestore security rules.';
+      } else if (err.code === 'unavailable') {
+        errorMsg = '❌ Service unavailable. Please check your internet connection.';
+      } else if (err.message) {
+        errorMsg = `❌ Error: ${err.message}`;
+      }
+      
+      showAlert(errorMsg, true);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Register Now';
+    }
+  });
+
+  document.querySelector('.back-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.history.back();
+  });
+
+  console.log('TABARE Registration form ready');
+  console.log('Firebase config loaded, project:', firebaseConfig.projectId);
+</script>
+</body>
+</html>

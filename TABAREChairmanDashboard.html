@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TABARE · Chairman's Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f1f5f9;
+      color: #0b1c2e;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .top-nav {
+      background: #0b1c2e;
+      color: #fff;
+      padding: 0.8rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .top-nav .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 14pt;
+      font-weight: 700;
+    }
+
+    .top-nav .nav-brand img {
+      height: 40px;
+      width: auto;
+      border-radius: 8px;
+    }
+
+    .top-nav .nav-brand span {
+      color: #d97706;
+    }
+
+    .top-nav .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .top-nav .nav-right .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 9.5pt;
+    }
+
+    .top-nav .nav-right .user-info .avatar {
+      width: 36px;
+      height: 36px;
+      background: #d97706;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14pt;
+      text-transform: uppercase;
+    }
+
+    .top-nav .nav-right .notification-bell {
+      position: relative;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #94a3b8;
+      transition: all 0.25s ease;
+    }
+
+    .top-nav .nav-right .notification-bell:hover {
+      color: #fff;
+    }
+
+    .top-nav .nav-right .notification-bell .badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #dc2626;
+      color: #fff;
+      font-size: 7pt;
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 50%;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .dashboard-container {
+      display: flex;
+      min-height: calc(100vh - 70px);
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #ffffff;
+      padding: 1.5rem 0;
+      border-right: 1px solid #e2e8f0;
+      flex-shrink: 0;
+      position: sticky;
+      top: 70px;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+    }
+
+    .sidebar .sidebar-section {
+      padding: 0 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar .sidebar-section .section-title {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      color: #52647a;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 9.5pt;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      margin-bottom: 0.1rem;
+    }
+
+    .sidebar .nav-item:hover {
+      background: #f1f5f9;
+      color: #0b1c2e;
+    }
+
+    .sidebar .nav-item.active {
+      background: #fef3e8;
+      color: #d97706;
+      font-weight: 600;
+    }
+
+    .sidebar .nav-item i {
+      width: 20px;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .sidebar .nav-item .badge {
+      margin-left: auto;
+      background: #f1f5f9;
+      padding: 0.1rem 0.5rem;
+      border-radius: 12px;
+      font-size: 7.5pt;
+      font-weight: 600;
+      color: #52647a;
+    }
+
+    .sidebar .nav-item.active .badge {
+      background: #d97706;
+      color: #fff;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      background: #f8fafc;
+    }
+
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 20pt;
+      font-weight: 800;
+      color: #0b1c2e;
+    }
+
+    .page-header .breadcrumb {
+      font-size: 9pt;
+      color: #94a3b8;
+    }
+
+    .page-header .breadcrumb span {
+      color: #d97706;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e2e8f0;
+      transition: all 0.25s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-card .stat-icon {
+      font-size: 1.5rem;
+      color: #d97706;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-card .stat-number {
+      font-size: 24pt;
+      font-weight: 800;
+      color: #0b1c2e;
+      line-height: 1.2;
+    }
+
+    .stat-card .stat-label {
+      font-size: 9pt;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .stat-card .stat-change {
+      font-size: 8pt;
+      font-weight: 600;
+      margin-top: 0.2rem;
+    }
+
+    .stat-card .stat-change.positive {
+      color: #16a34a;
+    }
+
+    .stat-card .stat-change.negative {
+      color: #dc2626;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .quick-action {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: #0b1c2e;
+    }
+
+    .quick-action:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border-color: #d97706;
+    }
+
+    .quick-action .qa-icon {
+      font-size: 2rem;
+      color: #d97706;
+      margin-bottom: 0.3rem;
+    }
+
+    .quick-action .qa-label {
+      font-size: 9.5pt;
+      font-weight: 600;
+    }
+
+    .quick-action .qa-desc {
+      font-size: 7.5pt;
+      color: #94a3b8;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .card .card-header h3 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #0b1c2e;
+    }
+
+    .card .card-header .card-action {
+      font-size: 8.5pt;
+      color: #d97706;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .card .card-header .card-action:hover {
+      text-decoration: underline;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 0.8rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-item .activity-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #fef3e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d97706;
+      flex-shrink: 0;
+    }
+
+    .activity-item .activity-content {
+      flex: 1;
+    }
+
+    .activity-item .activity-content .activity-text {
+      font-size: 9.5pt;
+      color: #0b1c2e;
+    }
+
+    .activity-item .activity-content .activity-text strong {
+      font-weight: 600;
+    }
+
+    .activity-item .activity-content .activity-time {
+      font-size: 7.5pt;
+      color: #94a3b8;
+    }
+
+    .pending-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .pending-item:last-child {
+      border-bottom: none;
+    }
+
+    .pending-item .pending-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pending-item .pending-info .pending-name {
+      font-size: 9.5pt;
+      font-weight: 600;
+    }
+
+    .pending-item .pending-info .pending-detail {
+      font-size: 8.5pt;
+      color: #94a3b8;
+    }
+
+    .pending-item .pending-status {
+      font-size: 7.5pt;
+      font-weight: 600;
+      padding: 0.15rem 0.6rem;
+      border-radius: 12px;
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 0.5rem;
+    }
+
+    .table-wrapper table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5pt;
+    }
+
+    .table-wrapper table th {
+      background: #f8fafc;
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+      font-weight: 600;
+      color: #52647a;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .table-wrapper table td {
+      padding: 0.5rem 0.8rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .table-wrapper table tr:hover td {
+      background: #f8fafc;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 12px;
+      font-size: 7.5pt;
+      font-weight: 600;
+    }
+
+    .status-badge.active {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .status-badge.inactive {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .status-badge.pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .status-badge.suspended {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .status-badge.approved {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .dashboard-footer {
+      text-align: center;
+      padding: 1.5rem 0;
+      font-size: 8.5pt;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 1rem;
+    }
+
+    .dashboard-footer i {
+      color: #d97706;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #0b1c2e;
+      color: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      display: none;
+      align-items: center;
+      gap: 0.8rem;
+      z-index: 2000;
+      animation: slideIn 0.3s ease;
+      max-width: 400px;
+    }
+
+    .toast.visible {
+      display: flex;
+    }
+
+    .toast.success {
+      background: #0f7b3a;
+    }
+
+    .toast.error {
+      background: #dc2626;
+    }
+
+    .toast i {
+      font-size: 1.5rem;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #94a3b8;
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      color: #dde5ed;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      font-size: 9.5pt;
+    }
+
+    .section-hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1200px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        display: none;
+      }
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        padding: 0.6rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .top-nav .nav-brand {
+        font-size: 12pt;
+      }
+      .top-nav .nav-brand img {
+        height: 32px;
+      }
+      .top-nav .nav-right .user-info .name {
+        display: none;
+      }
+      .main-content {
+        padding: 1rem;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      .stat-card {
+        padding: 0.8rem 1rem;
+      }
+      .stat-card .stat-number {
+        font-size: 18pt;
+      }
+      .quick-actions {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      .quick-action {
+        padding: 0.8rem;
+      }
+      .quick-action .qa-icon {
+        font-size: 1.5rem;
+      }
+      .page-header h1 {
+        font-size: 16pt;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+      .top-nav .nav-right .notification-bell {
+        font-size: 1rem;
+      }
+    }
+
+    @media print {
+      .top-nav,
+      .sidebar,
+      .quick-actions,
+      .dashboard-footer {
+        display: none !important;
+      }
+      .main-content {
+        padding: 0.5in;
+      }
+      .card {
+        border: none;
+        box-shadow: none;
+        padding: 0.5rem 0;
+      }
+      .stat-card {
+        border: 1px solid #e2e8f0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVIGATION -->
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <img src="finallogo.jpg" alt="Logo" onerror="this.style.display='none'">
+      TABARE <span>MARABA</span>
+    </div>
+    <div class="nav-right">
+      <div class="notification-bell" onclick="checkNotifications()">
+        <i class="fas fa-bell"></i>
+        <span class="badge" id="notificationBadge">0</span>
+      </div>
+      <div class="user-info" id="userInfo">
+        <div class="avatar" id="userAvatar">C</div>
+        <span class="name" id="userName">Chairman</span>
+      </div>
+      <a href="index.html" onclick="handleLogout()" style="color: #94a3b8; text-decoration: none; font-size: 9.5pt;">
+        <i class="fas fa-sign-out-alt"></i>
+      </a>
+    </div>
+  </nav>
+
+  <!-- DASHBOARD CONTAINER -->
+  <div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="section-title">Main</div>
+        <a class="nav-item active" onclick="showSection('dashboard')">
+          <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        <a class="nav-item" onclick="showSection('members')">
+          <i class="fas fa-users"></i> Members
+          <span class="badge" id="memberCount">0</span>
+        </a>
+        <a class="nav-item" onclick="showSection('approvals')">
+          <i class="fas fa-check-double"></i> Approvals
+          <span class="badge" id="pendingCount">0</span>
+        </a>
+        <a class="nav-item" onclick="window.location.href='TABAREChairmanCommunicationCenter.html'">
+          <i class="fas fa-bullhorn"></i> Communications
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">Management</div>
+        <a class="nav-item" onclick="window.location.href='#finance'">
+          <i class="fas fa-money-bill-wave"></i> Finance
+        </a>
+        <a class="nav-item" onclick="window.location.href='#vehicles'">
+          <i class="fas fa-truck"></i> Vehicles
+        </a>
+        <a class="nav-item" onclick="window.location.href='#routes'">
+          <i class="fas fa-route"></i> Routes
+        </a>
+        <a class="nav-item" onclick="window.location.href='#reports'">
+          <i class="fas fa-chart-bar"></i> Reports
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">Settings</div>
+        <a class="nav-item" onclick="window.location.href='#settings'">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+        <a class="nav-item" onclick="showToast('Help & Support', 'info')">
+          <i class="fas fa-question-circle"></i> Help & Support
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <h1 id="dashboardTitle">Chairman's Dashboard</h1>
+        <div class="breadcrumb">
+          <i class="fas fa-home"></i> Home / <span id="breadcrumbSpan">Dashboard</span>
+        </div>
+      </div>
+
+      <!-- STATS GRID -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-number" id="totalMembers">0</div>
+          <div class="stat-label">Total Members</div>
+          <div class="stat-change" id="totalMembersChange">Loading...</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+          <div class="stat-number" id="activeMembers">0</div>
+          <div class="stat-label">Active Members</div>
+          <div class="stat-change" id="activeMembersChange">Loading...</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+          <div class="stat-number" id="pendingApprovals">0</div>
+          <div class="stat-label">Pending Approvals</div>
+          <div class="stat-change" id="pendingApprovalsChange">Loading...</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-truck"></i></div>
+          <div class="stat-number" id="totalVehicles">0</div>
+          <div class="stat-label">Registered Vehicles</div>
+          <div class="stat-change" id="vehiclesChange">Loading...</div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <a class="quick-action" href="TABAREFullMembershipRegistration.html">
+          <div class="qa-icon"><i class="fas fa-user-plus"></i></div>
+          <div class="qa-label">Register Member</div>
+          <div class="qa-desc">Add new member</div>
+        </a>
+        <a class="quick-action" href="TABAREChairmanCommunicationCenter.html" onclick="showToast('Send Broadcast', 'info')">
+          <div class="qa-icon"><i class="fas fa-bullhorn"></i></div>
+          <div class="qa-label">Send Broadcast</div>
+          <div class="qa-desc">Message all members</div>
+        </a>
+        <a class="quick-action" href="TABAREPendingApprovals.html" onclick="showSection('approvals')">
+          <div class="qa-icon"><i class="fas fa-check-double"></i></div>
+          <div class="qa-label">Pending Approvals</div>
+          <div class="qa-desc" id="qaPendingCount">Review applications</div>
+        </a>
+		<a class="quick-action" href="TABARERegisterVehicles.html" onclick="showSection('approvals')">
+          <div class="qa-icon"><i class="fas fa-truck"></i></div>
+          <div class="qa-label">Register Vehicles</div>
+          <div class="qa-desc" id="qaPendingCount">Review applications</div>
+        </a>
+        <!-- <a class="quick-action" href="#" onclick="generateReport()"> -->
+          <!-- <div class="qa-icon"><i class="fas fa-file-pdf"></i></div> -->
+          <!-- <div class="qa-label">Generate Report</div> -->
+          <!-- <div class="qa-desc">View analytics</div> -->
+        <!-- </a> -->
+      </div>
+
+      <!-- TWO COLUMN -->
+      <div class="two-col" id="twoCol">
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-clock" style="color:#d97706;"></i> Recent Activity</h3>
+            <a class="card-action" href="#" onclick="refreshData()">Refresh</a>
+          </div>
+          <div id="activityList">
+            <div class="empty-state">
+              <i class="fas fa-spinner fa-spin"></i>
+              <p>Loading activities...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-hourglass-half" style="color:#d97706;"></i> Pending Approvals</h3>
+            <a class="card-action" href="#" onclick="showSection('approvals')">View All</a>
+          </div>
+          <div id="pendingList">
+            <div class="empty-state">
+              <i class="fas fa-spinner fa-spin"></i>
+              <p>Loading approvals...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBERS TABLE -->
+      <div class="card" id="membersSection">
+        <div class="card-header">
+          <h3><i class="fas fa-users" style="color:#d97706;"></i> Recent Members</h3>
+          <a class="card-action" href="#" onclick="showSection('members')">View All</a>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Member Name</th>
+                <th>Membership ID</th>
+                <th>Phone</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="memberTableBody">
+              <tr>
+                <td colspan="7" style="text-align:center; padding:2rem; color:#94a3b8;">
+                  <i class="fas fa-spinner fa-spin"></i> Loading members...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="dashboard-footer">
+        <i class="fas fa-shield-alt"></i> 
+        TABARE Transport Cooperative · Chairman's Dashboard v2.0
+        <br>
+        <span style="font-size: 7.5pt;">© 2026 All Rights Reserved</span>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle" id="toastIcon"></i>
+    <span id="toastMessage">Action completed successfully!</span>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ============================================================
+    // FIREBASE CONFIG
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg",
+      authDomain: "tabare-maraba.firebaseapp.com",
+      projectId: "tabare-maraba",
+      storageBucket: "tabare-maraba.firebasestorage.app",
+      messagingSenderId: "204144494424",
+      appId: "1:204144494424:web:82e1006399c1b94eb9c72d",
+      measurementId: "G-50F5VT9W12"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let allMembers = [];
+    let pendingMembers = [];
+    let activities = [];
+    let currentSection = 'dashboard';
+
+    // ============================================================
+    // USER DATA
+    // ============================================================
+    function getUserData() {
+      let user = {
+        name: '',
+        role: 'chairman',
+        phone: '',
+        email: ''
+      };
+
+      // Try URL params
+      const params = new URLSearchParams(window.location.search);
+      user.name = params.get('name') || '';
+      user.role = params.get('role') || 'chairman';
+      user.phone = params.get('phone') || '';
+      user.email = params.get('email') || '';
+
+      // Try localStorage
+      if (!user.name) {
+        try {
+          const stored = localStorage.getItem('tabare_user');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            user = { ...user, ...parsed };
+          }
+        } catch (e) {}
+      }
+
+      if (!user.name) {
+        user.name = 'Chairman';
+        user.role = 'chairman';
+      }
+
+      return user;
+    }
+
+    // ============================================================
+    // TOAST NOTIFICATIONS
+    // ============================================================
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+      
+      toast.className = 'toast ' + type;
+      toastMessage.textContent = message;
+      
+      if (type === 'success') {
+        toastIcon.className = 'fas fa-check-circle';
+      } else if (type === 'error') {
+        toastIcon.className = 'fas fa-exclamation-circle';
+      } else {
+        toastIcon.className = 'fas fa-info-circle';
+      }
+      
+      toast.classList.add('visible');
+      
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 4000);
+    }
+
+    // ============================================================
+    // FETCH DATA FROM FIRESTORE
+    // ============================================================
+    async function fetchMembers() {
+      try {
+        const snapshot = await db.collection('MembershipList')
+          .orderBy('registeredAt', 'desc')
+          .limit(50)
+          .get();
+
+        allMembers = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          allMembers.push({
+            id: doc.id,
+            ...data,
+            registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
+          });
+        });
+
+        return allMembers;
+      } catch (error) {
+        console.error('Error fetching members:', error);
+        showToast('Error fetching members from database', 'error');
+        return [];
+      }
+    }
+
+    async function fetchPendingMembers() {
+      try {
+        const snapshot = await db.collection('MembershipList')
+          .where('status', '==', 'pending')
+          .get();
+
+        pendingMembers = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          pendingMembers.push({
+            id: doc.id,
+            ...data,
+            registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
+          });
+        });
+
+        return pendingMembers;
+      } catch (error) {
+        console.error('Error fetching pending members:', error);
+        return [];
+      }
+    }
+
+    // ============================================================
+    // UPDATE UI FUNCTIONS
+    // ============================================================
+    function updateUserUI(user) {
+      const avatar = document.getElementById('userAvatar');
+      if (user.name && user.name.length > 0) {
+        avatar.textContent = user.name.charAt(0).toUpperCase();
+      } else {
+        avatar.textContent = 'C';
+      }
+
+      document.getElementById('userName').textContent = user.name || 'Chairman';
+
+      const titleEl = document.getElementById('dashboardTitle');
+      const breadcrumbEl = document.getElementById('breadcrumbSpan');
+      const roleDisplay = user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Chairman';
+      titleEl.textContent = `${roleDisplay}'s Dashboard`;
+      breadcrumbEl.textContent = roleDisplay;
+    }
+
+    function updateStats(members) {
+      const total = members.length;
+      const active = members.filter(m => m.status === 'active' || !m.status).length;
+      const pending = members.filter(m => m.status === 'pending').length;
+      const vehicles = members.filter(m => m.tricyclePlate && m.tricyclePlate.length > 0).length;
+
+      document.getElementById('totalMembers').textContent = total;
+      document.getElementById('activeMembers').textContent = active;
+      document.getElementById('pendingApprovals').textContent = pending;
+      document.getElementById('totalVehicles').textContent = vehicles;
+
+      document.getElementById('memberCount').textContent = total;
+      document.getElementById('pendingCount').textContent = pending;
+      document.getElementById('qaPendingCount').textContent = pending > 0 ? `${pending} pending` : 'No pending';
+
+      // Update changes (placeholder - could calculate from previous data)
+      document.getElementById('totalMembersChange').textContent = `Total members registered`;
+      document.getElementById('activeMembersChange').textContent = `${active} active members`;
+      document.getElementById('pendingApprovalsChange').textContent = `${pending} awaiting review`;
+      document.getElementById('vehiclesChange').textContent = `${vehicles} vehicles registered`;
+    }
+
+    function populateActivities(members) {
+      const container = document.getElementById('activityList');
+      
+      if (!members || members.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No recent activity</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Generate activities from recent members
+      const recent = members.slice(0, 6);
+      const activitiesHTML = recent.map((m, index) => {
+        const timeAgo = m.registeredAt ? getTimeAgo(m.registeredAt) : 'Recently';
+        const statusIcon = m.status === 'pending' ? 'fa-hourglass-half' : 'fa-user-check';
+        const statusColor = m.status === 'pending' ? '#d97706' : '#16a34a';
+        
+        return `
+          <div class="activity-item">
+            <div class="activity-icon"><i class="fas ${statusIcon}" style="color:${statusColor}"></i></div>
+            <div class="activity-content">
+              <div class="activity-text">
+                <strong>${m.fullName || 'Member'}</strong> 
+                ${m.status === 'pending' ? 'applied for membership' : 'registered as a member'}
+                ${m.membershipType ? `(${m.membershipType})` : ''}
+              </div>
+              <div class="activity-time"><i class="far fa-clock"></i> ${timeAgo}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = activitiesHTML;
+    }
+
+    function populatePending(members) {
+      const container = document.getElementById('pendingList');
+      const pending = members.filter(m => m.status === 'pending');
+      
+      if (pending.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-check-circle" style="color:#16a34a;"></i>
+            <p>No pending approvals</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = pending.slice(0, 5).map(p => `
+        <div class="pending-item">
+          <div class="pending-info">
+            <span class="pending-name">${p.fullName || 'Unknown'}</span>
+            <span class="pending-detail">${p.membershipType || 'New Member'} · ${p.id}</span>
+          </div>
+          <span class="pending-status">Pending</span>
+        </div>
+      `).join('');
+    }
+
+    function populateMemberTable(members) {
+      const tbody = document.getElementById('memberTableBody');
+      
+      if (!members || members.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center; padding:2rem; color:#94a3b8;">
+              <i class="fas fa-users"></i> No members registered yet
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const recent = members.slice(0, 10);
+      tbody.innerHTML = recent.map((m, index) => {
+        const status = m.status || 'active';
+        const joined = m.registeredAt ? m.registeredAt.toLocaleDateString('en-NG', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }) : '—';
+        
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td><strong>${m.fullName || '—'}</strong></td>
+            <td>${m.id || '—'}</td>
+            <td>${m.phone || '—'}</td>
+            <td>${m.membershipType || '—'}</td>
+            <td><span class="status-badge ${status}">${status}</span></td>
+            <td>${joined}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ============================================================
+    // HELPER FUNCTIONS
+    // ============================================================
+    function getTimeAgo(date) {
+      const now = new Date();
+      const diff = now - date;
+      
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+      
+      if (minutes < 1) return 'Just now';
+      if (minutes < 60) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+      if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+      if (days < 7) return `${days} day${days > 1 ? 's' : ''} ago`;
+      return date.toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    // ============================================================
+    // SECTION NAVIGATION
+    // ============================================================
+    function showSection(section) {
+      currentSection = section;
+      
+      // Update active nav
+      document.querySelectorAll('.sidebar .nav-item').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      const clicked = document.querySelector(`.sidebar .nav-item[onclick*="${section}"]`);
+      if (clicked) clicked.classList.add('active');
+
+      const membersSection = document.getElementById('membersSection');
+      const statsGrid = document.getElementById('statsGrid');
+      const twoCol = document.getElementById('twoCol');
+
+      if (section === 'dashboard') {
+        membersSection.style.display = 'block';
+        statsGrid.style.display = 'grid';
+        twoCol.style.display = 'grid';
+        document.getElementById('breadcrumbSpan').textContent = 'Dashboard';
+      } else if (section === 'members') {
+        membersSection.style.display = 'block';
+        statsGrid.style.display = 'none';
+        twoCol.style.display = 'none';
+        document.getElementById('breadcrumbSpan').textContent = 'Members';
+        populateMemberTable(allMembers);
+      } else if (section === 'approvals') {
+        membersSection.style.display = 'none';
+        statsGrid.style.display = 'none';
+        twoCol.style.display = 'grid';
+        document.getElementById('breadcrumbSpan').textContent = 'Approvals';
+        populatePending(allMembers);
+      }
+    }
+
+    // ============================================================
+    // REFRESH DATA
+    // ============================================================
+    async function refreshData() {
+      showToast('Refreshing data...', 'info');
+      
+      try {
+        await loadAllData();
+        showToast('Data refreshed successfully!', 'success');
+      } catch (error) {
+        showToast('Error refreshing data', 'error');
+      }
+    }
+
+    async function loadAllData() {
+      const members = await fetchMembers();
+      allMembers = members;
+      
+      await fetchPendingMembers();
+      
+      updateStats(members);
+      populateActivities(members);
+      populatePending(members);
+      populateMemberTable(members);
+      
+      return members;
+    }
+
+    // ============================================================
+    // NOTIFICATIONS
+    // ============================================================
+    function checkNotifications() {
+      const pending = allMembers.filter(m => m.status === 'pending').length;
+      if (pending > 0) {
+        showToast(`You have ${pending} pending approval${pending > 1 ? 's' : ''}`, 'info');
+      } else {
+        showToast('No new notifications', 'info');
+      }
+    }
+
+    // ============================================================
+    // GENERATE REPORT
+    // ============================================================
+    function generateReport() {
+      const total = allMembers.length;
+      const active = allMembers.filter(m => m.status === 'active' || !m.status).length;
+      const pending = allMembers.filter(m => m.status === 'pending').length;
+      const vehicles = allMembers.filter(m => m.tricyclePlate && m.tricyclePlate.length > 0).length;
+      
+      const report = `
+        📊 TABARE COOPERATIVE - MEMBERSHIP REPORT
+        =========================================
+        Generated: ${new Date().toLocaleString()}
+        
+        📈 Summary:
+        • Total Members: ${total}
+        • Active Members: ${active}
+        • Pending Approvals: ${pending}
+        • Registered Vehicles: ${vehicles}
+        
+        📋 Recent Members:
+        ${allMembers.slice(0, 5).map(m => `• ${m.fullName || 'Unknown'} (${m.id || 'No ID'})`).join('\n')}
+        
+        =========================================
+        TABARE Transport Cooperative · Maraba, Bauchi
+      `;
+      
+      alert(report);
+      showToast('Report generated! Check console for details.', 'success');
+      console.log(report);
+    }
+
+    // ============================================================
+    // LOGOUT
+    // ============================================================
+    function handleLogout() {
+      localStorage.removeItem('tabare_user');
+      showToast('Logging out...', 'info');
+      setTimeout(() => {
+        window.location.href = 'TABARE%20%C2%B7%20Login%20%26%20Signup.html';
+      }, 1000);
+    }
+
+    // ============================================================
+    // REAL-TIME LISTENER
+    // ============================================================
+    function setupRealTimeListener() {
+      db.collection('MembershipList')
+        .orderBy('registeredAt', 'desc')
+        .limit(50)
+        .onSnapshot((snapshot) => {
+          allMembers = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            allMembers.push({
+              id: doc.id,
+              ...data,
+              registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
+            });
+          });
+          
+          // Update UI with new data
+          updateStats(allMembers);
+          populateActivities(allMembers);
+          populatePending(allMembers);
+          
+          // Only update table if in members section or dashboard
+          if (currentSection === 'dashboard' || currentSection === 'members') {
+            populateMemberTable(allMembers);
+          }
+          
+          // Update notification badge
+          const pending = allMembers.filter(m => m.status === 'pending').length;
+          document.getElementById('notificationBadge').textContent = pending;
+          document.getElementById('pendingCount').textContent = pending;
+          document.getElementById('qaPendingCount').textContent = pending > 0 ? `${pending} pending` : 'No pending';
+          
+          console.log('Real-time update: ', allMembers.length, 'members loaded');
+        }, (error) => {
+          console.error('Real-time listener error:', error);
+          showToast('Error connecting to database', 'error');
+        });
+    }
+
+    // ============================================================
+    // KEYBOARD SHORTCUTS
+    // ============================================================
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'm') {
+        e.preventDefault();
+        showSection('members');
+      }
+      if (e.ctrlKey && e.key === 'a') {
+        e.preventDefault();
+        showSection('approvals');
+      }
+      if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        showSection('dashboard');
+      }
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        refreshData();
+      }
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    async function init() {
+      const user = getUserData();
+      updateUserUI(user);
+
+      if (user.name && window.location.search.includes('name=')) {
+        localStorage.setItem('tabare_user', JSON.stringify(user));
+      }
+
+      // Start real-time listener
+      setupRealTimeListener();
+
+      // Initial load
+      await loadAllData();
+
+      // Update notification badge
+      const pending = allMembers.filter(m => m.status === 'pending').length;
+      document.getElementById('notificationBadge').textContent = pending;
+
+      console.log('TABARE Dashboard initialized with real-time Firebase connection');
+      console.log(`Loaded ${allMembers.length} members`);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+
+</body>
+</html>

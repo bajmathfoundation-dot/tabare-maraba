@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TABARE · Chairman Login</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e8ecf1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      padding: 2.5rem 2.5rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #d97706, #fbbf24);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-header .logo img {
+      height: 60px;
+      width: auto;
+      border-radius: 12px;
+    }
+
+    .login-header .logo h1 {
+      font-size: 22pt;
+      font-weight: 800;
+      color: #0b1c2e;
+      letter-spacing: -0.02em;
+    }
+
+    .login-header .logo h1 span {
+      color: #d97706;
+    }
+
+    .login-header .subtitle {
+      font-size: 10pt;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .login-header .badge {
+      display: inline-block;
+      background: #fef3e8;
+      color: #d97706;
+      padding: 0.2rem 1.2rem;
+      border-radius: 20px;
+      font-size: 8.5pt;
+      font-weight: 600;
+      margin-top: 0.3rem;
+    }
+
+    .toast {
+      background: #fef2f2;
+      color: #b91c1c;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      border: 1px solid #fecaca;
+      margin-bottom: 1.5rem;
+      display: none;
+      font-size: 9.5pt;
+      font-weight: 500;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast.visible {
+      display: flex;
+    }
+
+    .toast.success {
+      background: #ecfdf5;
+      color: #0f7b3a;
+      border-color: #b8e6c9;
+    }
+
+    .toast i {
+      font-size: 1.1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 9.5pt;
+      color: #1f3348;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-group .input-wrapper {
+      position: relative;
+    }
+
+    .form-group .input-wrapper i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+    }
+
+    .form-group .input-wrapper input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.8rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 10.5pt;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.25s ease;
+      background: #f8fafc;
+    }
+
+    .form-group .input-wrapper input:focus {
+      outline: none;
+      border-color: #d97706;
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+      background: #fff;
+    }
+
+    .form-group .input-wrapper .toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.2rem;
+    }
+
+    .form-group .input-wrapper .toggle-password:hover {
+      color: #0b1c2e;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0.5rem 0 1.5rem;
+    }
+
+    .form-options .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 9pt;
+      color: #52647a;
+      cursor: pointer;
+    }
+
+    .form-options .remember-me input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #d97706;
+      cursor: pointer;
+    }
+
+    .form-options .forgot-password {
+      font-size: 9pt;
+      color: #d97706;
+      font-weight: 600;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-options .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.85rem;
+      background: #0b1c2e;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 11pt;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-submit:hover {
+      background: #1a314a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(11, 28, 46, 0.25);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-submit i {
+      font-size: 1.1rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 8.5pt;
+      color: #94a3b8;
+    }
+
+    .login-footer i {
+      color: #d97706;
+    }
+
+    .login-footer .demo-credentials {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      font-size: 8.5pt;
+      color: #52647a;
+      border: 1px dashed #dde5ed;
+    }
+
+    .login-footer .demo-credentials strong {
+      color: #0b1c2e;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 1.8rem 1.5rem 2rem;
+      }
+      .login-header .logo h1 {
+        font-size: 18pt;
+      }
+      .login-header .logo img {
+        height: 45px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <!-- Header -->
+    <div class="login-header">
+      <div class="logo">
+        <img src="finallogo.jpg" alt="TABARE Logo">
+        <h1>TABARE <span>MARABA</span></h1>
+      </div>
+      <div class="subtitle">Transport Cooperative · Bauchi State</div>
+      <div class="badge"><i class="fas fa-crown"></i> Chairman Access Only</div>
+    </div>
+
+    <!-- Toast Message -->
+    <div class="toast" id="toast">
+      <i class="fas fa-exclamation-circle" id="toastIcon"></i>
+      <span id="toastMessage">Invalid credentials</span>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Username <span class="required">*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-user"></i>
+          <input type="text" id="username" placeholder="Enter your username" required autofocus />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Password <span class="required">*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Enter your password" required />
+          <button type="button" class="toggle-password" onclick="togglePassword()">
+            <i class="fas fa-eye" id="eyeIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="remember-me">
+          <input type="checkbox" checked /> Remember me
+        </label>
+        <button type="button" class="forgot-password" onclick="showToast('Contact the cooperative chairman for password reset.', 'info')">
+          Forgot password?
+        </button>
+      </div>
+
+      <button type="submit" class="btn-submit" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i> Sign In
+      </button>
+    </form>
+
+    <!-- Demo Credentials -->
+    <div class="login-footer">
+      <div class="demo-credentials">
+        <i class="fas fa-info-circle" style="color: #d97706;"></i>
+      </div>
+      <div style="margin-top: 0.8rem;">
+        <i class="fas fa-shield-alt"></i> Secure &bull; Confidential
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // HARDCODED CREDENTIALS
+    // ============================================================
+    const VALID_USERNAME = 'Malam Bello';
+    const VALID_PASSWORD = 'YayaBabba';
+    const REDIRECT_URL = 'TABAREChairmanDashboard.html';
+
+    // ============================================================
+    // DOM REFS
+    // ============================================================
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    function showToast(msg, type = 'error') {
+      toast.className = 'toast visible ' + type;
+      toastMessage.textContent = msg;
+      toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+      
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 4000);
+    }
+
+    // ============================================================
+    // TOGGLE PASSWORD
+    // ============================================================
+    function togglePassword() {
+      const password = document.getElementById('password');
+      const eye = document.getElementById('eyeIcon');
+      if (password.type === 'password') {
+        password.type = 'text';
+        eye.className = 'fas fa-eye-slash';
+      } else {
+        password.type = 'password';
+        eye.className = 'fas fa-eye';
+      }
+    }
+
+    // ============================================================
+    // HANDLE LOGIN
+    // ============================================================
+    function handleLogin(e) {
+      e.preventDefault();
+
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      // Validate inputs
+      if (!username) {
+        showToast('Please enter your username', 'error');
+        usernameInput.focus();
+        return;
+      }
+
+      if (!password) {
+        showToast('Please enter your password', 'error');
+        passwordInput.focus();
+        return;
+      }
+
+      // Check credentials
+      if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+        // Success - redirect to dashboard
+        showToast('Login successful! Welcome Chairman.', 'success');
+        
+        // Store session
+        localStorage.setItem('tabare_user', JSON.stringify({
+          name: 'Malam Bello',
+          role: 'chairman',
+          username: username
+        }));
+
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner spinner"></i> Redirecting...';
+
+        setTimeout(() => {
+          window.location.href = REDIRECT_URL;
+        }, 1500);
+      } else {
+        // Failed - show error
+        showToast('Invalid username or password. Please try again.', 'error');
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    // ============================================================
+    // ENTER KEY SUPPORT
+    // ============================================================
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const form = document.getElementById('loginForm');
+        if (document.activeElement === usernameInput || document.activeElement === passwordInput) {
+          form.dispatchEvent(new Event('submit'));
+        }
+      }
+    });
+
+    // ============================================================
+    // CHECK IF ALREADY LOGGED IN
+    // ============================================================
+    const storedUser = localStorage.getItem('tabare_user');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        if (user.role === 'chairman' && user.name === 'Malam Bello') {
+          // Already logged in, redirect
+          window.location.href = REDIRECT_URL;
+        }
+      } catch (e) {}
+    }
+
+    console.log('TABARE Chairman Login ready');
+  </script>
+
+</body>
+</html>
