@@ -1036,12 +1036,10 @@
     // HELPER: Normalize ID formats
     // ============================================
     function normalizeId(id) {
-      // Convert slashes to underscores for document lookup
       return id.toUpperCase().replace(/\//g, '_');
     }
 
     function convertToDisplayId(id) {
-      // Convert underscores to slashes for display
       return id.toUpperCase().replace(/_/g, '/');
     }
 
@@ -1069,23 +1067,19 @@
         let memberData = null;
         let docId = '';
 
-        // 1. TRY: Direct document lookup using normalized ID (underscores)
+        // 1. Direct document lookup
         const normalizedId = normalizeId(id);
-        console.log('🔍 Trying direct lookup with:', normalizedId);
-        
         const docRef = db.collection('MembershipList').doc(normalizedId);
         const docSnap = await docRef.get();
 
         if (docSnap.exists) {
-          console.log('✅ Found by direct document ID:', normalizedId);
           memberData = docSnap.data();
           docId = docSnap.id;
           found = true;
         }
 
-        // 2. TRY: Search by membershipId field (display format with slashes)
+        // 2. Search by membershipId field
         if (!found) {
-          console.log('🔍 Trying search by membershipId field:', id);
           const searchId = id.toUpperCase();
           const snapshot = await db.collection('MembershipList')
             .where('membershipId', '==', searchId)
@@ -1096,13 +1090,11 @@
             memberData = doc.data();
             docId = doc.id;
             found = true;
-            console.log('✅ Found by membershipId field:', docId);
           }
         }
 
-        // 3. TRY: Search by phone number
+        // 3. Search by phone number
         if (!found) {
-          console.log('🔍 Trying search by phone:', id);
           const phoneSnapshot = await db.collection('MembershipList')
             .where('phone', '==', id)
             .get();
@@ -1112,24 +1104,6 @@
             memberData = doc.data();
             docId = doc.id;
             found = true;
-            console.log('✅ Found by phone:', docId);
-          }
-        }
-
-        // 4. TRY: Search by fullName (partial match)
-        if (!found) {
-          console.log('🔍 Trying search by name:', id);
-          const nameSnapshot = await db.collection('MembershipList')
-            .where('fullName', '>=', id)
-            .where('fullName', '<=', id + '\uf8ff')
-            .get();
-
-          if (!nameSnapshot.empty) {
-            const doc = nameSnapshot.docs[0];
-            memberData = doc.data();
-            docId = doc.id;
-            found = true;
-            console.log('✅ Found by name:', docId);
           }
         }
 
@@ -1221,7 +1195,6 @@
       document.getElementById('statusTitle').textContent = '✅ Member Valid';
       document.getElementById('statusMessage').textContent = 'This membership ID is registered in our system.';
 
-      // Display membership ID - prefer membershipId field, then doc ID
       const displayId = member.membershipId || member.id || '—';
       document.getElementById('detailMemberId').textContent = displayId;
       
@@ -1347,6 +1320,9 @@
       const displayStatus = member.status || 'Active';
       const displayPhone = member.phone || 'N/A';
 
+      // Ensure profilePhoto is a clean string
+      const profileImg = member.profilePhoto ? String(member.profilePhoto).trim() : '';
+
       return `
         <div class="id-card" id="idCardToPrint">
           <div class="card-watermark">TABARE</div>
@@ -1361,7 +1337,10 @@
           </div>
           <div class="card-body">
             <div class="card-photo" id="cardPhoto">
-              ${member.profilePhoto ? `<img src="${member.profilePhoto}" alt="Member Photo">` : '<i class="fas fa-user"></i>'}
+              ${profileImg 
+                ? `<img src="${profileImg}" alt="Member Photo" onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-user\\'></i>';" />` 
+                : '<i class="fas fa-user"></i>'
+              }
             </div>
             <div class="card-info">
               <div class="info-row">
@@ -1560,7 +1539,10 @@
           <body>
             ${content}
             <script>
-              window.onload = function() { window.print(); };
+              window.onload = function() { 
+                // Wait 500ms to ensure the remote image loads from GitHub before opening print
+                setTimeout(() => { window.print(); }, 500); 
+              };
             <\/script>
           </body>
         </html>
@@ -1844,7 +1826,7 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
             <style>body { margin: 0; padding: 0; background: white; }</style>
           </head>
-          <body>${letterHTML}<script>window.onload=function(){window.print();}<\/script></body>
+          <body>${letterHTML}<script>window.onload=function(){setTimeout(()=>{window.print();}, 500);}<\/script></body>
         </html>
       `);
       win.document.close();
@@ -1861,7 +1843,7 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
             <style>body { margin: 0; padding: 0; background: white; }</style>
           </head>
-          <body>${content}<script>window.onload=function(){window.print();}<\/script></body>
+          <body>${content}<script>window.onload=function(){setTimeout(()=>{window.print();}, 500);}<\/script></body>
         </html>
       `);
       win.document.close();
@@ -1905,8 +1887,6 @@
     }
 
     console.log('✅ TABARE Membership Verification System v2.0 loaded.');
-    console.log('📡 Connected to Firestore "MembershipList" collection.');
-    console.log('💡 Supports both ID formats: TAB/MEM/2026/001 and TAB_MEM_2026_001');
   </script>
 
 </body>

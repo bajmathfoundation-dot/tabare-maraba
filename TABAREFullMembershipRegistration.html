@@ -510,7 +510,7 @@
               <i class="fas fa-user placeholder-icon"></i>
               <button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>
             </div>
-            <span style="font-size: 0.8rem; color: #52647a;">Upload a clear photo (passport size preferred) - Optional</span>
+            <span style="font-size: 0.8rem; color: #52647a;">Upload a clear photo (Max 4MB) - Optional</span>
           </div>
         </div>
 
@@ -613,9 +613,9 @@
   </div>
 </footer>
 
+<!-- Firebase SDKs (Storage SDK removed) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
 <script>
   const firebaseConfig = {
@@ -630,7 +630,7 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
-  const storage = firebase.storage();
+  // const storage = firebase.storage(); // REMOVED
 
   const form = document.getElementById('memberForm');
   const alertEl = document.getElementById('memberAlert');
@@ -661,6 +661,13 @@
   imageInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
+      // Front-end size check for Vercel limits (approx 4MB limit due to Base64)
+      if (file.size > 4 * 1024 * 1024) {
+        showAlert('Image is too large. Please select an image smaller than 4MB.', true);
+        imageInput.value = '';
+        return;
+      }
+      
       selectedImageFile = file;
       const reader = new FileReader();
       reader.onload = function(event) {
@@ -704,10 +711,9 @@
       const nextNumber = count + 1;
       const padded = String(nextNumber).padStart(3, '0');
       
-      // Return a clean ID without slashes for the document reference
       return {
-        docId: `TAB_MEM_${currentYear}_${padded}`,  // For document ID (no slashes)
-        displayId: `TAB/MEM/${currentYear}/${padded}` // For display (with slashes)
+        docId: `TAB_MEM_${currentYear}_${padded}`, 
+        displayId: `TAB/MEM/${currentYear}/${padded}` 
       };
     } catch (error) {
       console.error('Error generating membership ID:', error);
@@ -763,27 +769,53 @@
     try {
       console.log('Starting registration process...');
       
-      // Generate membership ID
       const { docId, displayId } = await generateMembershipId();
       console.log('Document ID:', docId);
-      console.log('Display ID:', displayId);
 
-      // Upload image if selected
+      // --- NEW UPLOAD LOGIC (GitHub via Vercel) ---
       let imageUrl = '';
       if (selectedImageFile) {
         try {
-          console.log('Uploading image...');
-          const storageRef = storage.ref(`member_photos/${Date.now()}_${selectedImageFile.name}`);
-          const snapshot = await storageRef.put(selectedImageFile);
-          imageUrl = await snapshot.ref.getDownloadURL();
-          console.log('Image uploaded:', imageUrl);
+          console.log('Converting image to Base64...');
+          
+          const toBase64 = file => new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = () => resolve(reader.result.split(',')[1]); // Extract just the Base64 string
+              reader.onerror = error => reject(error);
+          });
+
+          const base64Content = await toBase64(selectedImageFile);
+
+          console.log('Uploading to GitHub via Vercel API...');
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fileName: selectedImageFile.name,
+              fileContent: base64Content
+            })
+          });
+
+          if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error || 'Upload failed');
+          }
+
+          const data = await response.json();
+          imageUrl = data.url; 
+          console.log('Image uploaded successfully. URL:', imageUrl);
+
         } catch (imageError) {
           console.error('Image upload error:', imageError);
-          imageUrl = '';
+          showAlert('Failed to upload image, but saving profile without it.', true);
+          imageUrl = ''; 
         }
       }
+      // --- END NEW UPLOAD LOGIC ---
 
-      // Prepare member data
       const memberData = {
         fullName: name,
         phone: phone,
@@ -791,7 +823,7 @@
         dateOfBirth: dob,
         stateOfOrigin: stateOrigin,
         homeAddress: address,
-        profilePhoto: imageUrl || '',
+        profilePhoto: imageUrl || '', // This now holds the GitHub raw URL
         membershipType: memTypeVal,
         tricyclePlate: plate || '',
         tricycleModel: model || '',
@@ -801,15 +833,12 @@
         preferredRoute: route || '',
         reason: reason || '',
         termsAccepted: true,
-        membershipId: displayId,  // Store formatted ID for display
+        membershipId: displayId, 
         status: 'pending',
         registeredAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
-      console.log('Saving member data...');
-      console.log('Using document ID:', docId);
-
-      // Save to Firestore using clean document ID
+      console.log('Saving member data to Firestore...');
       await db.collection('MembershipList').doc(docId).set(memberData);
       
       console.log('Member saved successfully!');
@@ -820,13 +849,9 @@
       licenseField.style.display = 'none';
       removeImage();
       termsCheck.checked = false;
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Register Now';
 
     } catch (err) {
-      console.error('Registration error DETAILS:', err);
-      console.error('Error code:', err.code);
-      console.error('Error message:', err.message);
+      console.error('Registration error:', err);
       
       let errorMsg = '❌ Something went wrong. Please try again.';
       if (err.code === 'permission-denied') {
@@ -838,6 +863,7 @@
       }
       
       showAlert(errorMsg, true);
+    } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Register Now';
     }
@@ -849,7 +875,6 @@
   });
 
   console.log('TABARE Registration form ready');
-  console.log('Firebase config loaded, project:', firebaseConfig.projectId);
 </script>
 </body>
 </html>
