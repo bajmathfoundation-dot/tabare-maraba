@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TABARE · Manage Enquiries</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #0b1c2e; line-height: 1.6; min-height: 100vh; }
+    .top-nav { background: #0b1c2e; color: #fff; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { display: flex; align-items: center; gap: 0.8rem; font-size: 14pt; font-weight: 700; }
+    .nav-brand img { height: 40px; border-radius: 8px; }
+    .nav-brand span { color: #d97706; }
+    .nav-right a { color: #94a3b8; text-decoration: none; font-size: 9.5pt; transition: color 0.2s; }
+    .nav-right a:hover { color: #fff; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .page-header h1 { font-size: 24pt; font-weight: 800; }
+    .page-header h1 i { color: #d97706; margin-right: 0.5rem; }
+    
+    .card { background: #fff; border-radius: 12px; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+    th { background: #f8fafc; padding: 0.8rem; text-align: left; color: #52647a; border-bottom: 2px solid #e2e8f0; font-weight: 600; }
+    td { padding: 0.8rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .msg-box { max-width: 300px; white-space: pre-wrap; word-wrap: break-word; font-size: 8.5pt; color: #52647a; background: #f8fafc; padding: 0.5rem; border-radius: 6px; }
+    
+    .status-badge { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 7.5pt; font-weight: 600; text-transform: uppercase; }
+    .status-pending { background: #fef3c7; color: #d97706; }
+    .status-contacted { background: #dcfce7; color: #16a34a; }
+    
+    .btn-group { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .btn-sm { padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 8pt; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none; transition: 0.2s; }
+    .btn-wa { background: #25D366; color: #fff; }
+    .btn-wa:hover { background: #1da851; }
+    .btn-call { background: #0b1c2e; color: #fff; }
+    .btn-call:hover { background: #1a314a; }
+    .btn-resolve { background: #f1f5f9; color: #52647a; border: 1px solid #dde5ed; }
+    .btn-resolve:hover { background: #e2e8f0; }
+    
+    .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: 12px; color: #fff; font-weight: 600; z-index: 2000; display: none; }
+    .toast.show { display: block; }
+    .toast.success { background: #0f7b3a; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-brand"><img src="finallogo.jpg" onerror="this.style.display='none'">TABARE <span>MARABA</span></div>
+    <div class="nav-right"><a href="TABAREChairmanDashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1><i class="fas fa-envelope-open-text"></i> Manage Enquiries</h1>
+    </div>
+
+    <div class="card">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Client Name</th><th>Phone</th><th>Service</th><th>Message</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="7" style="text-align:center; padding:2rem;">Loading enquiries...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = { apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg", authDomain: "tabare-maraba.firebaseapp.com", projectId: "tabare-maraba", storageBucket: "tabare-maraba.firebasestorage.app", messagingSenderId: "204144494424", appId: "1:204144494424:web:82e1006399c1b94eb9c72d" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast show success';
+      setTimeout(() => t.className = 'toast', 3000);
+    }
+
+    async function loadEnquiries() {
+      const tbody = document.getElementById('tableBody');
+      try {
+        const snap = await db.collection('Enquiries').orderBy('createdAt', 'desc').get();
+        
+        if (snap.empty) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem;">No enquiries found.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = snap.docs.map(doc => {
+          const d = doc.data();
+          const date = d.createdAt ? d.createdAt.toDate().toLocaleDateString('en-NG') : 'N/A';
+          
+          let phone = d.phone.replace(/[^0-9]/g, '');
+          if (phone.length === 10) phone = '234' + phone;
+          else if (phone.length === 11 && phone.startsWith('0')) phone = '234' + phone.substring(1);
+
+          const waText = encodeURIComponent(`Hello ${d.name}, this is TABARE Cooperative. We received your enquiry regarding "${d.service}". How can we assist you?`);
+
+          return `
+            <tr>
+              <td>${date}</td>
+              <td><strong>${d.name}</strong></td>
+              <td>${d.phone}</td>
+              <td>${d.service}</td>
+              <td><div class="msg-box">${d.message}</div></td>
+              <td><span class="status-badge status-${d.status || 'pending'}">${d.status || 'pending'}</span></td>
+              <td>
+                <div class="btn-group">
+                  <a href="https://wa.me/${phone}?text=${waText}" target="_blank" class="btn-sm btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                  <a href="tel:+${phone}" class="btn-sm btn-call"><i class="fas fa-phone"></i> Call</a>
+                  ${d.status === 'pending' ? `<button class="btn-sm btn-resolve" onclick="resolveEnquiry('${doc.id}')"><i class="fas fa-check"></i> Resolve</button>` : ''}
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error(error);
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error loading data.</td></tr>`;
+      }
+    }
+
+    async function resolveEnquiry(id) {
+      if (!confirm('Mark this enquiry as resolved?')) return;
+      try {
+        await db.collection('Enquiries').doc(id).update({ status: 'contacted' });
+        showToast('Enquiry marked as contacted.');
+        loadEnquiries();
+      } catch (e) { alert(e.message); }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadEnquiries);
+  </script>
+</body>
+</html>

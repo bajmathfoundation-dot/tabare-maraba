@@ -51,8 +51,6 @@
     .terms-section { background: #f8fafc; border-radius: 20px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; border: 1px solid #edf2f7; }
     .terms-section h4 { font-weight: 700; margin-bottom: 0.5rem; color: #0b1c2e; }
     .terms-section .terms-text { font-size: 0.85rem; color: #52647a; max-height: 120px; overflow-y: auto; padding-right: 0.5rem; line-height: 1.6; }
-    .terms-section .terms-text::-webkit-scrollbar { width: 4px; }
-    .terms-section .terms-text::-webkit-scrollbar-thumb { background: #dde5ed; border-radius: 4px; }
     .checkbox-group { display: flex; align-items: flex-start; gap: 0.6rem; margin-top: 0.8rem; }
     .checkbox-group input[type="checkbox"] { width: 18px; height: 18px; margin-top: 3px; cursor: pointer; accent-color: #d97706; }
     .checkbox-group label { font-size: 0.9rem; color: #1f3348; cursor: pointer; }
@@ -74,7 +72,6 @@
       .register-card h1 { font-size: 1.8rem; }
       .member-benefits ul { flex-direction: column; gap: 0.4rem; }
       .footer .container { flex-direction: column; text-align: center; }
-      .image-preview { width: 60px; height: 60px; }
     }
   </style>
 </head>
@@ -98,7 +95,7 @@
       <div class="sub">Complete the form below to join TABARE Transport Cooperative</div>
 
       <div class="disclaimer">
-        <i class="fas fa-info-circle"></i> <strong>Disclaimer:</strong> By submitting this form, you confirm that all information provided is accurate and complete. TABARE Cooperative reserves the right to verify all details and approve membership at its discretion.
+        <i class="fas fa-info-circle"></i> <strong>Disclaimer:</strong> By submitting this form, you confirm that all information provided is accurate and complete.
       </div>
 
       <div id="memberAlert" class="alert"></div>
@@ -185,57 +182,20 @@
 
         <h3 style="font-size: 1.1rem; color: #d97706; margin-bottom: 0.8rem;"><i class="fas fa-info-circle"></i> Additional Information</h3>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Occupation</label>
-            <input type="text" id="memOccupation" placeholder="e.g. Teacher, Trader, Driver" />
-          </div>
-          <div class="form-group">
-            <label>Years of experience</label>
-            <input type="number" id="memExperience" placeholder="e.g. 3" min="0" />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Preferred routes</label>
-          <input type="text" id="memRoute" placeholder="e.g. Maraba – Bauchi metropolis" />
-        </div>
-
         <div class="form-group">
           <label>Why do you want to join TABARE?</label>
-          <textarea id="memReason" placeholder="Tell us your motivation and how you can contribute ..."></textarea>
+          <textarea id="memReason" placeholder="Tell us your motivation..."></textarea>
         </div>
 
         <div class="terms-section">
-          <h4><i class="fas fa-file-contract" style="color: #d97706;"></i> Terms & Conditions</h4>
-          <div class="terms-text">
-            <p><strong>1. Membership Obligations:</strong> All members must abide by the cooperative's constitution and operational guidelines.</p>
-            <p><strong>2. Dues & Contributions:</strong> Members are required to pay registration fees and monthly dues as determined by the cooperative's management.</p>
-            <p><strong>3. Conduct:</strong> Members must maintain professional conduct and uphold the reputation of TABARE Cooperative at all times.</p>
-            <p><strong>4. Safety:</strong> Drivers must comply with all road safety regulations and ensure their tricycles are roadworthy.</p>
-            <p><strong>5. Termination:</strong> The cooperative reserves the right to terminate membership for violation of rules or misconduct.</p>
-            <p><strong>6. Data Privacy:</strong> Personal information will be kept confidential and used only for cooperative purposes.</p>
-            <p><strong>7. Dispute Resolution:</strong> Any disputes shall be resolved internally through the cooperative's dispute resolution mechanism.</p>
-          </div>
-
           <div class="checkbox-group">
             <input type="checkbox" id="termsCheck" required />
-            <label for="termsCheck">I have read, understood, and agree to the <strong>Terms & Conditions</strong> and <strong>Disclaimer</strong> above. <span class="required">*</span></label>
+            <label for="termsCheck">I have read, understood, and agree to the <strong>Terms & Conditions</strong> above. <span class="required">*</span></label>
           </div>
         </div>
 
         <button type="submit" class="btn btn-success" id="submitBtn"><i class="fas fa-paper-plane"></i> Register Now</button>
       </form>
-
-      <div class="member-benefits">
-        <h4><i class="fas fa-star" style="color: #d97706;"></i> What you get as a member</h4>
-        <ul>
-          <li><i class="fas fa-check-circle"></i> Access to cooperative transport services</li>
-          <li><i class="fas fa-check-circle"></i> Discounted rates &amp; group benefits</li>
-          <li><i class="fas fa-check-circle"></i> Business networking &amp; support</li>
-          <li><i class="fas fa-check-circle"></i> Community development participation</li>
-        </ul>
-      </div>
     </div>
   </div>
 </main>
@@ -286,17 +246,14 @@
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        showAlert('Image is too large. Please select an image smaller than 5MB.', true);
+        showAlert('Image is too large. Max 5MB.', true);
         imageInput.value = '';
         return;
       }
       selectedImageFile = file;
       const reader = new FileReader();
       reader.onload = function(event) {
-        imagePreview.innerHTML = `
-          <img src="${event.target.result}" alt="Profile photo" />
-          <button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>
-        `;
+        imagePreview.innerHTML = `<img src="${event.target.result}" alt="Profile" /><button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>`;
         document.getElementById('removeImageBtn').addEventListener('click', removeImage);
       };
       reader.readAsDataURL(file);
@@ -306,13 +263,9 @@
   function removeImage() {
     selectedImageFile = null;
     imageInput.value = '';
-    imagePreview.innerHTML = `
-      <i class="fas fa-user placeholder-icon"></i>
-      <button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>
-    `;
+    imagePreview.innerHTML = `<i class="fas fa-user placeholder-icon"></i><button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>`;
     document.getElementById('removeImageBtn').addEventListener('click', removeImage);
   }
-
   document.getElementById('removeImageBtn').addEventListener('click', removeImage);
 
   function showAlert(msg, isError = false) {
@@ -329,7 +282,6 @@
       const padded = String(count + 1).padStart(3, '0');
       return { docId: `TAB_MEM_${currentYear}_${padded}`, displayId: `TAB/MEM/${currentYear}/${padded}` };
     } catch (error) {
-      console.error('Error generating membership ID:', error);
       const timestamp = Date.now().toString(36).toUpperCase();
       return { docId: `TAB_MEM_${timestamp}`, displayId: `TAB/MEM/${new Date().getFullYear()}/${timestamp.slice(-4)}` };
     }
@@ -348,7 +300,6 @@
           const MAX_HEIGHT = 800;
           let width = img.width;
           let height = img.height;
-
           if (width > height) {
             if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
           } else {
@@ -369,10 +320,7 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (!termsCheck.checked) {
-      showAlert('Please accept the Terms & Conditions to proceed.', true);
-      return;
-    }
+    if (!termsCheck.checked) { showAlert('Please accept the Terms & Conditions.', true); return; }
 
     const name = document.getElementById('memName').value.trim();
     const phone = document.getElementById('memPhone').value.trim();
@@ -384,31 +332,19 @@
     const plate = document.getElementById('memPlate').value.trim();
     const model = document.getElementById('memModel').value.trim();
     const license = document.getElementById('memLicense').value.trim();
-    const occupation = document.getElementById('memOccupation').value.trim();
-    const experience = document.getElementById('memExperience').value.trim();
-    const route = document.getElementById('memRoute').value.trim();
     const reason = document.getElementById('memReason').value.trim();
 
     if (!name || !phone || !emergency || !dob || !stateOrigin || !address || !memTypeVal) {
-      showAlert('Please fill all required fields marked with *', true);
-      return;
-    }
-    if ((memTypeVal === 'driver' || memTypeVal === 'both') && !license) {
-      showAlert('Driver\'s license number is required for Driver or Both membership', true);
-      return;
-    }
-    if ((memTypeVal === 'tricycle_owner' || memTypeVal === 'both') && !plate) {
-      showAlert('Tricycle registration plate is required for Owner or Both membership', true);
-      return;
+      showAlert('Please fill all required fields.', true); return;
     }
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing & Registering...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
     try {
       const { docId, displayId } = await generateMembershipId();
-
       let imageUrl = '';
+
       if (selectedImageFile) {
         try {
           const compressedBase64 = await compressImage(selectedImageFile);
@@ -417,32 +353,23 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ fileName: selectedImageFile.name, fileContent: compressedBase64 })
           });
-
-          if (!response.ok) {
-            const errData = await response.json();
-            throw new Error(errData.error || 'Upload failed');
-          }
+          if (!response.ok) throw new Error('Upload failed');
           const data = await response.json();
           imageUrl = data.url; 
         } catch (imageError) {
-          console.error('Image upload error:', imageError);
           showAlert('Failed to upload image, but saving profile without it.', true);
         }
       }
 
-      const memberData = {
+      await db.collection('MembershipList').doc(docId).set({
         fullName: name, phone: phone, emergencyContact: emergency, dateOfBirth: dob,
         stateOfOrigin: stateOrigin, homeAddress: address, profilePhoto: imageUrl || '', 
         membershipType: memTypeVal, tricyclePlate: plate || '', tricycleModel: model || '',
-        driversLicense: license || '', occupation: occupation || '',
-        yearsExperience: experience ? parseInt(experience) : 0, preferredRoute: route || '',
-        reason: reason || '', termsAccepted: true, membershipId: displayId, 
-        status: 'pending', registeredAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      await db.collection('MembershipList').doc(docId).set(memberData);
+        driversLicense: license || '', reason: reason || '', termsAccepted: true, 
+        membershipId: displayId, status: 'pending', registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
       
-      showAlert(`✅ Registration successful! Your Membership ID: ${displayId}. Welcome to TABARE Cooperative.`);
+      showAlert(`✅ Registration successful! Your ID: ${displayId}.`);
       form.reset();
       vehicleFields.style.display = 'none';
       licenseField.style.display = 'none';
@@ -450,8 +377,7 @@
       termsCheck.checked = false;
 
     } catch (err) {
-      console.error('Registration error:', err);
-      showAlert(err.code === 'permission-denied' ? '❌ Permission denied. Check Firestore rules.' : `❌ Error: ${err.message}`, true);
+      showAlert('❌ Error: ' + err.message, true);
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Register Now';

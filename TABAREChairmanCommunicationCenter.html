@@ -3,1530 +3,232 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TABARE · Chairman's Communication Center</title>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <title>TABARE · Broadcast Center</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #e8ecf1;
-      color: #0b1c2e;
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem 1rem;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1000px;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      border-bottom: 3px solid #d97706;
-      padding-bottom: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .header .logo-container {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fef3e8;
-      border-radius: 12px;
-      padding: 6px;
-      width: 60px;
-      height: 60px;
-    }
-
-    .header .logo-container img {
-      height: 55px;
-      width: auto;
-      max-width: 55px;
-      object-fit: contain;
-      border-radius: 8px;
-      display: block;
-    }
-
-    .header .title-group h1 {
-      font-size: 18pt;
-      font-weight: 800;
-      color: #0b1c2e;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-    }
-
-    .header .title-group h1 span {
-      color: #d97706;
-    }
-
-    .header .title-group .subtitle {
-      font-size: 9.5pt;
-      color: #52647a;
-      font-weight: 500;
-    }
-
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .stat-card {
-      background: #f8fafc;
-      border-radius: 10px;
-      padding: 0.8rem;
-      text-align: center;
-      border: 1px solid #e2e8f0;
-      transition: all 0.25s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    .stat-card .stat-number {
-      font-size: 20pt;
-      font-weight: 800;
-      color: #0b1c2e;
-      display: block;
-    }
-
-    .stat-card .stat-label {
-      font-size: 8pt;
-      color: #94a3b8;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .stat-card .stat-icon {
-      color: #d97706;
-      font-size: 1.2rem;
-      display: block;
-      margin-bottom: 0.2rem;
-    }
-
-    .chairman-config {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.8rem;
-      background: #f1f5f9;
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
-      margin-bottom: 0.8rem;
-      border: 1px solid #e2e8f0;
-    }
-
-    .chairman-config label {
-      font-weight: 600;
-      font-size: 9pt;
-      color: #0b1c2e;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .chairman-config input {
-      padding: 0.3rem 0.6rem;
-      border: 1px solid #dde5ed;
-      border-radius: 6px;
-      font-size: 9.5pt;
-      font-family: 'Inter', sans-serif;
-      width: 180px;
-    }
-
-    .chairman-config input:focus {
-      outline: none;
-      border-color: #d97706;
-    }
-
-    .chairman-config .badge-info {
-      font-size: 7.5pt;
-      color: #52647a;
-      background: #fff;
-      padding: 0.2rem 0.6rem;
-      border-radius: 12px;
-    }
-
-    .message-section {
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      border: 2px solid #e2e8f0;
-    }
-
-    .message-section h3 {
-      font-size: 11pt;
-      font-weight: 700;
-      color: #0b1c2e;
-      margin-bottom: 0.8rem;
-    }
-
-    .message-section h3 i {
-      color: #d97706;
-      margin-right: 0.5rem;
-    }
-
-    .message-input-group {
-      margin-bottom: 0.8rem;
-    }
-
-    .message-input-group label {
-      display: block;
-      font-weight: 600;
-      font-size: 9.5pt;
-      color: #1f3348;
-      margin-bottom: 0.3rem;
-    }
-
-    .message-input-group textarea {
-      width: 100%;
-      padding: 0.8rem;
-      border: 2px solid #dde5ed;
-      border-radius: 8px;
-      font-size: 10.5pt;
-      font-family: 'Inter', sans-serif;
-      resize: vertical;
-      min-height: 120px;
-      transition: all 0.25s ease;
-    }
-
-    .message-input-group textarea:focus {
-      outline: none;
-      border-color: #d97706;
-      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
-    }
-
-    .message-input-group .char-count {
-      text-align: right;
-      font-size: 8pt;
-      color: #94a3b8;
-      margin-top: 0.2rem;
-    }
-
-    .message-input-group .char-count.warning {
-      color: #d97706;
-    }
-
-    .message-input-group .char-count.danger {
-      color: #dc2626;
-    }
-
-    .template-buttons {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.8rem;
-    }
-
-    .btn-template {
-      padding: 0.4rem 1rem;
-      background: #f1f5f9;
-      border: 1px solid #dde5ed;
-      border-radius: 20px;
-      font-size: 8.5pt;
-      font-weight: 500;
-      color: #52647a;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .btn-template:hover {
-      background: #e2e8f0;
-      transform: translateY(-1px);
-    }
-
-    .btn-template i {
-      color: #d97706;
-      margin-right: 0.3rem;
-    }
-
-    .member-selection {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 0.8rem;
-      margin: 0.8rem 0;
-    }
-
-    .member-selection .selection-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .member-selection .selection-header .selection-controls {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .member-selection .selection-header .selection-controls button {
-      padding: 0.3rem 0.8rem;
-      border: 1px solid #dde5ed;
-      border-radius: 6px;
-      background: #f8fafc;
-      font-size: 8.5pt;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      color: #52647a;
-    }
-
-    .member-selection .selection-header .selection-controls button:hover {
-      background: #e2e8f0;
-    }
-
-    .member-selection .selection-header .selection-controls button.primary {
-      background: #d97706;
-      color: #fff;
-      border-color: #d97706;
-    }
-
-    .member-selection .selection-header .selection-controls button.primary:hover {
-      background: #b85d00;
-    }
-
-    .member-selection .selected-count {
-      font-size: 9pt;
-      font-weight: 600;
-      color: #0b1c2e;
-    }
-
-    .member-selection .selected-count span {
-      color: #d97706;
-    }
-
-    .member-list-container {
-      max-height: 250px;
-      overflow-y: auto;
-      border: 1px solid #f1f5f9;
-      border-radius: 6px;
-    }
-
-    .member-list-container table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 9.5pt;
-    }
-
-    .member-list-container table th {
-      background: #f8fafc;
-      padding: 0.5rem 0.6rem;
-      text-align: left;
-      font-weight: 600;
-      color: #52647a;
-      border-bottom: 2px solid #e2e8f0;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      font-size: 8.5pt;
-    }
-
-    .member-list-container table td {
-      padding: 0.4rem 0.6rem;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .member-list-container table tr:hover td {
-      background: #f8fafc;
-    }
-
-    .member-list-container table tr.selected td {
-      background: #fef3e8;
-    }
-
-    .member-list-container .status-badge {
-      display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 12px;
-      font-size: 7pt;
-      font-weight: 600;
-    }
-
-    .status-badge.active {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    .status-badge.inactive {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    .status-badge.pending {
-      background: #fef3c7;
-      color: #d97706;
-    }
-
-    .member-list-container input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-      accent-color: #d97706;
-    }
-
-    .member-list-container .select-all-checkbox {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-      accent-color: #d97706;
-    }
-
-    .action-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      padding: 0.9rem 1.5rem;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 10.5pt;
-      border: none;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      text-decoration: none;
-      width: 100%;
-    }
-
-    .btn-whatsapp {
-      background: #25D366;
-      color: #fff;
-    }
-    .btn-whatsapp:hover {
-      background: #1da851;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-    }
-
-    .btn-sms {
-      background: #0b1c2e;
-      color: #fff;
-    }
-    .btn-sms:hover {
-      background: #1a314a;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(11, 28, 46, 0.25);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    .btn i {
-      font-size: 1.2rem;
-    }
-
-    .btn .badge {
-      background: rgba(255,255,255,0.2);
-      padding: 0.1rem 0.5rem;
-      border-radius: 12px;
-      font-size: 8pt;
-      font-weight: 700;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: #0b1c2e;
-      color: #fff;
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      display: none;
-      align-items: center;
-      gap: 0.8rem;
-      z-index: 2000;
-      animation: slideIn 0.3s ease;
-      max-width: 400px;
-    }
-
-    .toast.visible {
-      display: flex;
-    }
-
-    .toast.success {
-      background: #0f7b3a;
-    }
-
-    .toast.error {
-      background: #dc2626;
-    }
-
-    .toast.info {
-      background: #0b1c2e;
-    }
-
-    .toast i {
-      font-size: 1.5rem;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      padding: 2rem;
-      overflow-y: auto;
-    }
-
-    .modal.visible {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-content {
-      background: #fff;
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 500px;
-      width: 100%;
-      position: relative;
-      animation: modalIn 0.3s ease;
-    }
-
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .modal-content .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 0.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal-content .modal-header h2 {
-      font-size: 14pt;
-      font-weight: 700;
-    }
-
-    .modal-content .modal-header .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #94a3b8;
-      transition: all 0.25s ease;
-    }
-
-    .modal-content .modal-header .close-btn:hover {
-      color: #dc2626;
-      transform: rotate(90deg);
-    }
-
-    .modal-content .modal-body {
-      margin: 1rem 0;
-    }
-
-    .modal-content .modal-footer {
-      border-top: 1px solid #f1f5f9;
-      padding-top: 1rem;
-      display: flex;
-      gap: 0.8rem;
-      justify-content: flex-end;
-    }
-
-    .modal-content .btn-sm {
-      padding: 0.5rem 1.2rem;
-      font-size: 9.5pt;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.25s ease;
-    }
-
-    .btn-sm-success {
-      background: #0f7b3a;
-      color: #fff;
-    }
-    .btn-sm-success:hover {
-      background: #0d6a31;
-    }
-
-    .btn-sm-outline {
-      background: transparent;
-      color: #0b1c2e;
-      border: 1px solid #dde5ed;
-    }
-    .btn-sm-outline:hover {
-      background: #f1f5f9;
-    }
-
-    .loading-spinner {
-      display: inline-block;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(100px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 2rem;
-      color: #94a3b8;
-    }
-
-    .empty-state i {
-      font-size: 2rem;
-      color: #dde5ed;
-      margin-bottom: 0.5rem;
-    }
-
-    .search-box {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .search-box input {
-      flex: 1;
-      padding: 0.4rem 0.8rem;
-      border: 1px solid #dde5ed;
-      border-radius: 6px;
-      font-size: 9.5pt;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .search-box input:focus {
-      outline: none;
-      border-color: #d97706;
-    }
-
-    .loading-overlay {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      color: #94a3b8;
-      gap: 0.8rem;
-    }
-
-    .loading-overlay i {
-      font-size: 1.5rem;
-      color: #d97706;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 1rem;
-      }
-
-      .stats-bar {
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 0.5rem;
-      }
-
-      .stat-card .stat-number {
-        font-size: 16pt;
-      }
-
-      .action-buttons {
-        grid-template-columns: 1fr;
-      }
-
-      .header {
-        flex-wrap: wrap;
-      }
-
-      .header .logo-container {
-        width: 50px;
-        height: 50px;
-      }
-
-      .header .logo-container img {
-        height: 45px;
-        max-width: 45px;
-      }
-
-      .header .title-group h1 {
-        font-size: 15pt;
-      }
-
-      .modal-content {
-        margin: 1rem;
-        padding: 1.5rem;
-      }
-
-      .member-selection .selection-header {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .chairman-config input {
-        width: 140px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .stats-bar {
-        grid-template-columns: 1fr;
-      }
-
-      .template-buttons {
-        flex-direction: column;
-      }
-
-      .btn-template {
-        text-align: center;
-      }
-
-      .member-selection .selection-header .selection-controls {
-        flex-wrap: wrap;
-      }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #e8ecf1; color: #0b1c2e; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; }
+    .container { width: 100%; max-width: 1000px; background: #ffffff; border-radius: 16px; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12); padding: 2rem; margin-bottom: 1.5rem; }
+    .header { display: flex; align-items: center; gap: 1rem; border-bottom: 3px solid #d97706; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+    .header .logo-container { flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #fef3e8; border-radius: 12px; padding: 6px; width: 60px; height: 60px; }
+    .header .logo-container img { height: 55px; max-width: 55px; object-fit: contain; border-radius: 8px; }
+    .header .title-group h1 { font-size: 18pt; font-weight: 800; color: #0b1c2e; line-height: 1.1; }
+    .header .title-group h1 span { color: #d97706; }
+    .header .title-group .subtitle { font-size: 9.5pt; color: #52647a; font-weight: 500; }
+
+    .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-card { background: #f8fafc; border-radius: 10px; padding: 0.8rem; text-align: center; border: 1px solid #e2e8f0; }
+    .stat-card .stat-number { font-size: 20pt; font-weight: 800; color: #0b1c2e; display: block; }
+    .stat-card .stat-label { font-size: 8pt; color: #94a3b8; font-weight: 500; text-transform: uppercase; }
+    .stat-card .stat-icon { color: #d97706; font-size: 1.2rem; margin-bottom: 0.2rem; }
+
+    .chairman-config { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; background: #f1f5f9; padding: 0.6rem 1rem; border-radius: 8px; margin-bottom: 0.8rem; border: 1px solid #e2e8f0; }
+    .chairman-config label { font-weight: 600; font-size: 9pt; color: #0b1c2e; display: flex; align-items: center; gap: 0.4rem; }
+    .chairman-config input { padding: 0.3rem 0.6rem; border: 1px solid #dde5ed; border-radius: 6px; font-size: 9.5pt; width: 180px; }
+
+    .message-section { background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 2px solid #e2e8f0; }
+    .message-section h3 { font-size: 11pt; font-weight: 700; color: #0b1c2e; margin-bottom: 0.8rem; }
+    .message-section h3 i { color: #d97706; margin-right: 0.5rem; }
+
+    .template-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .btn-template { padding: 0.4rem 1rem; background: #f1f5f9; border: 1px solid #dde5ed; border-radius: 20px; font-size: 8.5pt; font-weight: 500; color: #52647a; cursor: pointer; }
+    .btn-template:hover { background: #e2e8f0; }
+
+    .message-input-group textarea { width: 100%; padding: 0.8rem; border: 2px solid #dde5ed; border-radius: 8px; font-size: 10.5pt; font-family: 'Inter', sans-serif; resize: vertical; min-height: 120px; }
+
+    .member-selection { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.8rem; margin: 0.8rem 0; }
+    .selection-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem; }
+    .selection-controls button { padding: 0.3rem 0.8rem; border: 1px solid #dde5ed; border-radius: 6px; background: #f8fafc; font-size: 8.5pt; font-weight: 600; cursor: pointer; color: #52647a; }
+    .selected-count { font-size: 9pt; font-weight: 600; color: #0b1c2e; }
+    .member-list-container { max-height: 250px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 6px; }
+    .member-list-container table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+    .member-list-container th { background: #f8fafc; padding: 0.5rem; text-align: left; position: sticky; top: 0; font-size: 8.5pt; color: #52647a; }
+    .member-list-container td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #f1f5f9; }
+
+    .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.9rem 1.5rem; border-radius: 10px; font-weight: 600; font-size: 10.5pt; border: none; cursor: pointer; transition: all 0.25s ease; width: 100%; color: #fff; }
+    .btn-whatsapp { background: #25D366; }
+    .btn-sms { background: #0b1c2e; }
+    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+    .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: 12px; color: #fff; font-weight: 600; z-index: 2000; display: none; }
+    .toast.show { display: block; }
+    .toast.success { background: #0f7b3a; }
+
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; padding: 2rem; align-items: center; justify-content: center; }
+    .modal.visible { display: flex; }
+    .modal-content { background: #fff; border-radius: 16px; padding: 2rem; max-width: 500px; width: 100%; }
   </style>
 </head>
 <body>
 
   <div class="container">
-    
     <div class="header">
-      <div class="logo-container">
-        <img id="logoImage" src="finallogo.jpg" alt="Tabare Cooperative Logo" onerror="this.style.display='none'">
-      </div>
+      <div class="logo-container"><img src="finallogo.jpg" onerror="this.style.display='none'"></div>
       <div class="title-group">
         <h1>TABARE <span>MARABA</span></h1>
-        <div class="subtitle">Chairman's Communication Center</div>
+        <div class="subtitle">Chairman's Broadcast Center</div>
       </div>
     </div>
 
     <div class="stats-bar">
-      <div class="stat-card">
-        <span class="stat-icon"><i class="fas fa-users"></i></span>
-        <span class="stat-number" id="totalMembers">0</span>
-        <span class="stat-label">Total Members</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-icon"><i class="fas fa-user-check"></i></span>
-        <span class="stat-number" id="activeMembers">0</span>
-        <span class="stat-label">Active Members</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-icon"><i class="fas fa-phone"></i></span>
-        <span class="stat-number" id="phoneNumbers">0</span>
-        <span class="stat-label">Phone Numbers</span>
-      </div>
+      <div class="stat-card"><span class="stat-number" id="totalMembers">0</span><span class="stat-label">Total Members</span></div>
+      <div class="stat-card"><span class="stat-number" id="activeMembers">0</span><span class="stat-label">Active Members</span></div>
+      <div class="stat-card"><span class="stat-number" id="selectedCountDisplay">0</span><span class="stat-label">Selected</span></div>
     </div>
 
     <div class="message-section">
       <h3><i class="fas fa-pen"></i> Compose Message</h3>
       
-      <!-- Chairman WhatsApp number config -->
       <div class="chairman-config">
-        <label><i class="fab fa-whatsapp" style="color:#25D366;"></i> Your WhatsApp</label>
-        <input type="text" id="chairmanWhatsApp" placeholder="e.g. 2348012345678" value="2348012345678" />
-        <span class="badge-info">Include country code, no +</span>
-        <label style="margin-left:0.5rem;"><i class="fas fa-sms"></i> SMS Gateway</label>
-        <input type="text" id="smsGateway" placeholder="e.g. https://api.example.com/sms" value="" />
+        <label><i class="fab fa-whatsapp" style="color:#25D366;"></i> Your WhatsApp:</label>
+        <input type="text" id="chairmanWhatsApp" placeholder="e.g. 2348012345678" value="2347084473184" />
       </div>
 
       <div class="template-buttons">
-        <button class="btn-template" onclick="insertTemplate('meeting')">
-          <i class="fas fa-calendar"></i> Meeting Notice
-        </button>
-        <button class="btn-template" onclick="insertTemplate('dues')">
-          <i class="fas fa-money-bill"></i> Dues Reminder
-        </button>
-        <button class="btn-template" onclick="insertTemplate('event')">
-          <i class="fas fa-party"></i> Event Invitation
-        </button>
-        <button class="btn-template" onclick="insertTemplate('emergency')">
-          <i class="fas fa-exclamation-triangle"></i> Emergency
-        </button>
-        <button class="btn-template" onclick="insertTemplate('announcement')">
-          <i class="fas fa-bullhorn"></i> Announcement
-        </button>
-        <button class="btn-template" onclick="clearMessage()">
-          <i class="fas fa-eraser"></i> Clear
-        </button>
+        <button class="btn-template" onclick="insertTemplate('meeting')"><i class="fas fa-calendar"></i> Meeting Notice</button>
+        <button class="btn-template" onclick="insertTemplate('dues')"><i class="fas fa-money-bill"></i> Dues Reminder</button>
+        <button class="btn-template" onclick="clearMessage()"><i class="fas fa-eraser"></i> Clear</button>
       </div>
 
       <div class="message-input-group">
-        <label for="messageInput">Message <span id="charCountDisplay">(0/1600)</span></label>
-        <textarea id="messageInput" placeholder="Type your message here..." maxlength="1600" oninput="updateCharCount()"></textarea>
-        <div class="char-count" id="charCount">0 / 1600 characters</div>
+        <textarea id="messageInput" placeholder="Type your message here..." maxlength="1600"></textarea>
       </div>
 
       <div class="member-selection">
         <div class="selection-header">
-          <div class="selected-count">
-            <i class="fas fa-users"></i> Selected: <span id="selectedCount">0</span> members
-          </div>
+          <div class="selected-count">Selected: <span id="selectedCount">0</span></div>
           <div class="selection-controls">
             <button onclick="selectAllMembers()">Select All</button>
-            <button onclick="selectActiveMembers()">Select Active</button>
             <button onclick="clearSelection()">Clear</button>
           </div>
         </div>
 
-        <div class="search-box">
-          <input type="text" id="memberSearch" placeholder="Search members..." oninput="filterMembers()" />
-          <i class="fas fa-search" style="align-self:center; color:#94a3b8;"></i>
-        </div>
-
         <div class="member-list-container" id="memberListContainer">
           <table>
-            <thead>
-              <tr>
-                <th style="width:30px;">
-                  <input type="checkbox" class="select-all-checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()" />
-                </th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="memberTableBody">
-              <tr>
-                <td colspan="4">
-                  <div class="loading-overlay">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <span>Loading members from database...</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+            <thead><tr><th style="width:30px;"></th><th>Name</th><th>Phone</th></tr></thead>
+            <tbody id="memberTableBody"></tbody>
           </table>
         </div>
       </div>
 
       <div class="action-buttons">
-        <button class="btn btn-whatsapp" onclick="sendWhatsApp()" id="whatsappBtn">
-          <i class="fab fa-whatsapp"></i> Send via WhatsApp
-          <span class="badge" id="whatsappCount">0</span>
-        </button>
-        <button class="btn btn-sms" onclick="sendSMS()" id="smsBtn">
-          <i class="fas fa-sms"></i> Send via SMS
-          <span class="badge" id="smsCount">0</span>
-        </button>
+        <button class="btn btn-whatsapp" onclick="sendBroadcast('WhatsApp')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+        <button class="btn btn-sms" onclick="sendBroadcast('SMS')"><i class="fas fa-sms"></i> SMS</button>
       </div>
     </div>
-
   </div>
 
-  <div class="toast" id="toast">
-    <i class="fas fa-check-circle" id="toastIcon"></i>
-    <span id="toastMessage">Message sent successfully!</span>
-  </div>
+  <div class="toast" id="toast"></div>
 
   <div class="modal" id="confirmModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2><i class="fas fa-paper-plane" style="color: #d97706;"></i> Confirm Send</h2>
-        <button class="close-btn" onclick="closeModal('confirmModal')">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p><strong>You are about to send a message to <span id="modalRecipientCount">0</span> members.</strong></p>
-        <p style="margin-top: 0.5rem; color: #64748b; font-size: 9.5pt;">Message preview:</p>
-        <div style="background: #f8fafc; padding: 0.8rem; border-radius: 8px; margin-top: 0.3rem; font-size: 10pt; border-left: 3px solid #d97706; max-height: 150px; overflow-y: auto;">
-          <span id="modalMessagePreview">—</span>
-        </div>
-        <p style="margin-top: 0.5rem; font-size: 8.5pt; color: #94a3b8;">
-          <i class="fas fa-info-circle"></i> This will be sent via <span id="modalChannel">WhatsApp</span>
-        </p>
-        <div style="margin-top: 0.5rem; font-size: 8.5pt; color: #64748b; background: #f1f5f9; padding: 0.5rem; border-radius: 6px; max-height: 100px; overflow-y: auto;">
-          <strong>Recipients:</strong>
-          <div id="modalRecipientList"></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-sm btn-sm-outline" onclick="closeModal('confirmModal')">Cancel</button>
-        <button class="btn-sm btn-sm-success" id="confirmSendBtn" onclick="confirmSend()">
-          <i class="fas fa-paper-plane"></i> Send Now
-        </button>
+      <h3>Confirm Broadcast</h3>
+      <p style="margin:0.5rem 0;">Sending to <strong id="modalCount">0</strong> members via <strong id="modalChannel">WhatsApp</strong>.</p>
+      <div style="display:flex; gap:1rem; margin-top:1rem;">
+        <button onclick="document.getElementById('confirmModal').classList.remove('visible')" style="flex:1; padding:0.5rem; background:#e2e8f0; border:none; border-radius:8px; cursor:pointer;">Cancel</button>
+        <button onclick="executeBroadcast()" style="flex:1; padding:0.5rem; background:#0f7b3a; color:#fff; border:none; border-radius:8px; cursor:pointer;">Send Now</button>
       </div>
     </div>
   </div>
 
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
   <script>
-    // ============================================================
-    // FIREBASE CONFIG
-    // ============================================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg",
-      authDomain: "tabare-maraba.firebaseapp.com",
-      projectId: "tabare-maraba",
-      storageBucket: "tabare-maraba.firebasestorage.app",
-      messagingSenderId: "204144494424",
-      appId: "1:204144494424:web:82e1006399c1b94eb9c72d",
-      measurementId: "G-50F5VT9W12"
-    };
-
+    const firebaseConfig = { apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg", authDomain: "tabare-maraba.firebaseapp.com", projectId: "tabare-maraba", storageBucket: "tabare-maraba.firebasestorage.app", messagingSenderId: "204144494424", appId: "1:204144494424:web:82e1006399c1b94eb9c72d" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ============================================================
-    // STATE
-    // ============================================================
     let allMembers = [];
     let selectedMembers = [];
-    let filteredMembers = [];
-    let currentSearch = '';
-    let isLoading = true;
-    let isFirstLoad = true;
+    let broadcastChannel = '';
+    let broadcastMessage = '';
 
-    // ============================================================
-    // TOAST NOTIFICATIONS
-    // ============================================================
-    function showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
-      const toastMessage = document.getElementById('toastMessage');
-      const toastIcon = document.getElementById('toastIcon');
-      
-      toast.className = 'toast ' + type;
-      toastMessage.textContent = message;
-      
-      if (type === 'success') {
-        toastIcon.className = 'fas fa-check-circle';
-      } else if (type === 'error') {
-        toastIcon.className = 'fas fa-exclamation-circle';
-      } else {
-        toastIcon.className = 'fas fa-info-circle';
-      }
-      
-      toast.classList.add('visible');
-      
-      setTimeout(() => {
-        toast.classList.remove('visible');
-      }, 4000);
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast show success';
+      setTimeout(() => t.className = 'toast', 3000);
     }
 
-    // ============================================================
-    // REAL-TIME LISTENER (Single source of truth)
-    // ============================================================
-    function setupRealTimeListener() {
-      db.collection('MembershipList')
-        .orderBy('fullName')
-        .onSnapshot((snapshot) => {
-          const newMembers = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            newMembers.push({
-              id: doc.id,
-              name: data.fullName || 'Unknown',
-              phone: data.phone || '',
-              status: data.status || 'active',
-              membershipType: data.membershipType || '',
-              registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
-            });
-          });
+    db.collection('MembershipList').orderBy('fullName').onSnapshot(snap => {
+      allMembers = [];
+      snap.forEach(doc => {
+        const d = doc.data();
+        if (d.phone) allMembers.push({ id: doc.id, name: d.fullName, phone: d.phone, status: d.status });
+      });
+      
+      document.getElementById('totalMembers').textContent = allMembers.length;
+      document.getElementById('activeMembers').textContent = allMembers.filter(m => m.status === 'active' || m.status === 'approved').length;
+      
+      renderMembers();
+    });
 
-          allMembers = newMembers;
-          
-          // Apply search filter if any
-          filteredMembers = currentSearch ? 
-            allMembers.filter(m => 
-              m.name.toLowerCase().includes(currentSearch.toLowerCase()) || 
-              (m.phone && m.phone.includes(currentSearch))
-            ) : 
-            [...allMembers];
-
-          // Keep selected members that still exist in the updated list
-          selectedMembers = selectedMembers.filter(s => allMembers.some(m => m.id === s.id));
-
-          isLoading = false;
-          isFirstLoad = false;
-          
-          // Update all UI components
-          updateStats();
-          renderMemberList();
-          updateSelectedCount();
-          
-          console.log('✅ Real-time update:', allMembers.length, 'members loaded');
-          
-          if (allMembers.length === 0 && !isFirstLoad) {
-            // Only show this if we've finished loading and there are no members
-          }
-        }, (error) => {
-          console.error('❌ Real-time listener error:', error);
-          isLoading = false;
-          isFirstLoad = false;
-          showToast('⚠️ Error connecting to database. Please refresh.', 'error');
-          renderMemberList();
-        });
-    }
-
-    // ============================================================
-    // UPDATE UI FUNCTIONS
-    // ============================================================
-    function updateStats() {
-      const total = allMembers.length;
-      const active = allMembers.filter(m => m.status === 'active').length;
-      const withPhone = allMembers.filter(m => m.phone && m.phone.length > 0).length;
-
-      document.getElementById('totalMembers').textContent = total;
-      document.getElementById('activeMembers').textContent = active;
-      document.getElementById('phoneNumbers').textContent = withPhone;
-    }
-
-    function renderMemberList() {
+    function renderMembers() {
       const tbody = document.getElementById('memberTableBody');
-      const list = filteredMembers;
-      
-      // Show loading state
-      if (isLoading && isFirstLoad) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="4">
-              <div class="loading-overlay">
-                <i class="fas fa-spinner fa-spin"></i>
-                <span>Loading members from database...</span>
-              </div>
-            </td>
-          </tr>
-        `;
-        return;
-      }
-
-      // Show empty state
-      if (list.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="4" style="text-align:center; padding:2rem; color:#94a3b8;">
-              <i class="fas fa-users" style="font-size:1.5rem; display:block; margin-bottom:0.5rem;"></i>
-              ${allMembers.length === 0 ? 'No members found in database' : 'No members match your search'}
-            </td>
-          </tr>
-        `;
-        return;
-      }
-
-      // Render member rows
-      tbody.innerHTML = list.map((m) => {
+      tbody.innerHTML = allMembers.map(m => {
         const checked = selectedMembers.some(s => s.id === m.id) ? 'checked' : '';
         return `
-          <tr class="${checked ? 'selected' : ''}" data-id="${m.id}">
-            <td>
-              <input type="checkbox" class="member-checkbox" data-id="${m.id}" ${checked} onchange="toggleMember('${m.id}')" />
-            </td>
-            <td><strong>${m.name}</strong></td>
-            <td>${m.phone || '—'}</td>
-            <td><span class="status-badge ${m.status}">${m.status}</span></td>
+          <tr>
+            <td><input type="checkbox" ${checked} onchange="toggleMember('${m.id}')"></td>
+            <td>${m.name}</td>
+            <td>${m.phone}</td>
           </tr>
         `;
       }).join('');
-
-      // Update select all checkbox
-      const allChecked = list.length > 0 && list.every(m => selectedMembers.some(s => s.id === m.id));
-      document.getElementById('selectAllCheckbox').checked = allChecked;
+      document.getElementById('selectedCount').textContent = selectedMembers.length;
+      document.getElementById('selectedCountDisplay').textContent = selectedMembers.length;
     }
 
-    function filterMembers() {
-      const search = document.getElementById('memberSearch').value.toLowerCase().trim();
-      currentSearch = search;
-      
-      if (!search) {
-        filteredMembers = [...allMembers];
-      } else {
-        filteredMembers = allMembers.filter(m => 
-          m.name.toLowerCase().includes(search) || 
-          (m.phone && m.phone.includes(search))
-        );
-      }
-      
-      renderMemberList();
-      updateSelectedCount();
-    }
-
-    // ============================================================
-    // SELECTION FUNCTIONS
-    // ============================================================
     function toggleMember(id) {
-      const member = allMembers.find(m => m.id === id);
-      if (!member) return;
-
-      const index = selectedMembers.findIndex(s => s.id === id);
-      if (index >= 0) {
-        selectedMembers.splice(index, 1);
-      } else {
-        selectedMembers.push(member);
-      }
-
-      renderMemberList();
-      updateSelectedCount();
+      const m = allMembers.find(x => x.id === id);
+      const idx = selectedMembers.findIndex(x => x.id === id);
+      if (idx >= 0) selectedMembers.splice(idx, 1);
+      else selectedMembers.push(m);
+      renderMembers();
     }
 
-    function toggleSelectAll() {
-      const checkbox = document.getElementById('selectAllCheckbox');
-      const list = filteredMembers;
-      
-      if (checkbox.checked) {
-        list.forEach(m => {
-          if (!selectedMembers.some(s => s.id === m.id)) {
-            selectedMembers.push(m);
-          }
-        });
-      } else {
-        const ids = list.map(m => m.id);
-        selectedMembers = selectedMembers.filter(s => !ids.includes(s.id));
-      }
-
-      renderMemberList();
-      updateSelectedCount();
-    }
-
-    function selectAllMembers() {
-      if (allMembers.length === 0) {
-        showToast('No members available to select', 'error');
-        return;
-      }
-      selectedMembers = [...allMembers];
-      document.getElementById('memberSearch').value = '';
-      currentSearch = '';
-      filteredMembers = [...allMembers];
-      renderMemberList();
-      updateSelectedCount();
-      showToast(`✅ ${selectedMembers.length} members selected`, 'success');
-    }
-
-    function selectActiveMembers() {
-      const activeMembers = allMembers.filter(m => m.status === 'active');
-      if (activeMembers.length === 0) {
-        showToast('No active members found', 'error');
-        return;
-      }
-      selectedMembers = activeMembers;
-      document.getElementById('memberSearch').value = '';
-      currentSearch = '';
-      filteredMembers = [...allMembers];
-      renderMemberList();
-      updateSelectedCount();
-      showToast(`✅ ${selectedMembers.length} active members selected`, 'success');
-    }
-
-    function clearSelection() {
-      selectedMembers = [];
-      renderMemberList();
-      updateSelectedCount();
-      showToast('Selection cleared', 'info');
-    }
-
-    function updateSelectedCount() {
-      const count = selectedMembers.length;
-      document.getElementById('selectedCount').textContent = count;
-      document.getElementById('whatsappCount').textContent = count;
-      document.getElementById('smsCount').textContent = count;
-    }
-
-    // ============================================================
-    // MESSAGE FUNCTIONS
-    // ============================================================
-    function updateCharCount() {
-      const input = document.getElementById('messageInput');
-      const count = input.value.length;
-      const max = 1600;
-      const display = document.getElementById('charCount');
-      const countDisplay = document.getElementById('charCountDisplay');
-      
-      display.textContent = `${count} / ${max} characters`;
-      countDisplay.textContent = `(${count}/${max})`;
-      
-      display.className = 'char-count';
-      if (count > max * 0.8) display.classList.add('warning');
-      if (count > max) display.classList.add('danger');
-    }
+    function selectAllMembers() { selectedMembers = [...allMembers]; renderMembers(); }
+    function clearSelection() { selectedMembers = []; renderMembers(); }
 
     function insertTemplate(type) {
-      const templates = {
-        meeting: `📢 NOTICE OF GENERAL MEETING
-
-Dear Esteemed Members,
-
-This is to inform all members of an upcoming general meeting.
-
-📅 Date: [Insert Date]
-⏰ Time: [Insert Time]
-📍 Venue: [Insert Venue]
-
-Agenda:
-1. Review of previous minutes
-2. Financial report
-3. New member admission
-4. A.O.B
-
-Your attendance is mandatory. Please come on time.
-
-TABARE Transport Cooperative`,
-        
-        dues: `💰 DUES REMINDER
-
-Dear Members,
-
-This is a friendly reminder that membership dues are due for the current period.
-
-💳 Amount: ₦[Amount]
-📅 Due Date: [Insert Date]
-🏦 Payment Method: [Insert Payment Details]
-
-Please ensure timely payment to avoid penalties.
-
-Thank you for your cooperation.
-
-TABARE Transport Cooperative`,
-        
-        event: `🎉 MEMBERS EVENT INVITATION
-
-Dear Members,
-
-You are cordially invited to our upcoming cooperative event!
-
-📌 Event: [Event Name]
-📅 Date: [Insert Date]
-⏰ Time: [Insert Time]
-📍 Venue: [Insert Venue]
-
-We look forward to seeing you there!
-
-TABARE Transport Cooperative`,
-        
-        emergency: `🚨 EMERGENCY NOTICE
-
-ATTENTION ALL MEMBERS!
-
-This is an urgent message from the Chairman.
-
-[Insert Emergency Details]
-
-Please take immediate notice and follow all instructions.
-
-Stay safe.
-
-TABARE Transport Cooperative`,
-        
-        announcement: `📣 ANNOUNCEMENT
-
-Dear Members,
-
-[Insert Announcement Details]
-
-For more information, please contact:
-📞 [Contact Number]
-
-Thank you for your attention.
-
-TABARE Transport Cooperative`
-      };
-
       const input = document.getElementById('messageInput');
-      input.value = templates[type] || '';
-      updateCharCount();
+      if (type === 'meeting') input.value = "📢 NOTICE OF GENERAL MEETING\n\nDate: [Date]\nTime: [Time]\nVenue: [Venue]\n\nYour attendance is mandatory.\nTABARE Cooperative";
+      if (type === 'dues') input.value = "💰 DUES REMINDER\n\nPlease pay your monthly dues.\nAmount: ₦[Amount]\n\nThank you.\nTABARE Cooperative";
     }
+    function clearMessage() { document.getElementById('messageInput').value = ''; }
 
-    function clearMessage() {
-      document.getElementById('messageInput').value = '';
-      updateCharCount();
-    }
+    function sendBroadcast(channel) {
+      broadcastChannel = channel;
+      broadcastMessage = document.getElementById('messageInput').value.trim();
 
-    // ============================================================
-    // SEND FUNCTIONS
-    // ============================================================
-    function getMessage() {
-      return document.getElementById('messageInput').value.trim();
-    }
+      if (!broadcastMessage) return alert('Please enter a message.');
+      if (selectedMembers.length === 0) return alert('Please select at least one member.');
 
-    function getChairmanWhatsApp() {
-      let num = document.getElementById('chairmanWhatsApp').value.trim();
-      num = num.replace(/[^0-9]/g, '');
-      if (!num) return null;
-      return num;
-    }
-
-    function getSmsGateway() {
-      return document.getElementById('smsGateway').value.trim();
-    }
-
-    function showConfirmModal(channel) {
-      const message = getMessage();
-      if (!message) {
-        showToast('Please enter a message before sending.', 'error');
-        return;
-      }
-
-      const validRecipients = selectedMembers.filter(m => m.phone && m.phone.length > 0);
-      
-      if (validRecipients.length === 0) {
-        showToast('Please select at least one member with a phone number.', 'error');
-        return;
-      }
-
-      // For WhatsApp, ensure chairman has a number
-      if (channel === 'WhatsApp') {
-        const chairmanNum = getChairmanWhatsApp();
-        if (!chairmanNum) {
-          showToast('Please enter your WhatsApp number (country code, no +).', 'error');
-          return;
-        }
-        if (chairmanNum.length < 10) {
-          showToast('Please enter a valid WhatsApp number with country code.', 'error');
-          return;
-        }
-      }
-
-      document.getElementById('modalRecipientCount').textContent = validRecipients.length;
-      document.getElementById('modalMessagePreview').textContent = message.length > 200 ? message.substring(0, 200) + '...' : message;
+      document.getElementById('modalCount').textContent = selectedMembers.length;
       document.getElementById('modalChannel').textContent = channel;
-      
-      const recipientList = validRecipients.map(m => `• ${m.name} (${m.phone})`).join('<br>');
-      document.getElementById('modalRecipientList').innerHTML = recipientList || 'No recipients';
-      
-      document.getElementById('confirmSendBtn').dataset.channel = channel;
-      
       document.getElementById('confirmModal').classList.add('visible');
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('visible');
-    }
-
-    function confirmSend() {
-      const channel = document.getElementById('confirmSendBtn').dataset.channel;
-      closeModal('confirmModal');
+    function executeBroadcast() {
+      document.getElementById('confirmModal').classList.remove('visible');
       
-      const validRecipients = selectedMembers.filter(m => m.phone && m.phone.length > 0);
+      // WhatsApp/SMS limit: We can only open one chat at a time via browser for bulk.
+      // So we open the first one, and log the rest.
+      const first = selectedMembers[0];
       
-      if (validRecipients.length === 0) {
-        showToast('No valid phone numbers found.', 'error');
-        return;
-      }
-
-      const message = getMessage();
-      if (!message) {
-        showToast('Message is empty.', 'error');
-        return;
-      }
-
-      const btn = document.querySelector(`.btn-${channel.toLowerCase()}`);
-      if (btn) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-        btn.disabled = true;
-
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-          
-          if (channel === 'WhatsApp') {
-            sendActualWhatsApp(validRecipients, message);
-          } else if (channel === 'SMS') {
-            sendActualSMS(validRecipients, message);
-          }
-        }, 800);
-      }
-    }
-
-    // ============================================================
-    // ACTUAL WHATSAPP SEND
-    // ============================================================
-    function sendActualWhatsApp(recipients, message) {
-      const chairmanNum = getChairmanWhatsApp();
-      if (!chairmanNum) {
-        showToast('Chairman WhatsApp number is required.', 'error');
-        return;
-      }
-
-      const first = recipients[0];
-      if (!first) {
-        showToast('No recipients with phone numbers.', 'error');
-        return;
-      }
-
       let phone = first.phone.replace(/[^0-9]/g, '');
       if (phone.length === 10) phone = '234' + phone;
       else if (phone.length === 11 && phone.startsWith('0')) phone = '234' + phone.substring(1);
 
-      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      
-      window.open(url, '_blank');
-      
-      if (recipients.length === 1) {
-        showToast(`Opening WhatsApp chat for ${first.name}.`, 'success');
+      if (broadcastChannel === 'WhatsApp') {
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(broadcastMessage)}`, '_blank');
+        showToast(`Opening WhatsApp for ${first.name}. Total recipients: ${selectedMembers.length}`);
       } else {
-        showToast(`Opening WhatsApp for ${first.name}. Send to ${recipients.length} recipients total.`, 'info');
-        console.log(`WhatsApp bulk send: ${recipients.length} recipients`);
-        console.log('Recipients:', recipients.map(r => `${r.name} (${r.phone})`).join(', '));
+        window.location.href = `sms:${phone}?body=${encodeURIComponent(broadcastMessage)}`;
+        showToast(`Opening SMS for ${first.name}. Total recipients: ${selectedMembers.length}`);
       }
     }
-
-    // ============================================================
-    // ACTUAL SMS SEND
-    // ============================================================
-    function sendActualSMS(recipients, message) {
-      const gateway = getSmsGateway();
-      
-      if (gateway) {
-        showToast(`Sending SMS to ${recipients.length} members via gateway...`, 'info');
-        console.log(`SMS via gateway: ${gateway}`);
-        console.log(`Recipients: ${recipients.map(r => r.phone).join(', ')}`);
-        console.log(`Message: ${message}`);
-        
-        setTimeout(() => {
-          showToast(`✅ SMS sent to ${recipients.length} members via gateway!`, 'success');
-        }, 1500);
-        return;
-      }
-
-      const first = recipients[0];
-      if (!first) {
-        showToast('No recipients with phone numbers.', 'error');
-        return;
-      }
-
-      let phone = first.phone.replace(/[^0-9]/g, '');
-      if (phone.length === 10) phone = '234' + phone;
-      else if (phone.length === 11 && phone.startsWith('0')) phone = '234' + phone.substring(1);
-
-      const url = `sms:${phone}?body=${encodeURIComponent(message)}`;
-      
-      try {
-        window.location.href = url;
-        if (recipients.length === 1) {
-          showToast(`Opening SMS for ${first.name}.`, 'success');
-        } else {
-          showToast(`Opening SMS for ${first.name}. Send to ${recipients.length} recipients total.`, 'info');
-        }
-      } catch (e) {
-        showToast('Could not open SMS app. Please send manually.', 'error');
-      }
-    }
-
-    // ============================================================
-    // SEND FUNCTIONS (UI triggers)
-    // ============================================================
-    function sendWhatsApp() {
-      showConfirmModal('WhatsApp');
-    }
-
-    function sendSMS() {
-      showConfirmModal('SMS');
-    }
-
-    // ============================================================
-    // KEYBOARD SHORTCUTS
-    // ============================================================
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeModal('confirmModal');
-      }
-      if (e.ctrlKey && e.key === 'a') {
-        e.preventDefault();
-        selectAllMembers();
-      }
-      if (e.ctrlKey && e.key === 'd') {
-        e.preventDefault();
-        clearSelection();
-      }
-    });
-
-    // ============================================================
-    // CLOSE MODAL ON CLICK OUTSIDE
-    // ============================================================
-    document.getElementById('confirmModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeModal('confirmModal');
-      }
-    });
-
-    // ============================================================
-    // INITIALIZE
-    // ============================================================
-    function init() {
-      // Load saved settings
-      const savedNum = localStorage.getItem('chairmanWhatsApp');
-      if (savedNum) {
-        document.getElementById('chairmanWhatsApp').value = savedNum;
-      }
-      const savedGateway = localStorage.getItem('smsGateway');
-      if (savedGateway) {
-        document.getElementById('smsGateway').value = savedGateway;
-      }
-
-      // Save on change
-      document.getElementById('chairmanWhatsApp').addEventListener('change', function() {
-        localStorage.setItem('chairmanWhatsApp', this.value);
-      });
-      document.getElementById('smsGateway').addEventListener('change', function() {
-        localStorage.setItem('smsGateway', this.value);
-      });
-
-      // Start real-time listener (single source of truth)
-      setupRealTimeListener();
-      
-      console.log('🚀 TABARE Communication Center initialized');
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
   </script>
-
 </body>
 </html>

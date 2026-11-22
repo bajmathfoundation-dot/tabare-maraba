@@ -4,1149 +4,124 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TABARE · Pending Approvals</title>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f1f5f9;
-      color: #0b1c2e;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    .top-nav {
-      background: #0b1c2e;
-      color: #fff;
-      padding: 0.8rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .top-nav .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 14pt;
-      font-weight: 700;
-    }
-
-    .top-nav .nav-brand img {
-      height: 40px;
-      width: auto;
-      border-radius: 8px;
-    }
-
-    .top-nav .nav-brand span {
-      color: #d97706;
-    }
-
-    .top-nav .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .top-nav .nav-right .user-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 9.5pt;
-    }
-
-    .top-nav .nav-right .user-info .avatar {
-      width: 36px;
-      height: 36px;
-      background: #d97706;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14pt;
-      text-transform: uppercase;
-    }
-
-    .top-nav .nav-right a {
-      color: #94a3b8;
-      text-decoration: none;
-      font-size: 9.5pt;
-      transition: color 0.2s;
-    }
-
-    .top-nav .nav-right a:hover {
-      color: #fff;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .page-header h1 {
-      font-size: 24pt;
-      font-weight: 800;
-      color: #0b1c2e;
-    }
-
-    .page-header h1 i {
-      color: #d97706;
-      margin-right: 0.5rem;
-    }
-
-    .page-header .badge {
-      background: #fef3e8;
-      color: #d97706;
-      padding: 0.3rem 1rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 10pt;
-    }
-
-    .page-header .badge span {
-      font-size: 14pt;
-      font-weight: 800;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 1.2rem 1.5rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-      border: 1px solid #e2e8f0;
-      transition: all 0.25s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
-
-    .stat-card .stat-icon {
-      font-size: 1.5rem;
-      color: #d97706;
-      margin-bottom: 0.3rem;
-    }
-
-    .stat-card .stat-number {
-      font-size: 24pt;
-      font-weight: 800;
-      color: #0b1c2e;
-      line-height: 1.2;
-    }
-
-    .stat-card .stat-label {
-      font-size: 9pt;
-      color: #94a3b8;
-      font-weight: 500;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 1.5rem;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    }
-
-    .card .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid #f1f5f9;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .card .card-header h3 {
-      font-size: 11pt;
-      font-weight: 700;
-      color: #0b1c2e;
-    }
-
-    .card .card-header .card-action {
-      font-size: 8.5pt;
-      color: #d97706;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .card .card-header .card-action:hover {
-      text-decoration: underline;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    .table-wrapper table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 9.5pt;
-    }
-
-    .table-wrapper table th {
-      background: #f8fafc;
-      padding: 0.6rem 0.8rem;
-      text-align: left;
-      font-weight: 600;
-      color: #52647a;
-      border-bottom: 2px solid #e2e8f0;
-      white-space: nowrap;
-    }
-
-    .table-wrapper table td {
-      padding: 0.6rem 0.8rem;
-      border-bottom: 1px solid #f1f5f9;
-      vertical-align: middle;
-    }
-
-    .table-wrapper table tr:hover td {
-      background: #f8fafc;
-    }
-
-    .table-wrapper table tr.pending-row td {
-      background: #fffbeb;
-    }
-
-    .table-wrapper table tr.pending-row:hover td {
-      background: #fef3c7;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 12px;
-      font-size: 7.5pt;
-      font-weight: 600;
-    }
-
-    .status-badge.pending {
-      background: #fef3c7;
-      color: #d97706;
-    }
-
-    .status-badge.approved {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    .status-badge.rejected {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 0.3rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-sm {
-      padding: 0.3rem 0.8rem;
-      border-radius: 6px;
-      font-size: 8pt;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .btn-sm-success {
-      background: #0f7b3a;
-      color: #fff;
-    }
-    .btn-sm-success:hover {
-      background: #0d6a31;
-      transform: translateY(-1px);
-    }
-
-    .btn-sm-danger {
-      background: #dc2626;
-      color: #fff;
-    }
-    .btn-sm-danger:hover {
-      background: #b91c1c;
-      transform: translateY(-1px);
-    }
-
-    .btn-sm-warning {
-      background: #d97706;
-      color: #fff;
-    }
-    .btn-sm-warning:hover {
-      background: #b85d00;
-      transform: translateY(-1px);
-    }
-
-    .btn-sm-outline {
-      background: transparent;
-      color: #52647a;
-      border: 1px solid #dde5ed;
-    }
-    .btn-sm-outline:hover {
-      background: #f1f5f9;
-    }
-
-    .btn-sm:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #94a3b8;
-    }
-
-    .empty-state i {
-      font-size: 3rem;
-      color: #dde5ed;
-      margin-bottom: 1rem;
-    }
-
-    .empty-state h3 {
-      font-size: 16pt;
-      color: #0b1c2e;
-      margin-bottom: 0.3rem;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: #0b1c2e;
-      color: #fff;
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      display: none;
-      align-items: center;
-      gap: 0.8rem;
-      z-index: 2000;
-      animation: slideIn 0.3s ease;
-      max-width: 400px;
-    }
-
-    .toast.visible {
-      display: flex;
-    }
-
-    .toast.success {
-      background: #0f7b3a;
-    }
-
-    .toast.error {
-      background: #dc2626;
-    }
-
-    .toast.info {
-      background: #0b1c2e;
-    }
-
-    .toast i {
-      font-size: 1.5rem;
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(100px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    .filter-bar {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .filter-bar select,
-    .filter-bar input {
-      padding: 0.4rem 0.8rem;
-      border: 1.5px solid #dde5ed;
-      border-radius: 8px;
-      font-size: 9.5pt;
-      font-family: 'Inter', sans-serif;
-      background: #fafcfe;
-    }
-
-    .filter-bar select:focus,
-    .filter-bar input:focus {
-      outline: none;
-      border-color: #d97706;
-    }
-
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      padding: 2rem;
-      overflow-y: auto;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #fff;
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 600px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: modalIn 0.3s ease;
-    }
-
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    .modal-content .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 0.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal-content .modal-header h2 {
-      font-size: 14pt;
-      font-weight: 700;
-      color: #0b1c2e;
-    }
-
-    .modal-content .modal-header .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #94a3b8;
-      transition: all 0.25s ease;
-    }
-
-    .modal-content .modal-header .close-btn:hover {
-      color: #dc2626;
-    }
-
-    .modal-content .detail-row {
-      display: flex;
-      padding: 0.4rem 0;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .modal-content .detail-row .label {
-      font-weight: 600;
-      color: #52647a;
-      min-width: 140px;
-      flex-shrink: 0;
-    }
-
-    .modal-content .detail-row .value {
-      color: #0b1c2e;
-    }
-
-    .modal-content .modal-footer {
-      border-top: 1px solid #f1f5f9;
-      padding-top: 1rem;
-      margin-top: 1rem;
-      display: flex;
-      gap: 0.8rem;
-      justify-content: flex-end;
-    }
-
-    .btn {
-      padding: 0.7rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 10pt;
-      border: none;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-success {
-      background: #0f7b3a;
-      color: #fff;
-    }
-    .btn-success:hover {
-      background: #0d6a31;
-    }
-
-    .btn-danger {
-      background: #dc2626;
-      color: #fff;
-    }
-    .btn-danger:hover {
-      background: #b91c1c;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: #52647a;
-      border: 1px solid #dde5ed;
-    }
-    .btn-outline:hover {
-      background: #f1f5f9;
-    }
-
-    .spinner {
-      display: inline-block;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .member-photo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #e2e8f0;
-    }
-
-    .member-photo-placeholder {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #f1f5f9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #94a3b8;
-      border: 2px solid #e2e8f0;
-    }
-
-    @media (max-width: 992px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .top-nav {
-        padding: 0.6rem 1rem;
-      }
-      .top-nav .nav-brand {
-        font-size: 12pt;
-      }
-      .top-nav .nav-brand img {
-        height: 32px;
-      }
-      .top-nav .nav-right .user-info .name {
-        display: none;
-      }
-      .container {
-        padding: 1rem;
-      }
-      .page-header h1 {
-        font-size: 18pt;
-      }
-      .stats-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
-      }
-      .stat-card {
-        padding: 0.8rem 1rem;
-      }
-      .stat-card .stat-number {
-        font-size: 18pt;
-      }
-      .modal-content {
-        padding: 1.5rem;
-        margin: 1rem;
-      }
-      .modal-content .detail-row {
-        flex-direction: column;
-      }
-      .modal-content .detail-row .label {
-        min-width: auto;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      .filter-bar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .btn-group {
-        flex-direction: column;
-      }
-      .btn-sm {
-        justify-content: center;
-      }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #0b1c2e; line-height: 1.6; min-height: 100vh; }
+    .top-nav { background: #0b1c2e; color: #fff; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { display: flex; align-items: center; gap: 0.8rem; font-size: 14pt; font-weight: 700; }
+    .nav-brand img { height: 40px; border-radius: 8px; }
+    .nav-brand span { color: #d97706; }
+    .nav-right a { color: #94a3b8; text-decoration: none; font-size: 9.5pt; transition: color 0.2s; }
+    .nav-right a:hover { color: #fff; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .page-header h1 { font-size: 24pt; font-weight: 800; }
+    .card { background: #fff; border-radius: 12px; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+    th { background: #f8fafc; padding: 0.6rem 0.8rem; text-align: left; color: #52647a; border-bottom: 2px solid #e2e8f0; }
+    td { padding: 0.6rem 0.8rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .status-badge { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 7.5pt; font-weight: 600; text-transform: capitalize; }
+    .status-pending { background: #fef3c7; color: #d97706; }
+    .btn-group { display: flex; gap: 0.3rem; }
+    .btn-sm { padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 8pt; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none; }
+    .btn-sm-success { background: #0f7b3a; color: #fff; }
+    .btn-sm-danger { background: #dc2626; color: #fff; }
+    .btn-sm-primary { background: #d97706; color: #fff; }
+    .member-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; }
+    .member-photo-placeholder { width: 40px; height: 40px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8; border: 2px solid #e2e8f0; }
+    .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: 12px; color: #fff; display: none; z-index: 2000; font-weight: 600; }
+    .toast.show { display: block; }
+    .toast.success { background: #0f7b3a; }
+    .toast.error { background: #dc2626; }
   </style>
 </head>
 <body>
-
-  <!-- TOP NAV -->
   <nav class="top-nav">
-    <div class="nav-brand">
-      <img src="finallogo.jpg" alt="Logo">
-      TABARE <span>MARABA</span>
-    </div>
-    <div class="nav-right">
-      <div class="user-info" id="userInfo">
-        <div class="avatar" id="userAvatar">C</div>
-        <span class="name" id="userName">Chairman</span>
-      </div>
-      <a href="TABAREChairmanDashboard.html"><i class="fas fa-th-large"></i> Dashboard</a>
-      <a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i></a>
-    </div>
+    <div class="nav-brand"><img src="finallogo.jpg" onerror="this.style.display='none'">TABARE <span>MARABA</span></div>
+    <div class="nav-right"><a href="TABAREChairmanDashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></div>
   </nav>
 
-  <!-- MAIN CONTENT -->
   <div class="container">
-
-    <!-- Page Header -->
     <div class="page-header">
-      <div>
-        <h1><i class="fas fa-check-double"></i> Pending Approvals</h1>
-        <p style="color: #52647a; font-size: 10pt;">Review and manage membership applications</p>
-      </div>
-      <div class="badge">
-        <i class="fas fa-clock"></i> Pending: <span id="pendingCount">0</span>
-      </div>
+      <h1><i class="fas fa-check-double" style="color:#d97706;"></i> Pending Approvals</h1>
     </div>
-
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
-        <div class="stat-number" id="statPending">0</div>
-        <div class="stat-label">Pending</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-check-circle" style="color: #16a34a;"></i></div>
-        <div class="stat-number" id="statApproved">0</div>
-        <div class="stat-label">Approved</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-times-circle" style="color: #dc2626;"></i></div>
-        <div class="stat-number" id="statRejected">0</div>
-        <div class="stat-label">Rejected</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-users"></i></div>
-        <div class="stat-number" id="statTotal">0</div>
-        <div class="stat-label">Total Applications</div>
-      </div>
-    </div>
-
-    <!-- Filter Bar -->
-    <div class="filter-bar">
-      <select id="filterStatus" onchange="applyFilters()">
-        <option value="all">All Status</option>
-        <option value="pending">Pending</option>
-        <option value="approved">Approved</option>
-        <option value="rejected">Rejected</option>
-      </select>
-      <input type="text" id="filterSearch" placeholder="Search by name or phone..." oninput="applyFilters()" />
-      <span style="font-size: 9pt; color: #94a3b8; margin-left: auto;">
-        Showing: <span id="displayCount">0</span> applications
-      </span>
-    </div>
-
-    <!-- Members Table -->
     <div class="card">
-      <div class="card-header">
-        <h3><i class="fas fa-users" style="color: #d97706;"></i> Membership Applications</h3>
-        <button class="btn-sm btn-sm-outline" onclick="refreshData()">
-          <i class="fas fa-sync"></i> Refresh
-        </button>
-      </div>
       <div class="table-wrapper">
         <table>
           <thead>
-            <tr>
-              <th>#</th>
-              <th>Member</th>
-              <th>Membership ID</th>
-              <th>Phone</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Registered</th>
-              <th>Actions</th>
-            </tr>
+            <tr><th>Member</th><th>ID</th><th>Phone</th><th>Type</th><th>Status</th><th>Actions</th></tr>
           </thead>
-          <tbody id="memberTableBody">
-            <tr>
-              <td colspan="8" style="text-align:center; padding:2rem; color:#94a3b8;">
-                <i class="fas fa-spinner fa-spin"></i> Loading applications...
-              </td>
-            </tr>
+          <tbody id="tableBody">
+            <tr><td colspan="6" style="text-align:center;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
-
   </div>
 
-  <!-- View Details Modal -->
-  <div class="modal-overlay" id="viewModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><i class="fas fa-id-card" style="color: #d97706;"></i> Member Details</h2>
-        <button class="close-btn" onclick="closeModal('viewModal')">&times;</button>
-      </div>
-      <div id="viewModalBody">
-        <div class="detail-row"><span class="label">Full Name</span><span class="value" id="viewName">—</span></div>
-        <div class="detail-row"><span class="label">Membership ID</span><span class="value" id="viewId">—</span></div>
-        <div class="detail-row"><span class="label">Phone</span><span class="value" id="viewPhone">—</span></div>
-        <div class="detail-row"><span class="label">Emergency Contact</span><span class="value" id="viewEmergency">—</span></div>
-        <div class="detail-row"><span class="label">Date of Birth</span><span class="value" id="viewDob">—</span></div>
-        <div class="detail-row"><span class="label">State of Origin</span><span class="value" id="viewState">—</span></div>
-        <div class="detail-row"><span class="label">Home Address</span><span class="value" id="viewAddress">—</span></div>
-        <div class="detail-row"><span class="label">Membership Type</span><span class="value" id="viewType">—</span></div>
-        <div class="detail-row"><span class="label">Tricycle Plate</span><span class="value" id="viewPlate">—</span></div>
-        <div class="detail-row"><span class="label">Tricycle Model</span><span class="value" id="viewModel">—</span></div>
-        <div class="detail-row"><span class="label">Driver's License</span><span class="value" id="viewLicense">—</span></div>
-        <div class="detail-row"><span class="label">Occupation</span><span class="value" id="viewOccupation">—</span></div>
-        <div class="detail-row"><span class="label">Years Experience</span><span class="value" id="viewExperience">—</span></div>
-        <div class="detail-row"><span class="label">Preferred Routes</span><span class="value" id="viewRoute">—</span></div>
-        <div class="detail-row"><span class="label">Reason</span><span class="value" id="viewReason">—</span></div>
-        <div class="detail-row"><span class="label">Status</span><span class="value" id="viewStatus">—</span></div>
-        <div class="detail-row"><span class="label">Registered</span><span class="value" id="viewRegistered">—</span></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" onclick="closeModal('viewModal')">Close</button>
-      </div>
-    </div>
-  </div>
+  <div class="toast" id="toast"></div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast">
-    <i class="fas fa-check-circle" id="toastIcon"></i>
-    <span id="toastMessage">Action completed!</span>
-  </div>
-
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
   <script>
-    // ============================================================
-    // FIREBASE CONFIG
-    // ============================================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg",
-      authDomain: "tabare-maraba.firebaseapp.com",
-      projectId: "tabare-maraba",
-      storageBucket: "tabare-maraba.firebasestorage.app",
-      messagingSenderId: "204144494424",
-      appId: "1:204144494424:web:82e1006399c1b94eb9c72d",
-      measurementId: "G-50F5VT9W12"
-    };
-
+    const firebaseConfig = { apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg", authDomain: "tabare-maraba.firebaseapp.com", projectId: "tabare-maraba", storageBucket: "tabare-maraba.firebasestorage.app", messagingSenderId: "204144494424", appId: "1:204144494424:web:82e1006399c1b94eb9c72d" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ============================================================
-    // STATE
-    // ============================================================
-    let allMembers = [];
-    let filteredMembers = [];
-    let currentFilter = 'all';
-    let currentSearch = '';
-
-    // ============================================================
-    // USER DATA
-    // ============================================================
-    function getUserData() {
-      try {
-        const stored = localStorage.getItem('tabare_user');
-        if (stored) {
-          return JSON.parse(stored);
-        }
-      } catch (e) {}
-      return { name: 'Chairman', role: 'chairman' };
+    function showToast(msg, type='success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = `toast show ${type}`;
+      setTimeout(() => t.className = 'toast', 3000);
     }
 
-    function updateUserUI() {
-      const user = getUserData();
-      const avatar = document.getElementById('userAvatar');
-      avatar.textContent = user.name ? user.name.charAt(0).toUpperCase() : 'C';
-      document.getElementById('userName').textContent = user.name || 'Chairman';
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('tabare_user');
-      showToast('Logging out...', 'info');
-      setTimeout(() => {
-        window.location.href = 'TABARE%C2%B7%20Login%20%26%20Signup.html';
-      }, 1000);
-    }
-
-    // ============================================================
-    // TOAST
-    // ============================================================
-    function showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
-      const toastMessage = document.getElementById('toastMessage');
-      const toastIcon = document.getElementById('toastIcon');
+    async function loadPending() {
+      const tbody = document.getElementById('tableBody');
+      const snap = await db.collection('MembershipList').where('status', '==', 'pending').get();
       
-      toast.className = 'toast ' + type;
-      toastMessage.textContent = message;
-      
-      if (type === 'success') {
-        toastIcon.className = 'fas fa-check-circle';
-      } else if (type === 'error') {
-        toastIcon.className = 'fas fa-exclamation-circle';
-      } else {
-        toastIcon.className = 'fas fa-info-circle';
-      }
-      
-      toast.classList.add('visible');
-      setTimeout(() => toast.classList.remove('visible'), 4000);
-    }
-
-    // ============================================================
-    // FETCH DATA
-    // ============================================================
-    async function fetchMembers() {
-      try {
-        const snapshot = await db.collection('MembershipList')
-          .orderBy('registeredAt', 'desc')
-          .get();
-
-        allMembers = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          allMembers.push({
-            id: doc.id,
-            ...data,
-            registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
-          });
-        });
-
-        return allMembers;
-      } catch (error) {
-        console.error('Error fetching members:', error);
-        showToast('Error loading members', 'error');
-        return [];
-      }
-    }
-
-    // ============================================================
-    // UPDATE UI
-    // ============================================================
-    function updateStats(members) {
-      const pending = members.filter(m => m.status === 'pending').length;
-      const approved = members.filter(m => m.status === 'approved').length;
-      const rejected = members.filter(m => m.status === 'rejected').length;
-      const total = members.length;
-
-      document.getElementById('statPending').textContent = pending;
-      document.getElementById('statApproved').textContent = approved;
-      document.getElementById('statRejected').textContent = rejected;
-      document.getElementById('statTotal').textContent = total;
-      document.getElementById('pendingCount').textContent = pending;
-    }
-
-    function renderMembers(members) {
-      const tbody = document.getElementById('memberTableBody');
-      
-      if (!members || members.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="8" style="text-align:center; padding:2rem; color:#94a3b8;">
-              <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:0.5rem;"></i>
-              No applications found
-            </td>
-          </tr>
-        `;
-        document.getElementById('displayCount').textContent = '0';
+      if (snap.empty) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem;">No pending applications.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = members.map((m, index) => {
-        const status = m.status || 'pending';
-        const isPending = status === 'pending';
-        const registered = m.registeredAt ? m.registeredAt.toLocaleDateString('en-NG', {
-          day: '2-digit', month: 'short', year: 'numeric'
-        }) : '—';
-        const membershipType = m.membershipType || '—';
-        
+      tbody.innerHTML = snap.docs.map(doc => {
+        const m = doc.data();
         return `
-          <tr class="${isPending ? 'pending-row' : ''}">
-            <td>${index + 1}</td>
+          <tr>
             <td>
               <div style="display:flex; align-items:center; gap:0.5rem;">
-                ${m.profilePhoto ? 
-                  `<img src="${m.profilePhoto}" class="member-photo" alt="${m.fullName}" />` :
-                  `<div class="member-photo-placeholder"><i class="fas fa-user"></i></div>`
-                }
-                <strong>${m.fullName || '—'}</strong>
+                ${m.profilePhoto ? `<img src="${m.profilePhoto}" class="member-photo">` : `<div class="member-photo-placeholder"><i class="fas fa-user"></i></div>`}
+                <strong>${m.fullName}</strong>
               </div>
             </td>
-            <td>${m.membershipId || '—'}</td>
-            <td>${m.phone || '—'}</td>
-            <td>${membershipType}</td>
-            <td><span class="status-badge ${status}">${status}</span></td>
-            <td>${registered}</td>
+            <td>${m.membershipId}</td>
+            <td>${m.phone}</td>
+            <td style="text-transform:capitalize;">${m.membershipType}</td>
+            <td><span class="status-badge status-pending">Pending</span></td>
             <td>
               <div class="btn-group">
-                ${isPending ? `
-                  <button class="btn-sm btn-sm-success" onclick="approveMember('${m.id}')" title="Approve">
-                    <i class="fas fa-check"></i>
-                  </button>
-                  <button class="btn-sm btn-sm-danger" onclick="rejectMember('${m.id}')" title="Reject">
-                    <i class="fas fa-times"></i>
-                  </button>
-                ` : ''}
-                <button class="btn-sm btn-sm-warning" onclick="viewMember('${m.id}')" title="View Details">
-                  <i class="fas fa-eye"></i>
-                </button>
+                <button class="btn-sm btn-sm-success" onclick="updateStatus('${doc.id}', 'approved')"><i class="fas fa-check"></i></button>
+                <button class="btn-sm btn-sm-danger" onclick="updateStatus('${doc.id}', 'rejected')"><i class="fas fa-times"></i></button>
+                <a href="TABAREEditMembership.html?id=${doc.id}" class="btn-sm btn-sm-primary"><i class="fas fa-pen"></i> Edit</a>
               </div>
             </td>
           </tr>
         `;
       }).join('');
-
-      document.getElementById('displayCount').textContent = members.length;
     }
 
-    // ============================================================
-    // FILTERS
-    // ============================================================
-    function applyFilters() {
-      const statusFilter = document.getElementById('filterStatus').value;
-      const searchFilter = document.getElementById('filterSearch').value.toLowerCase().trim();
-
-      let filtered = [...allMembers];
-
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter(m => m.status === statusFilter);
-      }
-
-      if (searchFilter) {
-        filtered = filtered.filter(m => 
-          (m.fullName && m.fullName.toLowerCase().includes(searchFilter)) ||
-          (m.phone && m.phone.includes(searchFilter)) ||
-          (m.membershipId && m.membershipId.toLowerCase().includes(searchFilter))
-        );
-      }
-
-      filteredMembers = filtered;
-      renderMembers(filtered);
-      updateStats(allMembers);
-    }
-
-    // ============================================================
-    // ACTIONS - Approve, Reject, View
-    // ============================================================
-    async function approveMember(id) {
-      if (!confirm('Approve this membership application?')) return;
-      
+    async function updateStatus(id, status) {
+      if (!confirm(`Are you sure you want to mark this as ${status}?`)) return;
       try {
-        await db.collection('MembershipList').doc(id).update({
-          status: 'approved',
-          approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          approvedBy: 'Chairman'
-        });
-        showToast('✅ Member approved successfully!', 'success');
-        refreshData();
-      } catch (error) {
-        console.error('Error approving member:', error);
-        showToast('Error approving member: ' + error.message, 'error');
-      }
+        await db.collection('MembershipList').doc(id).update({ status: status, reviewedAt: firebase.firestore.FieldValue.serverTimestamp() });
+        showToast(`Member ${status}!`);
+        loadPending();
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
     }
 
-    async function rejectMember(id) {
-      const reason = prompt('Enter reason for rejection (optional):');
-      
-      try {
-        await db.collection('MembershipList').doc(id).update({
-          status: 'rejected',
-          rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          rejectedBy: 'Chairman',
-          rejectionReason: reason || 'No reason provided'
-        });
-        showToast('❌ Member rejected', 'info');
-        refreshData();
-      } catch (error) {
-        console.error('Error rejecting member:', error);
-        showToast('Error rejecting member: ' + error.message, 'error');
-      }
-    }
-
-    function viewMember(id) {
-      const member = allMembers.find(m => m.id === id);
-      if (!member) {
-        showToast('Member not found', 'error');
-        return;
-      }
-
-      document.getElementById('viewName').textContent = member.fullName || '—';
-      document.getElementById('viewId').textContent = member.membershipId || '—';
-      document.getElementById('viewPhone').textContent = member.phone || '—';
-      document.getElementById('viewEmergency').textContent = member.emergencyContact || '—';
-      document.getElementById('viewDob').textContent = member.dateOfBirth || '—';
-      document.getElementById('viewState').textContent = member.stateOfOrigin || '—';
-      document.getElementById('viewAddress').textContent = member.homeAddress || '—';
-      document.getElementById('viewType').textContent = member.membershipType || '—';
-      document.getElementById('viewPlate').textContent = member.tricyclePlate || '—';
-      document.getElementById('viewModel').textContent = member.tricycleModel || '—';
-      document.getElementById('viewLicense').textContent = member.driversLicense || '—';
-      document.getElementById('viewOccupation').textContent = member.occupation || '—';
-      document.getElementById('viewExperience').textContent = member.yearsExperience || '—';
-      document.getElementById('viewRoute').textContent = member.preferredRoute || '—';
-      document.getElementById('viewReason').textContent = member.reason || '—';
-      
-      const status = member.status || 'pending';
-      document.getElementById('viewStatus').innerHTML = `<span class="status-badge ${status}">${status}</span>`;
-      
-      const registered = member.registeredAt ? member.registeredAt.toLocaleDateString('en-NG', {
-        day: '2-digit', month: 'long', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-      }) : '—';
-      document.getElementById('viewRegistered').textContent = registered;
-
-      document.getElementById('viewModal').classList.add('active');
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-    }
-
-    // ============================================================
-    // REFRESH DATA
-    // ============================================================
-    async function refreshData() {
-      showToast('Refreshing data...', 'info');
-      await fetchMembers();
-      applyFilters();
-      showToast('Data refreshed!', 'success');
-    }
-
-    // ============================================================
-    // REAL-TIME LISTENER
-    // ============================================================
-    function setupRealTimeListener() {
-      db.collection('MembershipList')
-        .orderBy('registeredAt', 'desc')
-        .onSnapshot((snapshot) => {
-          allMembers = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            allMembers.push({
-              id: doc.id,
-              ...data,
-              registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
-            });
-          });
-          applyFilters();
-        }, (error) => {
-          console.error('Real-time listener error:', error);
-          showToast('Error connecting to database', 'error');
-        });
-    }
-
-    // ============================================================
-    // KEYBOARD SHORTCUTS
-    // ============================================================
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeModal('viewModal');
-      }
-      if (e.ctrlKey && e.key === 'r') {
-        e.preventDefault();
-        refreshData();
-      }
-    });
-
-    // Close modal on click outside
-    document.getElementById('viewModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeModal('viewModal');
-      }
-    });
-
-    // ============================================================
-    // INIT
-    // ============================================================
-    function init() {
-      updateUserUI();
-      setupRealTimeListener();
-      
-      console.log('TABARE Pending Approvals ready');
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', loadPending);
   </script>
-
 </body>
 </html>

@@ -4,1347 +4,154 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TABARE · Register Vehicle</title>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f1f5f9;
-      color: #0b1c2e;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    .top-nav {
-      background: #0b1c2e;
-      color: #fff;
-      padding: 0.8rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .top-nav .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 14pt;
-      font-weight: 700;
-    }
-
-    .top-nav .nav-brand img {
-      height: 40px;
-      width: auto;
-      border-radius: 8px;
-    }
-
-    .top-nav .nav-brand span {
-      color: #d97706;
-    }
-
-    .top-nav .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .top-nav .nav-right .user-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 9.5pt;
-    }
-
-    .top-nav .nav-right .user-info .avatar {
-      width: 36px;
-      height: 36px;
-      background: #d97706;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14pt;
-      text-transform: uppercase;
-    }
-
-    .top-nav .nav-right a {
-      color: #94a3b8;
-      text-decoration: none;
-      font-size: 9.5pt;
-      transition: color 0.2s;
-    }
-
-    .top-nav .nav-right a:hover {
-      color: #fff;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    .page-header {
-      margin-bottom: 2rem;
-    }
-
-    .page-header h1 {
-      font-size: 24pt;
-      font-weight: 800;
-      color: #0b1c2e;
-    }
-
-    .page-header h1 i {
-      color: #d97706;
-      margin-right: 0.5rem;
-    }
-
-    .page-header p {
-      color: #52647a;
-      font-size: 10.5pt;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 2rem;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-      margin-bottom: 2rem;
-    }
-
-    .card .card-title {
-      font-size: 14pt;
-      font-weight: 700;
-      color: #0b1c2e;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #f1f5f9;
-    }
-
-    .card .card-title i {
-      color: #d97706;
-      margin-right: 0.5rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.2rem;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      font-size: 9.5pt;
-      color: #1f3348;
-      margin-bottom: 0.3rem;
-    }
-
-    .form-group label .required {
-      color: #b91c1c;
-      margin-left: 0.1rem;
-    }
-
-    .form-group .input-wrapper {
-      position: relative;
-    }
-
-    .form-group .input-wrapper i {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #94a3b8;
-      font-size: 1rem;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.8rem;
-      border: 1.5px solid #dde5ed;
-      border-radius: 12px;
-      font-family: 'Inter', sans-serif;
-      font-size: 10pt;
-      background: #fafcfe;
-      transition: 0.2s;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      border-color: #d97706;
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.12);
-      background: #fff;
-    }
-
-    .form-group input[type="number"] {
-      padding-right: 1rem;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 60px;
-      padding-left: 1rem;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .form-group .helper-text {
-      font-size: 8pt;
-      color: #94a3b8;
-      margin-top: 0.2rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      padding: 0.85rem 2rem;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 10.5pt;
-      border: none;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      width: 100%;
-    }
-
-    .btn-success {
-      background: #0f7b3a;
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(15, 123, 58, 0.3);
-    }
-    .btn-success:hover {
-      background: #0d6a31;
-      transform: translateY(-2px);
-    }
-    .btn-success:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-primary {
-      background: #0b1c2e;
-      color: #fff;
-    }
-    .btn-primary:hover {
-      background: #1a314a;
-      transform: translateY(-2px);
-    }
-
-    .btn-sm {
-      padding: 0.3rem 0.8rem;
-      border-radius: 6px;
-      font-size: 8pt;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .btn-sm-success {
-      background: #0f7b3a;
-      color: #fff;
-    }
-    .btn-sm-success:hover {
-      background: #0d6a31;
-      transform: translateY(-1px);
-    }
-
-    .btn-sm-danger {
-      background: #dc2626;
-      color: #fff;
-    }
-    .btn-sm-danger:hover {
-      background: #b91c1c;
-      transform: translateY(-1px);
-    }
-
-    .btn-sm-warning {
-      background: #d97706;
-      color: #fff;
-    }
-    .btn-sm-warning:hover {
-      background: #b85d00;
-      transform: translateY(-1px);
-    }
-
-    .btn-sm-info {
-      background: #0284c7;
-      color: #fff;
-    }
-    .btn-sm-info:hover {
-      background: #0369a1;
-      transform: translateY(-1px);
-    }
-
-    .btn-sm-outline {
-      background: transparent;
-      color: #52647a;
-      border: 1px solid #dde5ed;
-    }
-    .btn-sm-outline:hover {
-      background: #f1f5f9;
-    }
-
-    .alert {
-      padding: 0.8rem 1.2rem;
-      border-radius: 12px;
-      background: #ecfdf5;
-      color: #0f7b3a;
-      border: 1px solid #b8e6c9;
-      margin-bottom: 1.5rem;
-      display: none;
-      font-weight: 500;
-    }
-    .alert.error {
-      background: #fef2f2;
-      color: #b91c1c;
-      border-color: #fecaca;
-    }
-    .alert.show {
-      display: block;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: #0b1c2e;
-      color: #fff;
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      display: none;
-      align-items: center;
-      gap: 0.8rem;
-      z-index: 2000;
-      animation: slideIn 0.3s ease;
-      max-width: 400px;
-    }
-
-    .toast.visible {
-      display: flex;
-    }
-
-    .toast.success {
-      background: #0f7b3a;
-    }
-
-    .toast.error {
-      background: #dc2626;
-    }
-
-    .toast.info {
-      background: #0b1c2e;
-    }
-
-    .toast i {
-      font-size: 1.5rem;
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(100px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    .spinner {
-      display: inline-block;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .vehicle-list {
-      margin-top: 1rem;
-    }
-
-    .vehicle-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.8rem 1rem;
-      border-bottom: 1px solid #f1f5f9;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      transition: background 0.2s;
-    }
-
-    .vehicle-item:hover {
-      background: #f8fafc;
-    }
-
-    .vehicle-item:last-child {
-      border-bottom: none;
-    }
-
-    .vehicle-item .vehicle-info {
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      flex: 1;
-    }
-
-    .vehicle-item .vehicle-info .info-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .vehicle-item .vehicle-info .info-group .label {
-      font-size: 7.5pt;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .vehicle-item .vehicle-info .info-group .value {
-      font-weight: 600;
-      font-size: 9.5pt;
-    }
-
-    .vehicle-item .vehicle-actions {
-      display: flex;
-      gap: 0.3rem;
-      flex-wrap: wrap;
-    }
-
-    .vehicle-status {
-      display: inline-block;
-      padding: 0.15rem 0.6rem;
-      border-radius: 12px;
-      font-size: 7.5pt;
-      font-weight: 600;
-    }
-
-    .vehicle-status.active {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    .vehicle-status.maintenance {
-      background: #fef3c7;
-      color: #d97706;
-    }
-
-    .vehicle-status.stopped {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    .vehicle-status.sold {
-      background: #e2e8f0;
-      color: #64748b;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 2rem;
-      color: #94a3b8;
-    }
-
-    .empty-state i {
-      font-size: 2.5rem;
-      color: #dde5ed;
-      margin-bottom: 0.5rem;
-    }
-
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      padding: 2rem;
-      overflow-y: auto;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #fff;
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 500px;
-      width: 100%;
-      animation: modalIn 0.3s ease;
-    }
-
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    .modal-content .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 0.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal-content .modal-header h2 {
-      font-size: 14pt;
-      font-weight: 700;
-    }
-
-    .modal-content .modal-header .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #94a3b8;
-      transition: all 0.25s ease;
-    }
-
-    .modal-content .modal-header .close-btn:hover {
-      color: #dc2626;
-    }
-
-    .modal-content .modal-footer {
-      border-top: 1px solid #f1f5f9;
-      padding-top: 1rem;
-      margin-top: 1rem;
-      display: flex;
-      gap: 0.8rem;
-      justify-content: flex-end;
-    }
-
-    .modal-content .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .modal-content .form-group input,
-    .modal-content .form-group select {
-      padding-left: 1rem;
-    }
-
-    @media (max-width: 992px) {
-      .form-row {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .top-nav {
-        padding: 0.6rem 1rem;
-      }
-      .top-nav .nav-brand {
-        font-size: 12pt;
-      }
-      .top-nav .nav-brand img {
-        height: 32px;
-      }
-      .top-nav .nav-right .user-info .name {
-        display: none;
-      }
-      .container {
-        padding: 1rem;
-      }
-      .page-header h1 {
-        font-size: 18pt;
-      }
-      .card {
-        padding: 1.5rem;
-      }
-      .form-row {
-        grid-template-columns: 1fr;
-        gap: 0.8rem;
-      }
-      .vehicle-item {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .vehicle-item .vehicle-info {
-        flex-direction: column;
-        gap: 0.3rem;
-      }
-      .vehicle-item .vehicle-actions {
-        justify-content: center;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .modal-content {
-        padding: 1.5rem;
-        margin: 1rem;
-      }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #0b1c2e; line-height: 1.6; min-height: 100vh; }
+    .top-nav { background: #0b1c2e; color: #fff; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { display: flex; align-items: center; gap: 0.8rem; font-size: 14pt; font-weight: 700; }
+    .nav-brand img { height: 40px; border-radius: 8px; }
+    .nav-brand span { color: #d97706; }
+    .nav-right a { color: #94a3b8; text-decoration: none; font-size: 9.5pt; transition: color 0.2s; }
+    .nav-right a:hover { color: #fff; }
+    .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .page-header { margin-bottom: 2rem; }
+    .page-header h1 { font-size: 24pt; font-weight: 800; }
+    .page-header h1 i { color: #d97706; margin-right: 0.5rem; }
+    .card { background: #fff; border-radius: 16px; padding: 2rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-weight: 600; font-size: 9.5pt; color: #1f3348; margin-bottom: 0.3rem; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #dde5ed; border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 10pt; background: #fafcfe; transition: 0.2s; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #d97706; outline: none; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn { padding: 0.85rem 2rem; border-radius: 12px; font-weight: 700; font-size: 10.5pt; border: none; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .btn-success { background: #0f7b3a; color: #fff; }
+    .btn-success:hover { background: #0d6a31; }
+    .btn-success:disabled { opacity: 0.6; }
+    .alert { padding: 1rem; border-radius: 12px; background: #ecfdf5; color: #0f7b3a; margin-bottom: 1rem; display: none; font-size: 0.9rem; font-weight: 600; }
+    .alert.error { background: #fef2f2; color: #b91c1c; }
+    .alert.show { display: block; }
   </style>
 </head>
 <body>
-
-  <!-- TOP NAV -->
   <nav class="top-nav">
-    <div class="nav-brand">
-      <img src="finallogo.jpg" alt="Logo">
-      TABARE <span>MARABA</span>
-    </div>
-    <div class="nav-right">
-      <div class="user-info" id="userInfo">
-        <div class="avatar" id="userAvatar">C</div>
-        <span class="name" id="userName">Chairman</span>
-      </div>
-      <a href="TABAREChairmanDashboard.html"><i class="fas fa-th-large"></i> Dashboard</a>
-      <a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i></a>
-    </div>
+    <div class="nav-brand"><img src="finallogo.jpg" onerror="this.style.display='none'">TABARE <span>MARABA</span></div>
+    <div class="nav-right"><a href="TABAREChairmanDashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></div>
   </nav>
 
-  <!-- MAIN CONTENT -->
   <div class="container">
-
-    <!-- Page Header -->
     <div class="page-header">
-      <h1><i class="fas fa-truck"></i> Vehicle Registry</h1>
-      <p>Register and manage vehicles under cooperative members</p>
+      <h1><i class="fas fa-truck"></i> Register New Vehicle</h1>
+      <p style="color:#52647a;">Register a tricycle into the cooperative database.</p>
     </div>
 
-    <!-- Alert -->
     <div id="alert" class="alert"></div>
 
-    <!-- Registration Form -->
     <div class="card">
-      <div class="card-title"><i class="fas fa-plus-circle"></i> Register New Vehicle</div>
-
-      <form id="vehicleForm" onsubmit="registerVehicle(event)">
-        <!-- Member Selection -->
-        <div class="form-group">
-          <label>Vehicle Owner <span class="required">*</span></label>
-          <div class="input-wrapper">
-            <i class="fas fa-user"></i>
-            <select id="ownerSelect" required>
-              <option value="">Select a member...</option>
-            </select>
+      <form id="vehicleForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vehicle Plate Number</label>
+            <input type="text" id="vPlate" placeholder="e.g. BAU-123-XY" required />
           </div>
-          <div class="helper-text">Select the cooperative member who owns this vehicle</div>
+          <div class="form-group">
+            <label>Vehicle Model / Brand</label>
+            <input type="text" id="vModel" placeholder="e.g. Bajaj RE, TVS King" required />
+          </div>
         </div>
 
         <div class="form-row">
-          <!-- How Many Vehicles -->
           <div class="form-group">
-            <label>Number of Vehicles <span class="required">*</span></label>
-            <div class="input-wrapper">
-              <i class="fas fa-cubes"></i>
-              <input type="number" id="vehicleCount" placeholder="e.g., 2" min="1" max="10" required onchange="updateVehicleFields()" />
-            </div>
-            <div class="helper-text">How many vehicles to register for this member</div>
+            <label>Engine Number</label>
+            <input type="text" id="vEngine" placeholder="e.g. ENG-987654" />
           </div>
           <div class="form-group">
-            <label>Years Working Before Registration</label>
-            <div class="input-wrapper">
-              <i class="fas fa-clock"></i>
-              <input type="number" id="yearsWorking" placeholder="e.g., 3" min="0" />
-            </div>
-            <div class="helper-text">How many years was this vehicle operating before joining?</div>
-          </div>
-          <div class="form-group">
-            <label>Current Mileage (km)</label>
-            <div class="input-wrapper">
-              <i class="fas fa-tachometer-alt"></i>
-              <input type="number" id="mileage" placeholder="e.g., 15000" min="0" step="100" />
-            </div>
+            <label>Chassis Number</label>
+            <input type="text" id="vChassis" placeholder="e.g. CH-123456" />
           </div>
         </div>
 
-        <!-- Dynamic Vehicle Fields -->
-        <div id="vehicleFieldsContainer"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Assigned Driver Name</label>
+            <input type="text" id="vDriver" placeholder="Full name of driver" />
+          </div>
+          <div class="form-group">
+            <label>Driver Phone Number</label>
+            <input type="tel" id="vPhone" placeholder="080 1234 5678" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Vehicle Status</label>
+          <select id="vStatus">
+            <option value="active">Active</option>
+            <option value="maintenance">Under Maintenance</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
 
         <button type="submit" class="btn btn-success" id="submitBtn">
-          <i class="fas fa-save"></i> Register Vehicles
+          <i class="fas fa-save"></i> Save Vehicle
         </button>
       </form>
     </div>
-
-    <!-- Registered Vehicles List -->
-    <div class="card vehicle-list">
-      <div class="card-title"><i class="fas fa-list"></i> Registered Vehicles</div>
-      <div id="vehicleListContainer">
-        <div class="empty-state">
-          <i class="fas fa-truck"></i>
-          <p>No vehicles registered yet</p>
-        </div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Edit Vehicle Modal -->
-  <div class="modal-overlay" id="editModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><i class="fas fa-edit" style="color: #d97706;"></i> Edit Vehicle</h2>
-        <button class="close-btn" onclick="closeModal('editModal')">&times;</button>
-      </div>
-      <form id="editForm" onsubmit="saveVehicleEdit(event)">
-        <input type="hidden" id="editVehicleId" />
-        <div class="form-group">
-          <label>Plate Number</label>
-          <input type="text" id="editPlate" disabled style="background:#f1f5f9;" />
-        </div>
-        <div class="form-group">
-          <label>Model</label>
-          <input type="text" id="editModel" required />
-        </div>
-        <div class="form-group">
-          <label>Color</label>
-          <input type="text" id="editColor" placeholder="e.g., Red, Blue" />
-        </div>
-        <div class="form-group">
-          <label>Condition</label>
-          <select id="editCondition" required>
-            <option value="new">Brand New</option>
-            <option value="used">Used</option>
-            <option value="old">Old / Vintage</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Status</label>
-          <select id="editStatus" required>
-            <option value="active">Active</option>
-            <option value="maintenance">Under Maintenance</option>
-            <option value="stopped">Stopped</option>
-            <option value="sold">Sold</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Notes</label>
-          <textarea id="editNotes" rows="2" placeholder="Additional notes"></textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-sm btn-sm-outline" onclick="closeModal('editModal')">Cancel</button>
-          <button type="submit" class="btn-sm btn-sm-success">Save Changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div class="toast" id="toast">
-    <i class="fas fa-check-circle" id="toastIcon"></i>
-    <span id="toastMessage">Action completed!</span>
-  </div>
-
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
   <script>
-    // ============================================================
-    // FIREBASE CONFIG
-    // ============================================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg",
-      authDomain: "tabare-maraba.firebaseapp.com",
-      projectId: "tabare-maraba",
-      storageBucket: "tabare-maraba.firebasestorage.app",
-      messagingSenderId: "204144494424",
-      appId: "1:204144494424:web:82e1006399c1b94eb9c72d",
-      measurementId: "G-50F5VT9W12"
-    };
-
+    const firebaseConfig = { apiKey: "AIzaSyBGerm6n6NeHyWVu7V-oP7nFLSH7vg8Avg", authDomain: "tabare-maraba.firebaseapp.com", projectId: "tabare-maraba", storageBucket: "tabare-maraba.firebasestorage.app", messagingSenderId: "204144494424", appId: "1:204144494424:web:82e1006399c1b94eb9c72d" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ============================================================
-    // DOM REFS
-    // ============================================================
     const form = document.getElementById('vehicleForm');
-    const ownerSelect = document.getElementById('ownerSelect');
-    const vehicleCount = document.getElementById('vehicleCount');
-    const yearsWorking = document.getElementById('yearsWorking');
-    const mileage = document.getElementById('mileage');
-    const vehicleFieldsContainer = document.getElementById('vehicleFieldsContainer');
-    const submitBtn = document.getElementById('submitBtn');
     const alertEl = document.getElementById('alert');
-    const vehicleListContainer = document.getElementById('vehicleListContainer');
-
-    let allMembers = [];
-    let allVehicles = [];
-    let editingVehicleId = null;
-
-    // ============================================================
-    // USER DATA
-    // ============================================================
-    function getUserData() {
-      try {
-        const stored = localStorage.getItem('tabare_user');
-        if (stored) {
-          return JSON.parse(stored);
-        }
-      } catch (e) {}
-      return { name: 'Chairman', role: 'chairman' };
-    }
-
-    function updateUserUI() {
-      const user = getUserData();
-      const avatar = document.getElementById('userAvatar');
-      avatar.textContent = user.name ? user.name.charAt(0).toUpperCase() : 'C';
-      document.getElementById('userName').textContent = user.name || 'Chairman';
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('tabare_user');
-      showToast('Logging out...', 'info');
-      setTimeout(() => {
-        window.location.href = 'TABARE%C2%B7%20Login%20%26%20Signup.html';
-      }, 1000);
-    }
-
-    // ============================================================
-    // TOAST & ALERT
-    // ============================================================
-    function showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
-      const toastMessage = document.getElementById('toastMessage');
-      const toastIcon = document.getElementById('toastIcon');
-      
-      toast.className = 'toast ' + type;
-      toastMessage.textContent = message;
-      
-      if (type === 'success') {
-        toastIcon.className = 'fas fa-check-circle';
-      } else if (type === 'error') {
-        toastIcon.className = 'fas fa-exclamation-circle';
-      } else {
-        toastIcon.className = 'fas fa-info-circle';
-      }
-      
-      toast.classList.add('visible');
-      setTimeout(() => toast.classList.remove('visible'), 4000);
-    }
+    const submitBtn = document.getElementById('submitBtn');
 
     function showAlert(msg, isError = false) {
       alertEl.textContent = msg;
       alertEl.className = 'alert show' + (isError ? ' error' : '');
-      setTimeout(() => { alertEl.className = 'alert'; }, 6000);
+      setTimeout(() => { alertEl.className = 'alert'; }, 5000);
     }
 
-    // ============================================================
-    // DYNAMIC VEHICLE FIELDS
-    // ============================================================
-    function updateVehicleFields() {
-      const count = parseInt(vehicleCount.value) || 0;
-      if (count < 1 || count > 10) {
-        vehicleFieldsContainer.innerHTML = '';
-        return;
-      }
-
-      let html = `<div style="background:#f8fafc; padding:1rem; border-radius:12px; margin:1rem 0; border:1px solid #e2e8f0;">
-        <h4 style="font-size:10.5pt; margin-bottom:0.8rem; color:#0b1c2e;">
-          <i class="fas fa-vehicles" style="color:#d97706;"></i> Vehicle Details (${count} vehicles)
-        </h4>`;
-
-      for (let i = 1; i <= count; i++) {
-        html += `
-          <div style="background:#fff; padding:0.8rem; border-radius:8px; margin-bottom:0.8rem; border:1px solid #e2e8f0;">
-            <h5 style="font-size:9.5pt; color:#d97706; margin-bottom:0.5rem;">Vehicle #${i}</h5>
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.8rem;">
-              <div>
-                <label style="font-size:8pt; font-weight:600; color:#52647a; display:block; margin-bottom:0.2rem;">Plate Number *</label>
-                <input type="text" id="plate_${i}" placeholder="e.g., BAU-678TR" style="width:100%; padding:0.4rem 0.6rem; border:1.5px solid #dde5ed; border-radius:8px; font-size:9pt;" required />
-              </div>
-              <div>
-                <label style="font-size:8pt; font-weight:600; color:#52647a; display:block; margin-bottom:0.2rem;">Model *</label>
-                <input type="text" id="model_${i}" placeholder="e.g., Bajaj RE" style="width:100%; padding:0.4rem 0.6rem; border:1.5px solid #dde5ed; border-radius:8px; font-size:9pt;" required />
-              </div>
-              <div>
-                <label style="font-size:8pt; font-weight:600; color:#52647a; display:block; margin-bottom:0.2rem;">Color</label>
-                <input type="text" id="color_${i}" placeholder="e.g., Red" style="width:100%; padding:0.4rem 0.6rem; border:1.5px solid #dde5ed; border-radius:8px; font-size:9pt;" />
-              </div>
-            </div>
-            <div style="margin-top:0.5rem;">
-              <label style="font-size:8pt; font-weight:600; color:#52647a; display:block; margin-bottom:0.2rem;">Condition *</label>
-              <select id="condition_${i}" style="width:100%; padding:0.4rem 0.6rem; border:1.5px solid #dde5ed; border-radius:8px; font-size:9pt;" required>
-                <option value="new">Brand New</option>
-                <option value="used" selected>Used</option>
-                <option value="old">Old / Vintage</option>
-              </select>
-            </div>
-          </div>
-        `;
-      }
-
-      html += '</div>';
-      vehicleFieldsContainer.innerHTML = html;
-    }
-
-    // ============================================================
-    // FETCH MEMBERS
-    // ============================================================
-    async function fetchMembers() {
-      try {
-        const snapshot = await db.collection('MembershipList')
-          .where('status', 'in', ['approved', 'active'])
-          .orderBy('fullName')
-          .get();
-
-        allMembers = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          allMembers.push({
-            id: doc.id,
-            ...data
-          });
-        });
-
-        populateMemberSelect();
-        return allMembers;
-      } catch (error) {
-        console.error('Error fetching members:', error);
-        showToast('Error loading members', 'error');
-        return [];
-      }
-    }
-
-    function populateMemberSelect() {
-      ownerSelect.innerHTML = '<option value="">Select a member...</option>';
-      
-      if (allMembers.length === 0) {
-        ownerSelect.innerHTML = '<option value="">No members found. Please add members first.</option>';
-        return;
-      }
-
-      allMembers.forEach(m => {
-        const option = document.createElement('option');
-        option.value = m.id;
-        option.textContent = `${m.fullName} (${m.membershipId || 'No ID'})`;
-        ownerSelect.appendChild(option);
-      });
-    }
-
-    // ============================================================
-    // FETCH VEHICLES
-    // ============================================================
-    async function fetchVehicles() {
-      try {
-        const snapshot = await db.collection('VehicleList')
-          .orderBy('registeredAt', 'desc')
-          .get();
-
-        allVehicles = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          allVehicles.push({
-            id: doc.id,
-            ...data,
-            registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
-          });
-        });
-
-        renderVehicleList();
-        return allVehicles;
-      } catch (error) {
-        console.error('Error fetching vehicles:', error);
-        showToast('Error loading vehicles', 'error');
-        return [];
-      }
-    }
-
-    // ============================================================
-    // RENDER VEHICLE LIST
-    // ============================================================
-    function renderVehicleList() {
-      if (allVehicles.length === 0) {
-        vehicleListContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-truck"></i>
-            <p>No vehicles registered yet</p>
-            <p style="font-size: 8.5pt; margin-top: 0.3rem;">Register vehicles using the form above</p>
-          </div>
-        `;
-        return;
-      }
-
-      vehicleListContainer.innerHTML = allVehicles.map(v => {
-        const owner = allMembers.find(m => m.id === v.ownerId);
-        const ownerName = owner ? owner.fullName : 'Unknown Member';
-        const status = v.status || 'active';
-        
-        return `
-          <div class="vehicle-item">
-            <div class="vehicle-info">
-              <div class="info-group">
-                <span class="label">Plate</span>
-                <span class="value">${v.plateNumber || '—'}</span>
-              </div>
-              <div class="info-group">
-                <span class="label">Model</span>
-                <span class="value">${v.model || '—'}</span>
-              </div>
-              <div class="info-group">
-                <span class="label">Color</span>
-                <span class="value">${v.color || '—'}</span>
-              </div>
-              <div class="info-group">
-                <span class="label">Condition</span>
-                <span class="value">${v.condition || '—'}</span>
-              </div>
-              <div class="info-group">
-                <span class="label">Owner</span>
-                <span class="value">${ownerName}</span>
-              </div>
-              <div class="info-group">
-                <span class="label">Years Working</span>
-                <span class="value">${v.yearsWorking || '0'} yrs</span>
-              </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-              <span class="vehicle-status ${status}">${status}</span>
-              <div class="vehicle-actions">
-                <button class="btn-sm btn-sm-info" onclick="openEditModal('${v.id}')" title="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn-sm btn-sm-warning" onclick="updateVehicleStatus('${v.id}', 'active')" title="Set Active">
-                  <i class="fas fa-play"></i>
-                </button>
-                <button class="btn-sm btn-sm-warning" onclick="updateVehicleStatus('${v.id}', 'maintenance')" title="Set Maintenance">
-                  <i class="fas fa-tools"></i>
-                </button>
-                <button class="btn-sm btn-sm-danger" onclick="updateVehicleStatus('${v.id}', 'stopped')" title="Stop Vehicle">
-                  <i class="fas fa-stop"></i>
-                </button>
-                <button class="btn-sm btn-sm-outline" onclick="sellVehicle('${v.id}')" title="Sell Vehicle">
-                  <i class="fas fa-hand-holding-usd"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // ============================================================
-    // REGISTER VEHICLES
-    // ============================================================
-    async function registerVehicle(e) {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const ownerId = ownerSelect.value;
-      const count = parseInt(vehicleCount.value) || 0;
-      const yearsWork = parseInt(yearsWorking.value) || 0;
-      const mile = parseInt(mileage.value) || 0;
-
-      // Validation
-      if (!ownerId) {
-        showAlert('Please select a vehicle owner', true);
-        return;
-      }
-
-      if (count < 1 || count > 10) {
-        showAlert('Please enter a valid number of vehicles (1-10)', true);
-        return;
-      }
-
-      // Collect vehicle data
-      const vehicles = [];
-      let hasError = false;
-
-      for (let i = 1; i <= count; i++) {
-        const plate = document.getElementById(`plate_${i}`)?.value.trim().toUpperCase();
-        const model = document.getElementById(`model_${i}`)?.value.trim();
-        const color = document.getElementById(`color_${i}`)?.value.trim();
-        const condition = document.getElementById(`condition_${i}`)?.value;
-
-        if (!plate || plate.length < 3) {
-          showAlert(`Vehicle #${i}: Please enter a valid plate number (min 3 chars)`, true);
-          hasError = true;
-          break;
-        }
-
-        if (!model || model.length < 2) {
-          showAlert(`Vehicle #${i}: Please enter the vehicle model`, true);
-          hasError = true;
-          break;
-        }
-
-        // Check for duplicate plate
-        const existing = allVehicles.find(v => v.plateNumber === plate);
-        if (existing) {
-          showAlert(`Vehicle #${i}: Plate ${plate} already exists!`, true);
-          hasError = true;
-          break;
-        }
-
-        vehicles.push({
-          plateNumber: plate,
-          model: model,
-          color: color || '',
-          condition: condition || 'used',
-          yearsWorking: yearsWork,
-          mileage: mile
-        });
-      }
-
-      if (hasError) return;
-
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner spinner"></i> Registering vehicles...';
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+      const plate = document.getElementById('vPlate').value.trim().toUpperCase();
 
       try {
-        // Save each vehicle
-        for (const v of vehicles) {
-          const vehicleData = {
-            plateNumber: v.plateNumber,
-            model: v.model,
-            color: v.color,
-            condition: v.condition,
-            ownerId: ownerId,
-            yearsWorking: v.yearsWorking,
-            mileage: v.mileage,
-            status: 'active',
-            notes: '',
-            registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
-            registeredBy: 'Chairman'
-          };
-
-          await db.collection('VehicleList').doc(v.plateNumber).set(vehicleData);
+        // Check if plate already exists
+        const existing = await db.collection('VehicleList').where('plateNumber', '==', plate).get();
+        if (!existing.empty) {
+          throw new Error('A vehicle with this plate number is already registered.');
         }
 
-        showToast(`✅ ${vehicles.length} vehicle(s) registered successfully!`, 'success');
-        showAlert(`✅ ${vehicles.length} vehicle(s) registered successfully!`, false);
-
-        // Reset form
-        form.reset();
-        vehicleCount.value = '';
-        vehicleFieldsContainer.innerHTML = '';
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-save"></i> Register Vehicles';
-
-        // Refresh list
-        await fetchVehicles();
-
-      } catch (error) {
-        console.error('Registration error:', error);
-        showAlert('❌ Error: ' + error.message, true);
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-save"></i> Register Vehicles';
-      }
-    }
-
-    // ============================================================
-    // VEHICLE MANAGEMENT ACTIONS
-    // ============================================================
-    
-    // Update Status
-    async function updateVehicleStatus(id, status) {
-      const statusLabels = {
-        'active': 'Active',
-        'maintenance': 'Under Maintenance',
-        'stopped': 'Stopped',
-        'sold': 'Sold'
-      };
-
-      if (!confirm(`Change vehicle status to "${statusLabels[status] || status}"?`)) return;
-
-      try {
-        await db.collection('VehicleList').doc(id).update({
-          status: status,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-          updatedBy: 'Chairman'
-        });
-        showToast(`✅ Vehicle status updated to ${statusLabels[status] || status}`, 'success');
-        await fetchVehicles();
-      } catch (error) {
-        console.error('Error updating vehicle:', error);
-        showToast('Error updating vehicle', 'error');
-      }
-    }
-
-    // Sell Vehicle
-    async function sellVehicle(id) {
-      const newOwner = prompt('Enter the new owner\'s name (or leave empty to mark as sold):');
-      
-      try {
-        const updateData = {
-          status: 'sold',
-          soldAt: firebase.firestore.FieldValue.serverTimestamp(),
-          soldBy: 'Chairman'
+        const vehicleData = {
+          plateNumber: plate,
+          model: document.getElementById('vModel').value.trim(),
+          engineNumber: document.getElementById('vEngine').value.trim(),
+          chassisNumber: document.getElementById('vChassis').value.trim(),
+          driverName: document.getElementById('vDriver').value.trim(),
+          driverPhone: document.getElementById('vPhone').value.trim(),
+          status: document.getElementById('vStatus').value,
+          registeredAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        if (newOwner && newOwner.trim()) {
-          updateData.soldTo = newOwner.trim();
-        }
-
-        await db.collection('VehicleList').doc(id).update(updateData);
-        showToast(`✅ Vehicle marked as sold${newOwner ? ' to ' + newOwner : ''}`, 'success');
-        await fetchVehicles();
-      } catch (error) {
-        console.error('Error selling vehicle:', error);
-        showToast('Error selling vehicle', 'error');
-      }
-    }
-
-    // ============================================================
-    // EDIT VEHICLE MODAL
-    // ============================================================
-    function openEditModal(id) {
-      const vehicle = allVehicles.find(v => v.id === id);
-      if (!vehicle) {
-        showToast('Vehicle not found', 'error');
-        return;
-      }
-
-      editingVehicleId = id;
-      document.getElementById('editVehicleId').value = id;
-      document.getElementById('editPlate').value = vehicle.plateNumber || '';
-      document.getElementById('editModel').value = vehicle.model || '';
-      document.getElementById('editColor').value = vehicle.color || '';
-      document.getElementById('editCondition').value = vehicle.condition || 'used';
-      document.getElementById('editStatus').value = vehicle.status || 'active';
-      document.getElementById('editNotes').value = vehicle.notes || '';
-
-      document.getElementById('editModal').classList.add('active');
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-      editingVehicleId = null;
-    }
-
-    async function saveVehicleEdit(e) {
-      e.preventDefault();
-
-      const id = document.getElementById('editVehicleId').value;
-      const model = document.getElementById('editModel').value.trim();
-      const color = document.getElementById('editColor').value.trim();
-      const condition = document.getElementById('editCondition').value;
-      const status = document.getElementById('editStatus').value;
-      const notes = document.getElementById('editNotes').value.trim();
-
-      if (!model || model.length < 2) {
-        showToast('Please enter a valid model', 'error');
-        return;
-      }
-
-      try {
-        await db.collection('VehicleList').doc(id).update({
-          model: model,
-          color: color,
-          condition: condition,
-          status: status,
-          notes: notes,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-          updatedBy: 'Chairman'
-        });
-
-        showToast('✅ Vehicle updated successfully!', 'success');
-        closeModal('editModal');
-        await fetchVehicles();
-      } catch (error) {
-        console.error('Error updating vehicle:', error);
-        showToast('Error updating vehicle', 'error');
-      }
-    }
-
-    // Close modal on click outside
-    document.getElementById('editModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeModal('editModal');
+        await db.collection('VehicleList').add(vehicleData);
+        
+        showAlert('✅ Vehicle registered successfully!');
+        form.reset();
+      } catch (err) {
+        showAlert('❌ Error: ' + err.message, true);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Vehicle';
       }
     });
-
-    // ============================================================
-    // REAL-TIME LISTENERS
-    // ============================================================
-    function setupRealTimeListeners() {
-      // Members listener (approved/active only)
-      db.collection('MembershipList')
-        .where('status', 'in', ['approved', 'active'])
-        .orderBy('fullName')
-        .onSnapshot((snapshot) => {
-          allMembers = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            allMembers.push({
-              id: doc.id,
-              ...data
-            });
-          });
-          populateMemberSelect();
-        }, (error) => {
-          console.error('Members listener error:', error);
-        });
-
-      // Vehicles listener
-      db.collection('VehicleList')
-        .orderBy('registeredAt', 'desc')
-        .onSnapshot((snapshot) => {
-          allVehicles = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            allVehicles.push({
-              id: doc.id,
-              ...data,
-              registeredAt: data.registeredAt ? data.registeredAt.toDate() : null
-            });
-          });
-          renderVehicleList();
-        }, (error) => {
-          console.error('Vehicles listener error:', error);
-        });
-    }
-
-    // ============================================================
-    // INIT
-    // ============================================================
-    function init() {
-      updateUserUI();
-      setupRealTimeListeners();
-      
-      console.log('TABARE Vehicle Registration ready');
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
   </script>
-
 </body>
 </html>
