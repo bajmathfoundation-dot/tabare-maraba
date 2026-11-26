@@ -275,23 +275,19 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  //  MEMBER COUNTER  — single source of truth for membership numbers
+  //  memberCounter — single source of truth for membership numbers
   //  Document: Counters/memberCounter
-  //  Fields:   count (number), lastMembershipId (string), year (number)
-  //
-  //  On first run it bootstraps itself by scanning existing members
-  //  and finding the highest TAB/MEM/YYYY/NNN number. So if 006 exists
-  //  it will set count = 6 and the next registration becomes 007.
+  //  Bootstrap: first run scans MembershipList, finds highest
+  //             TAB/MEM/YYYY/NNN, stores it, then continues from +1.
   // ═══════════════════════════════════════════════════════════════════
   const COUNTER_DOC = db.collection('Counters').doc('memberCounter');
 
   async function bootstrapCounterIfNeeded(year) {
     const snap = await COUNTER_DOC.get();
     if (snap.exists && snap.data().year === year) {
-      return snap.data(); // already initialised for this year
+      return snap.data();
     }
 
-    // Scan MembershipList for existing IDs in this year and find the max
     let maxNum = 0;
     let lastDisplayId = '';
 
@@ -300,7 +296,7 @@
       membersSnap.forEach(doc => {
         const data = doc.data();
         const mid = data.membershipId || '';
-        // Match TAB/MEM/2026/006  (also tolerate TAB/MEM/2026/6)
+        // TAB/MEM/2026/006 (tolerate un-padded)
         const match = mid.match(/^TAB\/MEM\/(\d{4})\/(\d{1,4})$/);
         if (match && Number(match[1]) === year) {
           const n = parseInt(match[2], 10);
@@ -309,7 +305,7 @@
             lastDisplayId = `TAB/MEM/${year}/${String(n).padStart(3, '0')}`;
           }
         }
-        // Also catch docs where membershipId is the docId style (TAB_MEM_2026_006)
+        // TAB_MEM_2026_006 (docId style stored as membershipId)
         const matchDoc = doc.id.match(/^TAB_MEM_(\d{4})_(\d{1,4})$/);
         if (matchDoc && Number(matchDoc[1]) === year) {
           const n = parseInt(matchDoc[2], 10);
@@ -336,18 +332,14 @@
   async function generateMembershipId() {
     const currentYear = new Date().getFullYear();
 
-    // 1. Make sure the counter exists and is year-aware
+    // 1. Ensure counter exists (auto-bootstrap on first run)
     await bootstrapCounterIfNeeded(currentYear);
 
-    // 2. Atomically increment and grab the new number
+    // 2. Atomically increment
     const newCount = await db.runTransaction(async (tx) => {
       const snap = await tx.get(COUNTER_DOC);
       let current = snap.exists ? (snap.data().count || 0) : 0;
-
-      // If the stored year is different (new year), reset to 0
-      if (snap.exists && snap.data().year !== currentYear) {
-        current = 0;
-      }
+      if (snap.exists && snap.data().year !== currentYear) current = 0;
 
       const next = current + 1;
       const padded = String(next).padStart(3, '0');
@@ -368,6 +360,23 @@
       docId: `TAB_MEM_${currentYear}_${padded}`,
       displayId: `TAB/MEM/${currentYear}/${padded}`
     };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  Safe "create-if-not-exists" for the compat SDK
+  //  (compat DocumentReference has no .create(), so we do it in a tx)
+  // ═══════════════════════════════════════════════════════════════════
+  async function createMemberDoc(docId, data) {
+    const ref = db.collection('MembershipList').doc(docId);
+    await db.runTransaction(async (tx) => {
+      const existing = await tx.get(ref);
+      if (existing.exists) {
+        const err = new Error('already-exists');
+        err.code = 'already-exists';
+        throw err;
+      }
+      tx.set(ref, data);
+    });
   }
 
   function compressImage(file) {
@@ -445,8 +454,7 @@
         }
       }
 
-      // .create() refuses to overwrite an existing doc — safe against collisions
-      await db.collection('MembershipList').doc(docId).create({
+      await createMemberDoc(docId, {
         fullName: name,
         phone: phone,
         emergencyContact: emergency,
