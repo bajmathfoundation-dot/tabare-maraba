@@ -254,7 +254,7 @@
       const reader = new FileReader();
       reader.onload = function(event) {
         imagePreview.innerHTML = `<img src="${event.target.result}" alt="Profile" /><button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>`;
-        document.getElementById('removeImageBtn').addEventListener('click', removeImage);
+        document.getElementById('removeImageBtn').addEventListener('click', removeImage, { once: true });
       };
       reader.readAsDataURL(file);
     }
@@ -264,9 +264,9 @@
     selectedImageFile = null;
     imageInput.value = '';
     imagePreview.innerHTML = `<i class="fas fa-user placeholder-icon"></i><button type="button" class="remove-img" id="removeImageBtn"><i class="fas fa-times"></i></button>`;
-    document.getElementById('removeImageBtn').addEventListener('click', removeImage);
+    document.getElementById('removeImageBtn').addEventListener('click', removeImage, { once: true });
   }
-  document.getElementById('removeImageBtn').addEventListener('click', removeImage);
+  document.getElementById('removeImageBtn').addEventListener('click', removeImage, { once: true });
 
   function showAlert(msg, isError = false) {
     alertEl.textContent = msg;
@@ -274,17 +274,100 @@
     setTimeout(() => { alertEl.className = 'alert'; }, 8000);
   }
 
-  async function generateMembershipId() {
-    try {
-      const currentYear = new Date().getFullYear();
-      const snapshot = await db.collection('MembershipList').where('membershipId', '>=', `TAB/MEM/${currentYear}/`).where('membershipId', '<=', `TAB/MEM/${currentYear}/\uf8ff`).get();
-      const count = snapshot.size;
-      const padded = String(count + 1).padStart(3, '0');
-      return { docId: `TAB_MEM_${currentYear}_${padded}`, displayId: `TAB/MEM/${currentYear}/${padded}` };
-    } catch (error) {
-      const timestamp = Date.now().toString(36).toUpperCase();
-      return { docId: `TAB_MEM_${timestamp}`, displayId: `TAB/MEM/${new Date().getFullYear()}/${timestamp.slice(-4)}` };
+  // ═══════════════════════════════════════════════════════════════════
+  //  MEMBER COUNTER  — single source of truth for membership numbers
+  //  Document: Counters/memberCounter
+  //  Fields:   count (number), lastMembershipId (string), year (number)
+  //
+  //  On first run it bootstraps itself by scanning existing members
+  //  and finding the highest TAB/MEM/YYYY/NNN number. So if 006 exists
+  //  it will set count = 6 and the next registration becomes 007.
+  // ═══════════════════════════════════════════════════════════════════
+  const COUNTER_DOC = db.collection('Counters').doc('memberCounter');
+
+  async function bootstrapCounterIfNeeded(year) {
+    const snap = await COUNTER_DOC.get();
+    if (snap.exists && snap.data().year === year) {
+      return snap.data(); // already initialised for this year
     }
+
+    // Scan MembershipList for existing IDs in this year and find the max
+    let maxNum = 0;
+    let lastDisplayId = '';
+
+    try {
+      const membersSnap = await db.collection('MembershipList').get();
+      membersSnap.forEach(doc => {
+        const data = doc.data();
+        const mid = data.membershipId || '';
+        // Match TAB/MEM/2026/006  (also tolerate TAB/MEM/2026/6)
+        const match = mid.match(/^TAB\/MEM\/(\d{4})\/(\d{1,4})$/);
+        if (match && Number(match[1]) === year) {
+          const n = parseInt(match[2], 10);
+          if (n > maxNum) {
+            maxNum = n;
+            lastDisplayId = `TAB/MEM/${year}/${String(n).padStart(3, '0')}`;
+          }
+        }
+        // Also catch docs where membershipId is the docId style (TAB_MEM_2026_006)
+        const matchDoc = doc.id.match(/^TAB_MEM_(\d{4})_(\d{1,4})$/);
+        if (matchDoc && Number(matchDoc[1]) === year) {
+          const n = parseInt(matchDoc[2], 10);
+          if (n > maxNum) {
+            maxNum = n;
+            lastDisplayId = `TAB/MEM/${year}/${String(n).padStart(3, '0')}`;
+          }
+        }
+      });
+    } catch (scanErr) {
+      console.warn('Counter bootstrap scan failed, starting at 0:', scanErr);
+    }
+
+    const initial = {
+      count: maxNum,
+      lastMembershipId: lastDisplayId,
+      year: year,
+      bootstrappedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    await COUNTER_DOC.set(initial, { merge: true });
+    return initial;
+  }
+
+  async function generateMembershipId() {
+    const currentYear = new Date().getFullYear();
+
+    // 1. Make sure the counter exists and is year-aware
+    await bootstrapCounterIfNeeded(currentYear);
+
+    // 2. Atomically increment and grab the new number
+    const newCount = await db.runTransaction(async (tx) => {
+      const snap = await tx.get(COUNTER_DOC);
+      let current = snap.exists ? (snap.data().count || 0) : 0;
+
+      // If the stored year is different (new year), reset to 0
+      if (snap.exists && snap.data().year !== currentYear) {
+        current = 0;
+      }
+
+      const next = current + 1;
+      const padded = String(next).padStart(3, '0');
+      const displayId = `TAB/MEM/${currentYear}/${padded}`;
+
+      tx.set(COUNTER_DOC, {
+        count: next,
+        lastMembershipId: displayId,
+        year: currentYear,
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      return next;
+    });
+
+    const padded = String(newCount).padStart(3, '0');
+    return {
+      docId: `TAB_MEM_${currentYear}_${padded}`,
+      displayId: `TAB/MEM/${currentYear}/${padded}`
+    };
   }
 
   function compressImage(file) {
@@ -309,7 +392,7 @@
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]); 
+          resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
         };
         img.onerror = error => reject(error);
       };
@@ -353,22 +436,35 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ fileName: selectedImageFile.name, fileContent: compressedBase64 })
           });
-          if (!response.ok) throw new Error('Upload failed');
-          const data = await response.json();
-          imageUrl = data.url; 
+          if (response.ok) {
+            const data = await response.json();
+            imageUrl = data.url;
+          }
         } catch (imageError) {
-          showAlert('Failed to upload image, but saving profile without it.', true);
+          console.warn('Image upload skipped:', imageError);
         }
       }
 
-      await db.collection('MembershipList').doc(docId).set({
-        fullName: name, phone: phone, emergencyContact: emergency, dateOfBirth: dob,
-        stateOfOrigin: stateOrigin, homeAddress: address, profilePhoto: imageUrl || '', 
-        membershipType: memTypeVal, tricyclePlate: plate || '', tricycleModel: model || '',
-        driversLicense: license || '', reason: reason || '', termsAccepted: true, 
-        membershipId: displayId, status: 'pending', registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+      // .create() refuses to overwrite an existing doc — safe against collisions
+      await db.collection('MembershipList').doc(docId).create({
+        fullName: name,
+        phone: phone,
+        emergencyContact: emergency,
+        dateOfBirth: dob,
+        stateOfOrigin: stateOrigin,
+        homeAddress: address,
+        profilePhoto: imageUrl || '',
+        membershipType: memTypeVal,
+        tricyclePlate: plate || '',
+        tricycleModel: model || '',
+        driversLicense: license || '',
+        reason: reason || '',
+        termsAccepted: true,
+        membershipId: displayId,
+        status: 'pending',
+        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      
+
       showAlert(`✅ Registration successful! Your ID: ${displayId}.`);
       form.reset();
       vehicleFields.style.display = 'none';
@@ -377,7 +473,12 @@
       termsCheck.checked = false;
 
     } catch (err) {
-      showAlert('❌ Error: ' + err.message, true);
+      console.error('REGISTER ERROR:', err.code, err.message);
+      if (err.code === 'already-exists') {
+        showAlert('❌ ID collision — the counter is out of sync. Please refresh and try again.', true);
+      } else {
+        showAlert('❌ Error: ' + err.message, true);
+      }
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Register Now';
